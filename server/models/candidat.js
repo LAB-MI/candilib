@@ -5,48 +5,54 @@ import bcrypt from 'bcrypt';
 const candidatSchema = new Schema({
   nomNaissance: {
     type: String,
-    required: false
+    required: false,
   },
   nomUsage: {
     type: String,
-    required: false
+    required: false,
   },
   prenom: {
     type: String,
-    required: false
+    required: false,
   },
   codeNeph: {
-    type: String,
-    required: false
+    type: Number,
+    required: false,
   },
   dateNaissance: {
     type: Date,
-    required: false
+    required: false,
   },
   dateReussiteETG: {
     type: Date,
-    required: false
+    required: false,
   },
   dateDernierEchecPratique: {
     type: Date,
-    required: false
+    required: false,
   },
   reussitePratique: {
     type: String,
-    required: false
+    required: false,
   },
   email: {
     type: String,
     default: '',
+    trim: true, unique: true,
+    match: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
   },
-  mobile: {
-    type: String,
+  portable: {
+    type: Number,
     default: '',
   },
   adresse: {
     type: String,
     default: '',
-  }
+  },
+  isValid: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 candidatSchema.methods.generateHash = (password) => {

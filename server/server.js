@@ -45,9 +45,7 @@ import Helmet from 'react-helmet';
 // Import required modules
 import routes from '../client/routes';
 import { fetchComponentData } from './util/fetchData';
-import posts from './routes/post.routes';
-import candidats from './routes/candidats.routes'
-import dummyData from './dummyData';
+import candidats from './routes/candidats.routes';
 import serverConfig from './config';
 
 // Set native promises as mongoose promise
@@ -60,9 +58,6 @@ if (process.env.NODE_ENV !== 'test') {
       console.error('Please make sure Mongodb is installed and running!'); // eslint-disable-line no-console
       throw error;
     }
-
-    // feed some dummy data in DB.
-    dummyData();
   });
 }
 
@@ -71,7 +66,6 @@ app.use(compression());
 app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
 app.use(Express.static(path.resolve(__dirname, '../dist/client')));
-app.use('/api', posts);
 app.use('/api', candidats);
 
 // Render Initial HTML
@@ -93,8 +87,8 @@ const renderFullPage = (html, initialState) => {
         ${head.script.toString()}
 
         ${isProdMode ? `<link rel='stylesheet' href='${assetsManifest['/app.css']}' />` : ''}
-        <link href='https://fonts.googleapis.com/css?family=Lato:400,300,700' rel='stylesheet' type='text/css'/>
-        <link rel="shortcut icon" href="http://res.cloudinary.com/hashnode/image/upload/v1455629445/static_imgs/mern/mern-favicon-circle-fill.png" type="image/png" />
+        <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,700' rel='stylesheet' type='text/css'/>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
       </head>
       <body>
         <div id="root">${process.env.NODE_ENV === 'production' ? html : `<div>${html}</div>`}</div>
@@ -159,7 +153,7 @@ app.use((req, res, next) => {
 // start app
 app.listen(serverConfig.port, (error) => {
   if (!error) {
-    console.log(`MERN is running on port: ${serverConfig.port}! Build something amazing!`); // eslint-disable-line
+    console.log(`Candilb is running on port: ${serverConfig.port}! Build something amazing!`); // eslint-disable-line
   }
 });
 
