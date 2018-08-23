@@ -2,6 +2,8 @@
 import Candidat from '../models/candidat';
 import sanitizeHtml from 'sanitize-html';
 import csv from 'csv-express'; // eslint-disable-line no-unused-vars
+import retourAurige from '../data_aurige/mock_2.json';
+import sendMailToAccount from '../util/sendMail';
 
 /**
  * signUp
@@ -36,7 +38,6 @@ export function signUp(req, res) {
   // 1. Verify neph and mail doesn't exist
   // 2. Save
 
-
   Candidat.find({
     email,
   }, (err, previousUsers) => {
@@ -58,17 +59,17 @@ export function signUp(req, res) {
     const newCandidat = new Candidat();
 
     // Let's sanitize inputs
-    newCandidat.nomNaissance = nom;
-    newCandidat.nomUsage = nomUsage;
-    newCandidat.prenom = prenom;
-    newCandidat.codeNeph = neph;
-    newCandidat.dateNaissance = naissance;
+    newCandidat.nomNaissance = sanitizeHtml(nom);
+    newCandidat.nomUsage = sanitizeHtml(nomUsage);
+    newCandidat.prenom = sanitizeHtml(prenom);
+    newCandidat.codeNeph = sanitizeHtml(neph);
+    newCandidat.dateNaissance = sanitizeHtml(naissance);
     newCandidat.dateReussiteETG = null;
     newCandidat.dateDernierEchecPratique = null;
     newCandidat.reussitePratique = null;
-    newCandidat.portable = portable;
-    newCandidat.adresse = adresse;
-    newCandidat.email = email;
+    newCandidat.portable = sanitizeHtml(portable);
+    newCandidat.adresse = sanitizeHtml(adresse);
+    newCandidat.email = sanitizeHtml(email);
     newCandidat.isValid = false;
 
     newCandidat.save((error, candidat) => {
@@ -79,10 +80,13 @@ export function signUp(req, res) {
             message: error.message,
           });
       }
+
+      sendMailToAccount(candidat.email, 'Votre demande a bien été prise en compte, vous recevrez une réponse  pour confirmation définitive sous 24 heures');
+
       return res.status(200)
         .send({
           success: true,
-          message: 'Candidat créé',
+          message: 'Votre demande a bien été prise en compte, veuillez consulter votre email.',
           candidat,
         });
     });
@@ -282,10 +286,61 @@ export function destroyAll(req, res) {
       console.log(err); // eslint-disable-line no-console
     } else {
       res.send(' destroy success');
+      res.end();
     }
   });
 }
 
+const CANDIDAT_OK = 'OK';
+
+export function synchroAurige(req, res) {
+  retourAurige.map((candidatAurige) => {
+    if (candidatAurige.candidatExistant === CANDIDAT_OK) {
+      Candidat.update(
+        { email: candidatAurige.email },
+        {
+          $set: {
+            isValid: true,
+            dateReussiteETG: candidatAurige.dateReussiteETG,
+            dateDernierEchecPratique: candidatAurige.dateDernierEchecPratique,
+          },
+        },
+        (err) => {
+          if (err) {
+            console.warn(err.message);  // eslint-disable-line no-console
+          } else {
+            sendMailToAccount(candidatAurige.email, 'votre demande a bien été validé');
+          }
+        }
+      );
+    } else {
+      if (candidatAurige.email) {
+        sendMailToAccount(candidatAurige.email, 'votre demande présente des problèmes veuillez vous réinscrire');
+      }
+
+      Candidat.findOneAndRemove({
+        $or: [
+          {
+            email: candidatAurige.email,
+          },
+          {
+            nomNaissance: candidatAurige.nomNaissance,
+          },
+          {
+            codeNeph: candidatAurige.codeNeph,
+          },
+        ],
+      }, (err, object) => {
+        if (err) {
+          console.warn(err);
+        } else {
+          console.dir(`Ce candidat a été detruit : ${object.nomNaissance}`); // eslint-disable-line no-console
+        }
+      });
+    }
+  });
+  res.end();
+}
 
 export function purgePermisOk(req, res) {
   Candidat.find({
@@ -298,13 +353,12 @@ export function purgePermisOk(req, res) {
         Candidat.findOne({ _id: c._id })
           .exec((error, cand) => {
             if (error) {
-              res.status(500)
+              res
                 .send(error);
             }
-
             cand.remove(() => {
               res.status(200)
-                  .end();
+                .end();
             });
           });
       });

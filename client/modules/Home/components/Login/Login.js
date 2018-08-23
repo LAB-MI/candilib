@@ -16,7 +16,7 @@ import {
 } from '@material-ui/core';
 
 import blue from '@material-ui/core/colors/blue';
-
+import SnackbarNotification from '../Notifications/SnackbarNotificationWrapper';
 
 const styles = theme => ({
   layout: {
@@ -94,8 +94,7 @@ const styles = theme => ({
     position: 'absolute',
   },
   snackbarContent: {
-    width: '100%',
-    backgroundColor: theme.palette.error.dark,
+    width: theme.spacing.unit * 50,
   },
   textField: {
     width: '100%',
@@ -191,6 +190,7 @@ class Login extends Component {
               naissance: 'dd/mm/yyyy',
               portable: '',
               adresse: '',
+              success: true,
             });
           } else {
             this.setState({
@@ -198,6 +198,7 @@ class Login extends Component {
               emailError: !json.success,
               isLoading: false,
               open: true,
+              success: false,
             });
           }
         });
@@ -219,14 +220,15 @@ class Login extends Component {
       naissance,
       portable,
       adresse,
+      success,
     } = this.state;
 
     return (
       <React.Fragment>
         <CssBaseline />
-        <main className={classes.layout}>
-          <Paper className={classes.paper}>
-            <Typography variant="display1" align="center" gutterBottom>
+        <main className={classes.layout} >
+          <Paper className={classes.paper} >
+            <Typography variant="display1" align="center" gutterBottom >
               <form
                 className={classes.form}
                 onSubmit={this.handleCreate}
@@ -285,22 +287,35 @@ class Login extends Component {
             </Typography>
           </Paper>
         </main>
-        <Snackbar
-          open={open}
-          autoHideDuration={4000}
-          onClose={this.handleClose}
-          ContentProps={{
-            'aria-describedby': 'snackbar-fab-message-id',
-            className: classes.snackbarContent,
-          }}
-          message={<span id="snackbar-fab-message-id">{signUpError}</span>}
-          action={
-            <Button color="inherit" size="small" onClick={this.handleClose}>
-              Fermer
-            </Button>
-          }
-          className={classes.snackbar}
-        />
+        {success &&
+          <Snackbar
+            open={open}
+            autoHideDuration={4000}
+            onClose={this.handleClose}
+            className={classes.snackbar}
+          >
+            <SnackbarNotification
+              onClose={this.handleClose}
+              variant="success"
+              className={classes.snackbarContent}
+              message={signUpError}
+            />
+          </Snackbar>
+        }
+        {!success &&
+          <Snackbar
+            open={open}
+            autoHideDuration={4000}
+            onClose={this.handleClose}
+            className={classes.snackbar}
+          >
+            <SnackbarNotification
+              onClose={this.handleClose}
+              variant="error"
+              className={classes.snackbarContent}
+              message={signUpError}
+            />
+          </Snackbar>}
       </React.Fragment>
     );
   }

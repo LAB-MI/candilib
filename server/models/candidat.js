@@ -44,6 +44,8 @@ const candidatSchema = new Schema({
   portable: {
     type: Number,
     default: '',
+    trim: true,
+    match: /^(?:0|\(?\+33\)?\s?|0033\s?)[1-79](?:[\.\-\s]?\d\d){4}$/,
   },
   adresse: {
     type: String,

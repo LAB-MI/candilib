@@ -32,5 +32,8 @@ router.route('/export').get(CandidatsController.exportToCSV);
 // Purge candidats from Aurige permis OK
 router.route('/candidats/permis/ok').get(CandidatsController.purgePermisOk);
 
+// synchro candidats from Aurige
+router.route('/synchro').get(CandidatsController.synchroAurige);
+
 export default router;
 

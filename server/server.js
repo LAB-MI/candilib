@@ -3,7 +3,9 @@ import compression from 'compression';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import path from 'path';
+import morgan from 'morgan';
 import IntlWrapper from '../client/modules/Intl/IntlWrapper';
+
 
 // Initialize the Express App
 const app = new Express();
@@ -62,6 +64,7 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 // Apply body Parser and server public assets and routes
+app.use(morgan('combined'));
 app.use(compression());
 app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
