@@ -9,6 +9,6 @@ dist
 coverage/
 .nyc_output/
 yarn.lock
-server/models/__tests__
 server/data_aurige
+server/models/__tests__
 
