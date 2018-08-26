@@ -10,4 +10,5 @@ coverage/
 .nyc_output/
 yarn.lock
 server/data_aurige
+server/models/__tests__
 
