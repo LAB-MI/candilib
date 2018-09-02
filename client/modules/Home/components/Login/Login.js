@@ -12,11 +12,11 @@ import {
   CssBaseline,
   Snackbar,
   CircularProgress,
-  TextField,
 } from '@material-ui/core';
 
 import blue from '@material-ui/core/colors/blue';
 import SnackbarNotification from '../Notifications/SnackbarNotificationWrapper';
+import { setInStorage } from '../../../../util/storage';
 
 const styles = theme => ({
   layout: {
@@ -50,20 +50,8 @@ const styles = theme => ({
     margin: theme.spacing.unit,
     position: 'relative',
   },
-  buttonSuccess: {
-    backgroundColor: blue[500],
-    '&:hover': {
-      backgroundColor: blue[700],
-    },
-  },
-  fabProgress: {
-    color: blue[500],
-    position: 'absolute',
-    top: -6,
-    left: -6,
-    zIndex: 1,
-  },
   buttonProgress: {
+    margin: theme.spacing.unit * 2,
     color: blue[500],
     position: 'absolute',
     top: '50%',
@@ -71,24 +59,9 @@ const styles = theme => ({
     marginTop: -12,
     marginLeft: -12,
   },
-  fab: {
-    position: 'absolute',
-    bottom: theme.spacing.unit * 2,
-    right: theme.spacing.unit * 2,
-  },
-  fabMoveUp: {
-    transform: 'translate3d(0, -46px, 0)',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.enteringScreen,
-      easing: theme.transitions.easing.easeOut,
-    }),
-  },
-  fabMoveDown: {
-    transform: 'translate3d(0, 0, 0)',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.leavingScreen,
-      easing: theme.transitions.easing.sharp,
-    }),
+  buttonLogin: {
+    textTransform: 'none',
+    fontSize: 10,
   },
   snackbar: {
     position: 'absolute',
@@ -107,6 +80,7 @@ class Login extends Component {
     super(props);
     this.state = {
       isLoading: false,
+      isLogin: false,
       success: false,
       neph: '',
       nom: '',
@@ -151,6 +125,7 @@ class Login extends Component {
       naissance,
       portable,
       adresse,
+      isLogin,
     } = this.state;
 
     this.setState({
@@ -158,66 +133,100 @@ class Login extends Component {
     });
     if (email) {
       // Post request to backend
-      fetch('/api/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          neph,
-          nom,
-          nomUsage,
-          prenom,
-          email,
-          naissance,
-          portable,
-          adresse,
-        }),
-      })
-        .then(res => res.json())
-        .then(json => {
-          if (json.success) {
-            this.setState({
-              signUpError: json.message,
-              isLoading: false,
-              open: true,
-              emailError: !json.success,
-              neph: '',
-              nom: '',
-              nomUsage: '',
-              email: '',
-              prenom: '',
-              naissance: 'dd/mm/yyyy',
-              portable: '',
-              adresse: '',
-              success: true,
-            });
-          } else {
-            this.setState({
-              signUpError: json.message,
-              emailError: !json.success,
-              isLoading: false,
-              open: true,
-              success: false,
-            });
-          }
-        });
+
+      if (!isLogin) {
+        fetch('/api/candidats/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            neph,
+            nom,
+            nomUsage,
+            prenom,
+            email,
+            naissance,
+            portable,
+            adresse,
+          }),
+        })
+          .then(res => res.json())
+          .then(json => {
+            if (json.success) {
+              setInStorage('candilib', json.token);
+              this.setState({
+                signUpError: json.message,
+                isLoading: false,
+                open: true,
+                emailError: !json.success,
+                neph: '',
+                nom: '',
+                nomUsage: '',
+                email: '',
+                prenom: '',
+                naissance: 'dd/mm/yyyy',
+                portable: '',
+                adresse: '',
+                success: true,
+              });
+            } else {
+              this.setState({
+                signUpError: json.message,
+                emailError: !json.success,
+                isLoading: false,
+                open: true,
+                success: false,
+              });
+            }
+          });
+      } else {
+        fetch('/api/candidats/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email,
+          }),
+        })
+          .then(res => res.json())
+          .then(json => {
+            if (json.success) {
+              this.setState({
+                signUpError: json.message,
+                isLoading: false,
+                open: true,
+                emailError: !json.success,
+                email: '',
+                success: true,
+              });
+            } else {
+              this.setState({
+                signUpError: json.message,
+                emailError: !json.success,
+                isLoading: false,
+                open: true,
+                success: false,
+              });
+            }
+          });
+      }
     }
   }
 
   render() {
     const { classes } = this.props;
     const {
+      isLogin,
       isLoading,
       open,
       signUpError,
       emailError,
       neph,
       nom,
-      nomUsage,
       email,
       prenom,
-      naissance,
       portable,
       adresse,
       success,
@@ -226,10 +235,10 @@ class Login extends Component {
     return (
       <React.Fragment>
         <CssBaseline />
-        <main className={classes.layout} >
-          <Paper className={classes.paper} >
-            <Typography variant="display1" align="center" gutterBottom >
-              <form
+        <main className={classes.layout}>
+          <Paper className={classes.paper}>
+            <Typography variant="display1" align="center" gutterBottom>
+              {!isLogin && <form
                 className={classes.form}
                 onSubmit={this.handleCreate}
               >
@@ -242,24 +251,8 @@ class Login extends Component {
                   <Input id="nom" name="nom" autoComplete="nom" value={nom} autoFocus onChange={this.handleChange} />
                 </FormControl>
                 <FormControl margin="normal" fullWidth>
-                  <InputLabel htmlFor="nomUsage">Nom Usage</InputLabel>
-                  <Input id="nomusage" name="nomUsage" autoComplete="nomusage" value={nomUsage} autoFocus onChange={this.handleChange} />
-                </FormControl>
-                <FormControl margin="normal" fullWidth>
                   <InputLabel htmlFor="prenom">Prénom</InputLabel>
                   <Input id="prenom" name="prenom" autoComplete="prenom" value={prenom} autoFocus onChange={this.handleChange} />
-                </FormControl>
-                <FormControl
-                  margin="normal" fullWidth
-                >
-                  <TextField
-                    id="date"
-                    label="Date de Naissance"
-                    type="date"
-                    value={naissance}
-                    className={classes.textField} variant="title" InputLabelProps={{ shrink: true }} name="naissance"
-                    onChange={this.handleChange}
-                  />
                 </FormControl>
                 <FormControl margin="normal" required fullWidth>
                   <InputLabel htmlFor="email">Email</InputLabel>
@@ -283,7 +276,50 @@ class Login extends Component {
                   {isLoading && <CircularProgress size={24} className={classes.buttonProgress} />}
 
                 </FormControl>
+                <FormControl margin="normal" className={classes.buttonLogin}>
+                  <Button
+                    color="default"
+                    onClick={() => this.setState({ isLogin: true })}
+                  >
+                    <Typography variant="caption">
+                      Connection
+                    </Typography>
+                  </Button>
+                </FormControl>
               </form>
+              }
+              {isLogin && <form
+                className={classes.form}
+                onSubmit={this.handleCreate}
+              >
+
+                <FormControl margin="normal" required fullWidth>
+                  <InputLabel htmlFor="email">Email</InputLabel>
+                  <Input id="email" error={emailError} name="email" autoComplete="email" value={email} autoFocus onChange={this.handleChange} />
+                </FormControl>
+
+                <FormControl margin="normal" required fullWidth>
+                  <Button
+                    type="submit"
+                    color="primary"
+                    variant="raised"
+                    disabled={isLoading}
+                  >Connection</Button>
+                  {isLoading && <CircularProgress size={24} className={classes.buttonProgress} />}
+
+                </FormControl>
+                <FormControl margin="normal" className={classes.buttonLogin}>
+                  <Button
+                    color="default"
+                    onClick={() => this.setState({ isLogin: false })}
+                  >
+                    <Typography variant="caption">
+                      inscription
+                    </Typography>
+                  </Button>
+                </FormControl>
+              </form>
+              }
             </Typography>
           </Paper>
         </main>

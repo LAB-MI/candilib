@@ -7,20 +7,12 @@ const candidatSchema = new Schema({
     type: String,
     required: false,
   },
-  nomUsage: {
-    type: String,
-    required: false,
-  },
   prenom: {
     type: String,
     required: false,
   },
   codeNeph: {
     type: Number,
-    required: false,
-  },
-  dateNaissance: {
-    type: Date,
     required: false,
   },
   dateReussiteETG: {

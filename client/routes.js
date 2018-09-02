@@ -16,6 +16,7 @@ if (typeof require.ensure !== 'function') {
  */
 if (process.env.NODE_ENV !== 'production') {
   // Require async routes only in development for react-hot-reloader to work.
+  require('./modules/Home/components/Login/Login');
   require('./modules/Post/pages/PostListPage/PostListPage');
   require('./modules/Post/pages/PostDetailPage/PostDetailPage');
 }

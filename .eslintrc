@@ -25,6 +25,8 @@
      "react/jsx-no-bind": [0],
      "import/no-unresolved": [0], // Until import plugin supports webpack 2 resolveModules
     "consistent-return": 0,
-    "array-callback-return": 0
+    "array-callback-return": 0,
+    "quote-props": 1,
+    "no-param-reassign": [1, {"props": true}]
   }
 }

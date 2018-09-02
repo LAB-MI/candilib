@@ -1,7 +1,8 @@
 import nodemailer from 'nodemailer';
 import serverConfig from '../config';
 
-const sendMailToAccount = (account, message) => {
+
+const sendMagicLink = (account, token) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -9,8 +10,6 @@ const sendMailToAccount = (account, message) => {
       pass: 'Salahdin@1314',
     },
   });
-  // TODO faire contenu message par flag CANDIDATS_NOK et CANDIDATS_NOK_NOM etc...
-
   const mailOptions = {
     form: 'candilib@securite-routiere.gouv.fr',
     to: account,
@@ -63,7 +62,7 @@ const sendMailToAccount = (account, message) => {
                                         <!-- entete -->
                                         <tr class="pagetoplogo">
                                             <td class="w640"  width="640">
-                                                <table  class="w640"  width="640" cellpadding="0" cellspacing="0" border="0">
+                                                <table  class="w640"  width="640" cellpadding="0" cellspacing="0" border="0" bgcolor="#FFFFFF">
                                                     <tbody>
                                                         <tr>
                                                             <td class="w30"  width="30"></td>
@@ -90,19 +89,21 @@ const sendMailToAccount = (account, message) => {
                                                     <tbody>
                                                         <tr>
                                                             <td  class="w30"  width="30"></td>
-                                                            <td  align="center" class="w580"  width="580">
+                                                            <td  class="w580"  width="580">
                                                                 <!-- une zone de contenu -->
                                                                 <table class="w580"  width="580" cellpadding="0" cellspacing="0" border="0">
                                                                     <tbody>                                                            
                                                                         <tr>
-                                                                            <td class="w580"  width="580">
+                                                                            <td align="center" class="w580"  width="580">
                                                                                 <h2 style="color:rgba(0,0,0, 0.54); font-size:22px; padding-top:12px;">
                                                                                    CANDILIB 93
                                                                                 </h2>
 
                                                                                 <div align="center" class="article-content">
                                                                                     <p> 
-                                                                                        ${message}
+                                                                                            <a href="${serverConfig.host}/api/candidats/me?token=${encodeURIComponent(token)}">
+                                                                                              Se Connecter a Candilb
+                                                                                            </a>
                                                                                     </p>
                                                                                 </div>
                                                                             </td>
@@ -137,7 +138,7 @@ const sendMailToAccount = (account, message) => {
                                                             <td class="w30"  width="30"></td>
                                                             <td class="w580"  width="580" valign="top">
                                                                 <p align="right" class="pagebottom-content-left">
-                                                                    <a style="color:rgba(0,0,0, 0.54)" href="#"><span style="color:rgba(0,0,0, 0.54)">Candilib 2018</span></a>
+                                                                    <a style="color:rgba(0,0,0, 0.54);" href="#"><span style="color:rgba(0,0,0, 0.54);">Candilib 2018</span></a>
                                                                 </p>
                                                             </td>
 
@@ -170,5 +171,5 @@ const sendMailToAccount = (account, message) => {
   });
 };
 
-export default sendMailToAccount;
+export default sendMagicLink;
 

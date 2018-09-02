@@ -2,8 +2,11 @@
 import Candidat from '../models/candidat';
 import sanitizeHtml from 'sanitize-html';
 import csv from 'csv-express'; // eslint-disable-line no-unused-vars
-import retourAurige from '../data_aurige/mock_2.json';
+import retourAurige from '../data_aurige/mock.json';
 import sendMailToAccount from '../util/sendMail';
+import jwt from 'jsonwebtoken';
+import serverConfig from '../config';
+import sendMagicLink from '../util/sendMagicLink';
 
 /**
  * signUp
@@ -19,10 +22,8 @@ export function signUp(req, res) {
   const {
     nom,
     neph,
-    nomUsage,
     email,
     prenom,
-    naissance,
     portable,
     adresse,
   } = body;
@@ -60,10 +61,9 @@ export function signUp(req, res) {
 
     // Let's sanitize inputs
     newCandidat.nomNaissance = sanitizeHtml(nom);
-    newCandidat.nomUsage = sanitizeHtml(nomUsage);
-    newCandidat.prenom = sanitizeHtml(prenom);
+    // see https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
+    newCandidat.prenom = sanitizeHtml(prenom.normalize('NFD').replace(/[\u0300-\u036f]/g, ''));
     newCandidat.codeNeph = sanitizeHtml(neph);
-    newCandidat.dateNaissance = sanitizeHtml(naissance);
     newCandidat.dateReussiteETG = null;
     newCandidat.dateDernierEchecPratique = null;
     newCandidat.reussitePratique = null;
@@ -81,16 +81,91 @@ export function signUp(req, res) {
           });
       }
 
-      sendMailToAccount(candidat.email, 'Votre demande a bien été prise en compte, vous recevrez une réponse  pour confirmation définitive sous 24 heures');
+      sendMailToAccount(candidat.email, 'Votre demande d’inscription est en cours de vérification, vous recevrez une information sous 48h hors week-end et jours fériés.\n' +
+        'Candilib');
+
+      const token = jwt.sign(
+        {
+          id: candidat._id,
+        },
+        serverConfig.secret,
+        {
+          expiresIn: 86400,
+        },
+      );
 
       return res.status(200)
         .send({
           success: true,
-          message: 'Votre demande a bien été prise en compte, veuillez consulter votre email.',
+          message: 'Votre demande a été prise en compte, veuillez consulter votre messagerie.',
           candidat,
+          auth: true,
+          token,
         });
     });
   });
+}
+
+
+export function verifyMe(req, res) {
+  Candidat.findById(req.userId,
+    (err, user) => {
+      if (err) {
+        return res.status(500)
+          .send({ auth: false, message: 'Problème pour retrouver cet utilisateur .' });
+      }
+      if (!user) {
+        return res.status(404)
+          .send({ auth: false, message: 'Utilisateur non reconnu.' });
+      }
+      res.status(200)
+        .send(user);
+    });
+}
+
+export function login(req, res) {
+  const {
+    email,
+  } = req.body;
+
+  Candidat.findOne({ email },
+    (err, user) => {
+      if (err) {
+        return res.status(500)
+          .send({ auth: false, message: 'Erreur serveur.' });
+      }
+
+      if (!user) {
+        return res.status(404)
+          .send({ auth: false, message: 'Utilisateur non reconnu. ' });
+      }
+
+      const emailIsValid = email === user.email;
+
+      if (!emailIsValid) {
+        return res.status(401)
+          .send({ auth: false, token: null });
+      }
+
+      if (!user.isValid) {
+        return res.status(401)
+          .send({ auth: false, token: null, message: 'Utiliseur en attente de validation.' });
+      }
+
+      const token = jwt.sign(
+        {
+          id: user._id,
+        },
+        serverConfig.secret,
+        {
+          expiresIn: 86400,
+        },
+      );
+
+      sendMagicLink(user.email, token);
+
+      return res.status(200).send({ success: true, token, message: 'Veuillez consulter votre boîte mail pour vous connecter.' });
+    });
 }
 
 /**
@@ -107,7 +182,7 @@ export function getCandidats(req, res) {
         res.status(500)
           .send(err);
       }
-      res.json({ Candidats });
+      res.status(200).json(Candidats);
     });
 }
 
@@ -171,12 +246,12 @@ export function getCandidat(req, res) {
  * @param res
  * @returns void
  */
-export function getCandidatNeph(req, res) {
-  Candidat.find({ codeNeph: req.params.neph })
+export function getCandidatNeph(req, res, next) {
+  const neph = parseInt(req.params.neph, 10);
+  Candidat.find({ codeNeph: neph })
     .exec((err, candidat) => {
       if (err) {
-        res
-          .send(err);
+        next(err);
       }
       res.json({ candidat });
     });
@@ -189,8 +264,8 @@ export function getCandidatNeph(req, res) {
  * @returns void
  */
 
-export function updateUser(req, res, next) {
-  Candidat.findByIdAndUpdate(req.body._id, req.body, { new: true }, (err, user) => {
+export function updateCandidat(req, res, next) {
+  Candidat.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err, user) => {
     if (err) {
       next(err);
     } else {
@@ -215,7 +290,7 @@ export function deleteCandidat(req, res) {
 
       candidat.remove(() => {
         res.status(200)
-          .end('candidat delete', candidat);
+          .end('candidat delete');
       });
     });
 }
@@ -237,7 +312,7 @@ export function deleteCandidatNeph(req, res) {
 
       candidat.remove(() => {
         res.status(200)
-          .end('candidat delete', candidat);
+          .end('candidat delete');
       });
     });
 }
@@ -262,11 +337,11 @@ export function exportToCSV(req, res) {
 
       candidats.map((n) => {
         newData.push({
-          codeNeph: n.codeNeph,
-          nomNaissance: n.nomNaissance,
-          nomUsage: n.nomUsage,
-          prenom: n.prenom,
-          email: n.email,
+          'Code NEPH': n.codeNeph,
+          'Nom de naissance': n.nomNaissance,
+          'Nom d\'usage': n.nomUsage,
+          'Prénom': n.prenom,
+          'email': n.email,
         });
         return true;
       });
@@ -291,55 +366,87 @@ export function destroyAll(req, res) {
   });
 }
 
-const CANDIDAT_OK = 'OK';
-
 export function synchroAurige(req, res) {
-  retourAurige.map((candidatAurige) => {
-    if (candidatAurige.candidatExistant === CANDIDAT_OK) {
-      Candidat.update(
-        { email: candidatAurige.email },
-        {
-          $set: {
-            isValid: true,
-            dateReussiteETG: candidatAurige.dateReussiteETG,
-            dateDernierEchecPratique: candidatAurige.dateDernierEchecPratique,
-          },
-        },
-        (err) => {
-          if (err) {
-            console.warn(err.message);  // eslint-disable-line no-console
-          } else {
-            sendMailToAccount(candidatAurige.email, 'votre demande a bien été validé');
+  Candidat.find({}, (err, candidatsBase) => {
+    const lgtCandilib = candidatsBase.length;
+    const lgthsAurige = retourAurige.length;
+
+    const CANDIDATS_NOK = 'NOK';
+    const CANDIDATS_NOK_NOM = 'NOK Nom';
+
+    for (let i = 0; i < lgtCandilib; i++) {
+      for (let j = 0; j < lgthsAurige; j++) {
+        const candidatAurige = retourAurige[j];
+        const candidatCandilib = candidatsBase[i];
+
+        if (candidatAurige.candidatExistant === CANDIDATS_NOK || candidatAurige.candidatExistant === CANDIDATS_NOK_NOM) {
+          if (candidatCandilib.codeNeph === Number(candidatAurige.codeNeph)) {
+            if (candidatAurige.email) {
+              sendMailToAccount(candidatAurige.email,
+                'Bonjour, vous avez demandé à rejoindre le site de réservation des candidats libres.' +
+                ' Malheureusement les informations que vous avez fournies sont erronées :\n' +
+                'NEPH 123456789 / NOM FIALEIX\n' +
+                'Merci de les vérifier avant de renouveler une demande d’inscription.\n' +
+                'Veuillez consulter notre aide en ligne :\n' +
+                'Url FAQ site\n' +
+                'Candilib');
+            }
+
+            Candidat.findOneAndRemove({
+              $or: [
+                {
+                  email: candidatAurige.email,
+                },
+                {
+                  nomNaissance: candidatAurige.nomNaissance,
+                },
+                {
+                  codeNeph: candidatAurige.codeNeph,
+                },
+              ],
+            }, () => {
+              if (err) {
+                console.warn(err);
+              } else {
+                console.dir('Ce candidat a été detruit '); // eslint-disable-line no-console
+              }
+            });
+          }
+        } else {
+          if (candidatCandilib.codeNeph === Number(candidatAurige.codeNeph)) {
+            Candidat.update(
+              { email: candidatAurige.email },
+              {
+                $set: {
+                  isValid: true,
+                  dateReussiteETG: candidatAurige.dateReussiteETG,
+                  dateDernierEchecPratique: candidatAurige.dateDernierEchecPratique,
+                  reussitePratique: candidatAurige.reussitePratique,
+                },
+              },
+              () => {
+                if (err) {
+                  console.warn(err.message);  // eslint-disable-line no-console
+                } else {
+                  const token = jwt.sign(
+                    {
+                      id: candidatCandilib._id,
+                    },
+                    serverConfig.secret,
+                    {
+                      expiresIn: 86400,
+                    },
+                  );
+                  sendMagicLink(candidatCandilib.email, token);
+                }
+              }
+            );
           }
         }
-      );
-    } else {
-      if (candidatAurige.email) {
-        sendMailToAccount(candidatAurige.email, 'votre demande présente des problèmes veuillez vous réinscrire');
       }
-
-      Candidat.findOneAndRemove({
-        $or: [
-          {
-            email: candidatAurige.email,
-          },
-          {
-            nomNaissance: candidatAurige.nomNaissance,
-          },
-          {
-            codeNeph: candidatAurige.codeNeph,
-          },
-        ],
-      }, (err, object) => {
-        if (err) {
-          console.warn(err);
-        } else {
-          console.dir(`Ce candidat a été detruit : ${object.nomNaissance}`); // eslint-disable-line no-console
-        }
-      });
     }
+    res.status(200).send('Synchonisation done');
   });
-  res.end();
 }
 
 export function purgePermisOk(req, res) {
