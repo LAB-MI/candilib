@@ -7,6 +7,7 @@ import sendMailToAccount from '../util/sendMail';
 import jwt from 'jsonwebtoken';
 import serverConfig from '../config';
 import sendMagicLink from '../util/sendMagicLink';
+import moment from 'moment';
 
 /**
  * signUp
@@ -371,15 +372,20 @@ export function synchroAurige(req, res) {
     const lgtCandilib = candidatsBase.length;
     const lgthsAurige = retourAurige.length;
 
-    const CANDIDATS_NOK = 'NOK';
+    const CANDIDAT_NOK = 'NOK';
     const CANDIDATS_NOK_NOM = 'NOK Nom';
+    const EPREUVE_PRATIQUE_OK = 'OK';
 
     for (let i = 0; i < lgtCandilib; i++) {
       for (let j = 0; j < lgthsAurige; j++) {
         const candidatAurige = retourAurige[j];
         const candidatCandilib = candidatsBase[i];
 
-        if (candidatAurige.candidatExistant === CANDIDATS_NOK || candidatAurige.candidatExistant === CANDIDATS_NOK_NOM) {
+        if (candidatAurige.candidatExistant === CANDIDAT_NOK
+          || candidatAurige.candidatExistant === CANDIDATS_NOK_NOM
+          || candidatAurige.reussitePratique === EPREUVE_PRATIQUE_OK
+          || !moment(candidatAurige.dateReussiteETG).isValid()
+        ) {
           if (candidatCandilib.codeNeph === Number(candidatAurige.codeNeph)) {
             if (candidatAurige.email) {
               sendMailToAccount(candidatAurige.email,
