@@ -3,21 +3,16 @@ import compression from 'compression';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import path from 'path';
-import morgan from 'morgan';
 import IntlWrapper from '../client/modules/Intl/IntlWrapper';
-import dotenv from 'dotenv';
-import cors from 'cors';
 
 // Initialize the Express App
 const app = new Express();
-app.use(cors({ origin: '*' }));
 
 
 // Set Development modes checks
 const isDevMode = process.env.NODE_ENV === 'development' || false;
 const isProdMode = process.env.NODE_ENV === 'production' || false;
 
-dotenv.config();
 
 // Run Webpack dev server in development mode
 if (isDevMode) {
@@ -53,7 +48,6 @@ import Helmet from 'react-helmet';
 import routes from '../client/routes';
 import { fetchComponentData } from './util/fetchData';
 import candidats from './routes/candidats.routes';
-import users from './routes/users.routes';
 import serverConfig from './config';
 import verifyToken from './util/verifyToken';
 
@@ -72,13 +66,11 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 // Apply body Parser and server public assets and routes
-app.use(morgan('combined'));
 app.use(compression());
 app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
 app.use(Express.static(path.resolve(__dirname, '../dist/client')));
 app.use('/api', verifyToken, candidats);
-app.use('/api', verifyToken, users);
 
 // Render Initial HTML
 const renderFullPage = (html, initialState) => {
