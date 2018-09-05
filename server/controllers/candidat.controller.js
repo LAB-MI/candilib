@@ -1,7 +1,7 @@
 /* eslint no-console: ["error", { allow: ["warn"] }] */
 import Candidat from '../models/candidat';
 import sanitizeHtml from 'sanitize-html';
-import csv from 'csv-express'; // eslint-disable-line no-unused-vars
+import csv from '../util/csv-express-candilib'; // eslint-disable-line no-unused-vars
 import retourAurige from '../data_aurige/mock.json';
 import sendMailToAccount from '../util/sendMail';
 import jwt from 'jsonwebtoken';
@@ -64,7 +64,7 @@ export function signUp(req, res) {
     newCandidat.nomNaissance = sanitizeHtml(nom);
     // see https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
     newCandidat.prenom = sanitizeHtml(prenom.normalize('NFD').replace(/[\u0300-\u036f]/g, ''));
-    newCandidat.codeNeph = sanitizeHtml(neph);
+    newCandidat.codeNeph = neph;
     newCandidat.dateReussiteETG = null;
     newCandidat.dateDernierEchecPratique = null;
     newCandidat.reussitePratique = null;
@@ -320,7 +320,7 @@ export function deleteCandidatNeph(req, res) {
 
 
 export function exportToCSV(req, res) {
-  const filename = 'candidatLibresDB.csv';
+  const filename = 'candidatsLibresPrintel.csv';
 
   Candidat.find({}, {
     _id: 0,
@@ -333,9 +333,7 @@ export function exportToCSV(req, res) {
     .lean()
     .exec({}, (err, candidats) => {
       if (err) res.send(err);
-
       const newData = [];
-
       candidats.map((n) => {
         newData.push({
           'Code NEPH': n.codeNeph,
@@ -348,10 +346,9 @@ export function exportToCSV(req, res) {
       });
 
       res.status(200);
-
-      res.setHeader('Content-Type', ['text/csv ; charset=iso-8859-1']);
+      res.setHeader('Content-Type', ['text/csv ; charset=utf-8']);
       res.setHeader('Content-Disposition', `attachment; filename= ${filename}`);
-      res.csv(newData, 'iso-8859-1', true);
+      res.csv(newData, 'utf-8', true);
     });
 }
 

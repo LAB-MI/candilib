@@ -12,7 +12,7 @@ const candidatSchema = new Schema({
     required: false,
   },
   codeNeph: {
-    type: Number,
+    type: String,
     required: false,
   },
   dateReussiteETG: {
