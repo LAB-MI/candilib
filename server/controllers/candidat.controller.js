@@ -119,8 +119,7 @@ export function verifyMe(req, res) {
         return res.status(404)
           .send({ auth: false, message: 'Utilisateur non reconnu.' });
       }
-      res.status(200)
-        .send(user);
+      res.redirect('/sites');
     });
 }
 
