@@ -2,6 +2,7 @@
 import React from 'react';
 import { Route, IndexRoute } from 'react-router';
 import App from './modules/App/App';
+import PrivateRoute from 'react-router-private-route';
 
 
 // require.ensure polyfill for node
@@ -33,7 +34,7 @@ export default (
       }}
     />
 
-    <Route
+    <PrivateRoute
       path="/sites"
       getComponent={(nextState, cb) => {
         require.ensure([], require => {

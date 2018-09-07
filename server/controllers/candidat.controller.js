@@ -2,7 +2,6 @@
 import Candidat from '../models/candidat';
 import sanitizeHtml from 'sanitize-html';
 import csv from '../util/csv-express-candilib'; // eslint-disable-line no-unused-vars
-import retourAurige from '../data_aurige/mock.json';
 import sendMailToAccount from '../util/sendMail';
 import jwt from 'jsonwebtoken';
 import serverConfig from '../config';
@@ -119,8 +118,7 @@ export function verifyMe(req, res) {
         return res.status(404)
           .send({ auth: false, message: 'Utilisateur non reconnu.' });
       }
-      res.status(200)
-        .send(user);
+      res.redirect('/sites');
     });
 }
 
@@ -363,6 +361,8 @@ export function destroyAll(req, res) {
     }
   });
 }
+
+const retourAurige = [];
 
 export function synchroAurige(req, res) {
   Candidat.find({}, (err, candidatsBase) => {
