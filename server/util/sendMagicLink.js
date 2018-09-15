@@ -1,8 +1,12 @@
 import nodemailer from 'nodemailer';
 import serverConfig from '../config';
 
+const sendMagicLink = (email, token) => {
+  const INSCRIPTION_OK_MSG = `Bienvenue sur Candilib! </br>\n\r
+    Vous êtes inscrit sur le site de réservation des candidats libres.</br>\n\r
+    Voici votre identifiant: ${email}\n`;
 
-const sendMagicLink = (account, token) => {
+
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -12,7 +16,7 @@ const sendMagicLink = (account, token) => {
   });
   const mailOptions = {
     form: 'candilib@securite-routiere.gouv.fr',
-    to: account,
+    to: email,
     subject: 'Email de Candilib 93',
     text: 'confirmation de Rendez Vous',
     html: `<p><!DOCTYPE html>
@@ -67,14 +71,6 @@ const sendMagicLink = (account, token) => {
                                                         <tr>
                                                             <td class="w30"  width="30"></td>
                                                             <td  class="w580"  width="580" valign="middle" align="left">
-                                                                <div class="pagetoplogo-content">
-                                                                    <img 
-                                                                        class="w580" 
-                                                                        style="text-decoration: none; display: block; color:#476688; font-size:30px;background-color: #008800" 
-                                                                        src="${serverConfig.host}/e90df5023690b8ced7b481d69f5e7c77.png" 
-                                                                        alt="Mon Logo" 
-                                                                        width="100%" height="100%"/>
-                                                                </div>
                                                             </td> 
                                                             <td class="w30"  width="30"></td>
                                                         </tr>
@@ -101,6 +97,7 @@ const sendMagicLink = (account, token) => {
 
                                                                                 <div align="center" class="article-content">
                                                                                     <p> 
+                                                                                            ${INSCRIPTION_OK_MSG}<br/>
                                                                                             <a href="${serverConfig.host}/api/candidats/me?token=${encodeURIComponent(token)}">
                                                                                               Se Connecter a Candilb
                                                                                             </a>

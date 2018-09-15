@@ -1,7 +1,9 @@
 import nodemailer from 'nodemailer';
-import serverConfig from '../config';
+import mailMessage from '../util/messageMailManager';
 
-const sendMailToAccount = (account, message) => {
+const sendMailToAccount = (candidatAurige, flag) => {
+  const message = mailMessage(candidatAurige, flag);
+
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -10,10 +12,12 @@ const sendMailToAccount = (account, message) => {
     },
   });
   // TODO faire contenu message par flag CANDIDATS_NOK et CANDIDATS_NOK_NOM etc...
+  console.log(candidatAurige);
+  console.log(candidatAurige.email);
 
   const mailOptions = {
     form: 'candilib@securite-routiere.gouv.fr',
-    to: account,
+    to: candidatAurige.email,
     subject: 'Email de Candilib 93',
     text: 'confirmation de Rendez Vous',
     html: `<p><!DOCTYPE html>
@@ -68,14 +72,6 @@ const sendMailToAccount = (account, message) => {
                                                         <tr>
                                                             <td class="w30"  width="30"></td>
                                                             <td  class="w580"  width="580" valign="middle" align="left">
-                                                                <div class="pagetoplogo-content">
-                                                                    <img 
-                                                                        class="w580" 
-                                                                        style="text-decoration: none; display: block; color:#476688; font-size:30px;background-color: #008800" 
-                                                                        src="${serverConfig.host}/e90df5023690b8ced7b481d69f5e7c77.png" 
-                                                                        alt="Mon Logo" 
-                                                                        width="100%" height="100%"/>
-                                                                </div>
                                                             </td> 
                                                             <td class="w30"  width="30"></td>
                                                         </tr>
