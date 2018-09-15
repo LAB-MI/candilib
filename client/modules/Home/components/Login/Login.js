@@ -326,7 +326,7 @@ class Login extends Component {
         {success &&
           <Snackbar
             open={open}
-            autoHideDuration={4000}
+            autoHideDuration={8000}
             onClose={this.handleClose}
             className={classes.snackbar}
           >
@@ -341,7 +341,7 @@ class Login extends Component {
         {!success &&
           <Snackbar
             open={open}
-            autoHideDuration={4000}
+            autoHideDuration={8000}
             onClose={this.handleClose}
             className={classes.snackbar}
           >
