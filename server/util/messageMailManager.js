@@ -14,30 +14,46 @@ const mailMessage = (candidatAurige, flag) => {
     nomNaissance,
   } = candidatAurige;
 
+  const nomMaj = nomNaissance.toUpperCase();
+
   const INSCRIPTION_KO_MSG = `Bonjour, vous avez demandé à rejoindre le site de réservation des candidats libres.
-    Malheureusement les informations que vous avez fournies sont erronées: \n\r
-    NEPH ${codeNeph} / NOM ${nomNaissance} \r\n
-    Merci de les vérifier avant de renouveler une demande d’inscription.\n\r
-    Veuillez consulter notre aide en ligne:
-    Url FAQ site\n
-    Candilib`;
+  Malheureusement les informations que vous avez fournies sont erronées:
 
-  const EPREUVE_PRATIQUE_OK_MSG = `Bonjour, vous avez demandé à rejoindre le site de réservation des candidats libres.
-    Malheureusement vous avez déja votre permis : \n\r
-    NEPH ${codeNeph} / NOM ${nomNaissance} \r\n
-    Si vous ètes dans le cadre d'un annulation, veuillez d'abord passer le ETG
-    Candilib`;
+  NEPH ${codeNeph} / NOM ${nomMaj}
 
-  const EPREUVE_ETG_KO_MSG = `Bonjour, votre code de la route n’est pas/plus valide. 
-    Vous ne pouvez pas rejoindre le site de réservation des candidats libres sans examen du code de la route réussi et en cours de validité. 
-    Veuillez consulter notre aide en ligne:
-    Url FAQ site
-    Candilib`;
+  Merci de les vérifier avant de renouveler une demande d’inscription.
+
+  Veuillez consulter notre aide en ligne:
+  Url FAQ site
+
+  Candilib`;
+
+  const EPREUVE_PRATIQUE_OK_MSG = `Bonjour,
+  selon nos informations vous avez déjà réussi votre examen du permis de conduire, notre service ne vous est plus utile.
+  
+  Attention :
+  Si vous recevez ce message et que vous êtes en situation de retour au permis de conduire après une annulation, 
+  vous ne pouvez pas rejoindre le site de réservation des candidats libres sans examen du code de la route réussi et en cours de validité.
+  
+  Veuillez consulter notre aide en ligne :
+  Url FAQ site
+
+  Candilib `;
+
+  const EPREUVE_ETG_KO_MSG = `Bonjour, votre code de la route n’est pas/plus valide.
+
+  Vous ne pouvez pas rejoindre le site de réservation des candidats libres sans examen du code de la route réussi et en cours de validité.
+    
+  Veuillez consulter notre aide en ligne:
+  Url FAQ site
+
+  Candilib`;
 
 
-  const INSCRIPTION_VALID_MSG = `Mr/Mme ${nomNaissance} Votre demande d’inscription est en cours de vérification, 
-  vous recevrez une information sous 48h hors week-end et jours fériés.\n` +
-    'Candilib';
+  const INSCRIPTION_VALID_MSG = `Mr/Mme ${nomMaj} Votre demande d’inscription est en cours de vérification, 
+  vous recevrez une information sous 48h hors week-end et jours fériés.
+
+  Candilib`;
 
   switch (flag) {
     case CANDIDAT_NOK:

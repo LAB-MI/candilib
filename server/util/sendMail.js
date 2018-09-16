@@ -11,9 +11,6 @@ const sendMailToAccount = (candidatAurige, flag) => {
       pass: 'Salahdin@1314',
     },
   });
-  // TODO faire contenu message par flag CANDIDATS_NOK et CANDIDATS_NOK_NOM etc...
-  console.log(candidatAurige);
-  console.log(candidatAurige.email);
 
   const mailOptions = {
     form: 'candilib@securite-routiere.gouv.fr',

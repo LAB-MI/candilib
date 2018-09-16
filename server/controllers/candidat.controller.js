@@ -7,6 +7,18 @@ import jwt from 'jsonwebtoken';
 import serverConfig from '../config';
 import sendMagicLink from '../util/sendMagicLink';
 import moment from 'moment';
+// import retourAurige from './candidatsLibres.json';
+const retourAurige = []; // TODO fix docker
+
+import {
+  INSCRIPTION_OK,
+  EPREUVE_PRATIQUE_OK,
+  EPREUVE_ETG_KO,
+  CANDIDAT_NOK,
+  CANDIDAT_NOK_NOM,
+} from '../util/constant';
+
+const DATE_CODE_VALID = 5;
 
 /**
  * signUp
@@ -81,8 +93,7 @@ export function signUp(req, res) {
           });
       }
 
-      sendMailToAccount(candidat.email, 'Votre demande d’inscription est en cours de vérification, vous recevrez une information sous 48h hors week-end et jours fériés.\n' +
-        'Candilib');
+      sendMailToAccount(candidat, INSCRIPTION_OK);
 
       const token = jwt.sign(
         {
@@ -157,7 +168,7 @@ export function login(req, res) {
         },
         serverConfig.secret,
         {
-          expiresIn: 86400,
+          expiresIn: '7d',
         },
       );
 
@@ -362,39 +373,23 @@ export function destroyAll(req, res) {
   });
 }
 
-const retourAurige = [];
+
+export const epreuveEtgInvalid = (candidatAurige) => {
+  return !moment(candidatAurige.dateReussiteETG).isValid();
+};
+
 
 export function synchroAurige(req, res) {
   Candidat.find({}, (err, candidatsBase) => {
     const lgtCandilib = candidatsBase.length;
     const lgthsAurige = retourAurige.length;
 
-    const CANDIDAT_NOK = 'NOK';
-    const CANDIDATS_NOK_NOM = 'NOK Nom';
-    const EPREUVE_PRATIQUE_OK = 'OK';
-
     for (let i = 0; i < lgtCandilib; i++) {
       for (let j = 0; j < lgthsAurige; j++) {
         const candidatAurige = retourAurige[j];
         const candidatCandilib = candidatsBase[i];
-
-        if (candidatAurige.candidatExistant === CANDIDAT_NOK
-          || candidatAurige.candidatExistant === CANDIDATS_NOK_NOM
-          || candidatAurige.reussitePratique === EPREUVE_PRATIQUE_OK
-          || !moment(candidatAurige.dateReussiteETG).isValid()
-        ) {
-          if (candidatCandilib.codeNeph === Number(candidatAurige.codeNeph)) {
-            if (candidatAurige.email) {
-              sendMailToAccount(candidatAurige.email,
-                'Bonjour, vous avez demandé à rejoindre le site de réservation des candidats libres.' +
-                ' Malheureusement les informations que vous avez fournies sont erronées :\n' +
-                'NEPH 123456789 / NOM FIALEIX\n' +
-                'Merci de les vérifier avant de renouveler une demande d’inscription.\n' +
-                'Veuillez consulter notre aide en ligne :\n' +
-                'Url FAQ site\n' +
-                'Candilib');
-            }
-
+        if (candidatCandilib.codeNeph === candidatAurige.codeNeph) {
+          if (candidatAurige.reussitePratique === EPREUVE_PRATIQUE_OK) { // check si permis obtenu
             Candidat.findOneAndRemove({
               $or: [
                 {
@@ -412,43 +407,93 @@ export function synchroAurige(req, res) {
                 console.warn(err);
               } else {
                 console.dir('Ce candidat a été detruit '); // eslint-disable-line no-console
+                sendMailToAccount(candidatAurige, EPREUVE_PRATIQUE_OK);
               }
             });
-          }
-        } else {
-          if (candidatCandilib.codeNeph === Number(candidatAurige.codeNeph)) {
-            Candidat.update(
-              { email: candidatAurige.email },
-              {
-                $set: {
-                  isValid: true,
-                  dateReussiteETG: candidatAurige.dateReussiteETG,
-                  dateDernierEchecPratique: candidatAurige.dateDernierEchecPratique,
-                  reussitePratique: candidatAurige.reussitePratique,
-                },
-              },
-              () => {
+          } else if (candidatAurige.reussitePratique === CANDIDAT_NOK || CANDIDAT_NOK_NOM) { // Nom inconnu de Aurige
+            if (epreuveEtgInvalid(candidatAurige)) { // check si code invalid
+              Candidat.findOneAndRemove({
+                $or: [
+                  {
+                    email: candidatAurige.email,
+                  },
+                  {
+                    nomNaissance: candidatAurige.nomNaissance,
+                  },
+                  {
+                    codeNeph: candidatAurige.codeNeph,
+                  },
+                ],
+              }, () => {
                 if (err) {
-                  console.warn(err.message);  // eslint-disable-line no-console
+                  console.warn(err);
                 } else {
-                  const token = jwt.sign(
-                    {
-                      id: candidatCandilib._id,
-                    },
-                    serverConfig.secret,
-                    {
-                      expiresIn: 86400,
-                    },
-                  );
-                  sendMagicLink(candidatCandilib.email, token);
+                  console.dir('Ce candidat a été detruit '); // eslint-disable-line no-console
+                  sendMailToAccount(candidatAurige, CANDIDAT_NOK || CANDIDAT_NOK_NOM);
                 }
+              });
+            } else { // Date du code valid
+              if (moment().diff(candidatAurige.dateReussiteETG, 'years', true) > DATE_CODE_VALID) { // check si code moins de 5 ans
+                Candidat.findOneAndRemove({
+                  $or: [
+                    {
+                      email: candidatAurige.email,
+                    },
+                    {
+                      nomNaissance: candidatAurige.nomNaissance,
+                    },
+                    {
+                      codeNeph: candidatAurige.codeNeph,
+                    },
+                  ],
+                }, () => {
+                  if (err) {
+                    console.warn(err);
+                  } else {
+                    console.dir('Ce candidat a été detruit '); // eslint-disable-line no-console
+                    sendMailToAccount(candidatAurige, EPREUVE_ETG_KO);
+                  }
+                });
+              } else { // permis non obtenu et code valid
+                Candidat.update(
+                  { email: candidatAurige.email },
+                  {
+                    $set: {
+                      isValid: true,
+                      dateReussiteETG: candidatAurige.dateReussiteETG,
+                      dateDernierEchecPratique: candidatAurige.dateDernierEchecPratique,
+                      reussitePratique: candidatAurige.reussitePratique,
+                    },
+                  },
+                  () => {
+                    if (err) {
+                      console.warn(err.message);  // eslint-disable-line no-console
+                    } else {
+                      const token = jwt.sign(
+                        {
+                          id: candidatCandilib._id,
+                        },
+                        serverConfig.secret,
+                        {
+                          expiresIn: 86400,
+                        },
+                      );
+                      sendMagicLink(candidatCandilib.email, token);
+                    }
+                  }
+                );
               }
-            );
+            }
           }
         }
       }
     }
-    res.status(200).send('Synchonisation done');
+  });
+  Candidat.find({}, (err, candidatCandilib) => {
+    res.status(200).send({
+      candidats: candidatCandilib,
+      message: 'Synchonisation done',
+    });
   });
 }
 

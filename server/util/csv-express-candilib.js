@@ -78,7 +78,7 @@ export default res.csv = function (data, charset, csvHeaders, headers, status) {
 
   // Append the header row to the response if requested
   if (csvHeaders) {
-    body += `${headerRow.join(exports.separator)}`; // TODO remettre avec retour chariot sous linux \r\n
+    body += `${headerRow.join(exports.separator)}\r\n`; // TODO remettre avec retour chariot sous linux \r\n
   }
 
   // Convert the data to a CSV-like structure
@@ -92,7 +92,7 @@ export default res.csv = function (data, charset, csvHeaders, headers, status) {
       });
     }
 
-    body += `${data[i].map(escape).join(exports.separator)}\n`; // TODO remettre avec retour chariot sous linux \r\n
+    body += `${data[i].map(escape).join(exports.separator)}\r\n`; // TODO remettre avec retour chariot sous linux \r\n
   }
 
   if (this.charset !== 'utf-8') {
