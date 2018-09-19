@@ -17,7 +17,7 @@ const sendMailToAccount = (candidatAurige, flag) => {
     to: candidatAurige.email,
     subject: 'Email de Candilib 93',
     text: 'confirmation de Rendez Vous',
-    html: `<p><!DOCTYPE html>
+    html: `<!DOCTYPE html>
         <html>
             <head>
             <title>Email de Candilib 93</title>
@@ -28,24 +28,24 @@ const sendMailToAccount = (candidatAurige, flag) => {
             body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; font-size:14px; color:rgba(0,0,0, 0.54); }
             body { background-color: #ffffff; margin: 0; padding: 0; -webkit-text-size-adjust:none; -ms-text-size-adjust:none; }
             h2{ padding-top:12px; /* ne fonctionnera pas sous Outlook 2007+ */color:rgba(0,0,0, 0.54); font-size:22px; }
-            
-            @media only screen and (max-width: 480px) { 
+
+            @media only screen and (max-width: 480px) {
 
                 table[class=w275], td[class=w275], img[class=w275] { width:135px !important; }
-                table[class=w30], td[class=w30], img[class=w30] { width:10px !important; }  
+                table[class=w30], td[class=w30], img[class=w30] { width:10px !important; }
                 table[class=w580], td[class=w580], img[class=w580] { width:280px !important; }
                 table[class=w640], td[class=w640], img[class=w640] { width:300px !important; }
                 img{ height:auto;}
                 /*illisible, on passe donc sur 3 lignes */
-                table[class=w180], td[class=w180], img[class=w180] { 
-                    width:280px !important; 
+                table[class=w180], td[class=w180], img[class=w180] {
+                    width:280px !important;
                     display:block;
-                }    
-                td[class=w20]{ display:none; }    
-            } 
+                }
+                td[class=w20]{ display:none; }
+            }
 
             </style>
-   
+
             </head>
             <body style="margin:20px; padding:0px; -webkit-text-size-adjust:none;">
 
@@ -54,7 +54,7 @@ const sendMailToAccount = (candidatAurige, flag) => {
                         <tr>
                             <td align="center" bgcolor="#FFFFFF">
                                 <table  cellpadding="0" cellspacing="0" border="0">
-                                    <tbody>                            
+                                    <tbody>
                                         <tr>
                                             <td class="w640"  width="640" height="10"></td>
                                         </tr>
@@ -69,7 +69,7 @@ const sendMailToAccount = (candidatAurige, flag) => {
                                                         <tr>
                                                             <td class="w30"  width="30"></td>
                                                             <td  class="w580"  width="580" valign="middle" align="left">
-                                                            </td> 
+                                                            </td>
                                                             <td class="w30"  width="30"></td>
                                                         </tr>
                                                     </tbody>
@@ -86,23 +86,22 @@ const sendMailToAccount = (candidatAurige, flag) => {
                                                             <td  align="center" class="w580"  width="580">
                                                                 <!-- une zone de contenu -->
                                                                 <table class="w580"  width="580" cellpadding="0" cellspacing="0" border="0">
-                                                                    <tbody>                                                            
+                                                                    <tbody>
                                                                         <tr>
                                                                             <td class="w580"  width="580">
+                                                                            <img width="100px" src="../../assets/logo-securite-routiere.jpg" />
                                                                                 <h2 style="color:rgba(0,0,0, 0.54); font-size:22px; padding-top:12px;">
                                                                                    CANDILIB 93
                                                                                 </h2>
 
-                                                                                <div align="center" class="article-content">
-                                                                                    <p> 
-                                                                                        ${message}
-                                                                                    </p>
+                                                                                <div class="article-content">
+                                                                                    ${message}
                                                                                 </div>
                                                                             </td>
                                                                         </tr>
                                                                     </tbody>
                                                                 </table>
-                                                                <!-- fin zone -->                                                   
+                                                                <!-- fin zone -->
 
 
                                                             </td>
@@ -153,7 +152,7 @@ const sendMailToAccount = (candidatAurige, flag) => {
                     </tbody>
                 </table>
             </body>
-        </html></p>`,
+        </html>`,
   };
 
   transporter.sendMail(mailOptions, (err) => {
@@ -164,4 +163,3 @@ const sendMailToAccount = (candidatAurige, flag) => {
 };
 
 export default sendMailToAccount;
-
