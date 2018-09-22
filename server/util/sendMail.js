@@ -15,12 +15,12 @@ const sendMailToAccount = (candidatAurige, flag) => {
   const mailOptions = {
     form: 'candilib@securite-routiere.gouv.fr',
     to: candidatAurige.email,
-    subject: 'Email de Candilib 93',
+    subject: `${message.subject}`,
     text: 'confirmation de Rendez Vous',
     html: `<!DOCTYPE html>
         <html>
             <head>
-            <title>Email de Candilib 93</title>
+            <title>Email de Candilib</title>
             <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
             <meta content="width=device-width">
             <style type="text/css">
@@ -88,15 +88,19 @@ const sendMailToAccount = (candidatAurige, flag) => {
                                                                 <table class="w580"  width="580" cellpadding="0" cellspacing="0" border="0">
                                                                     <tbody>
                                                                         <tr>
-                                                                            <td class="w580"  width="580">
-                                                                            <img width="100px" src="../../assets/logo-securite-routiere.jpg" />
-                                                                                <h2 style="color:rgba(0,0,0, 0.54); font-size:22px; padding-top:12px;">
-                                                                                   CANDILIB 93
+                                                                            <td>
+                                                                              <img width="80px" src="https://www.cartaplac.com/images/logo-securite-routiere.jpg" />
+                                                                            </td>
+                                                                            <td class="w580"  width="580" align="center">
+                                                                                <h2>
+                                                                                   CANDILIB
                                                                                 </h2>
-
-                                                                                <div class="article-content">
-                                                                                    ${message}
-                                                                                </div>
+                                                                            </td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td></td>
+                                                                            <td class="article-content">
+                                                                                ${message.content}
                                                                             </td>
                                                                         </tr>
                                                                     </tbody>
@@ -128,8 +132,7 @@ const sendMailToAccount = (candidatAurige, flag) => {
                                                         <tr>
                                                             <td class="w30"  width="30"></td>
                                                             <td class="w580"  width="580" valign="top">
-                                                                <p align="right" class="pagebottom-content-left">
-                                                                    <a style="color:rgba(0,0,0, 0.54)" href="#"><span style="color:rgba(0,0,0, 0.54)">Candilib 2018</span></a>
+                                                                <p align="right" class="pagebottom-content-left"><span style="color:rgba(0,0,0, 0.54)">(c) 2018 Candilib</span>
                                                                 </p>
                                                             </td>
 
