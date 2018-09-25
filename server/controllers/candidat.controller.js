@@ -7,7 +7,7 @@ import jwt from 'jsonwebtoken';
 import serverConfig from '../config';
 import sendMagicLink from '../util/sendMagicLink';
 import moment from 'moment';
-// import retourAurige from './candidatsLibres.json';
+// import retourAurige from './candidatsLibresEnrichis_20180921_110004.json';
 const retourAurige = []; // TODO fix docker
 
 import {
@@ -16,7 +16,6 @@ import {
   EPREUVE_ETG_KO,
   CANDIDAT_NOK,
   CANDIDAT_NOK_NOM,
-  CANDIDATS_EXISTANT,
 } from '../util/constant';
 
 const DATE_CODE_VALID = 5;
@@ -390,7 +389,8 @@ export function synchroAurige(req, res) {
         const candidatAurige = retourAurige[j];
         const candidatCandilib = candidatsBase[i];
         if (candidatCandilib.codeNeph === candidatAurige.codeNeph) {
-          if (candidatAurige.reussitePratique === EPREUVE_PRATIQUE_OK) { // check si permis obtenu
+          if (candidatAurige.candidatExistant === CANDIDAT_NOK) { // Neph inconnu dans Aurige
+            // Date du code valid
             Candidat.findOneAndRemove({
               $or: [
                 {
@@ -408,14 +408,32 @@ export function synchroAurige(req, res) {
                 console.warn(err);
               } else {
                 console.dir('Ce candidat a été detruit '); // eslint-disable-line no-console
-                sendMailToAccount(candidatAurige, EPREUVE_PRATIQUE_OK);
+                sendMailToAccount(candidatAurige, CANDIDAT_NOK);
               }
             });
-            return;
-          }
-
-          if (candidatAurige.candidatExistant === CANDIDAT_NOK || candidatAurige.candidatExistant === CANDIDAT_NOK_NOM) { // Nom inconnu de Aurige
+          } else if (candidatAurige.candidatExistant === CANDIDAT_NOK_NOM) { // Nom inconnu de Aurige
             // Date du code valid
+            Candidat.findOneAndRemove({
+              $or: [
+                {
+                  email: candidatAurige.email,
+                },
+                {
+                  nomNaissance: candidatAurige.nomNaissance,
+                },
+                {
+                  codeNeph: candidatAurige.codeNeph,
+                },
+              ],
+            }, () => {
+              if (err) {
+                console.warn(err);
+              } else {
+                console.dir('Ce candidat a été detruit '); // eslint-disable-line no-console
+                sendMailToAccount(candidatAurige, CANDIDAT_NOK_NOM);
+              }
+            });
+          } else if (epreuveEtgInvalid(candidatAurige)) { // check si code invalid
             Candidat.findOneAndRemove({
               $or: [
                 {
@@ -436,90 +454,84 @@ export function synchroAurige(req, res) {
                 sendMailToAccount(candidatAurige, EPREUVE_ETG_KO);
               }
             });
-          }
-
-          if (candidatAurige.candidatExistant === CANDIDATS_EXISTANT) {
-            if (epreuveEtgInvalid(candidatAurige)) { // check si code invalid
-              Candidat.findOneAndRemove({
-                $or: [
-                  {
-                    email: candidatAurige.email,
-                  },
-                  {
-                    nomNaissance: candidatAurige.nomNaissance,
-                  },
-                  {
-                    codeNeph: candidatAurige.codeNeph,
-                  },
-                ],
-              }, () => {
-                if (err) {
-                  console.warn(err);
-                } else {
-                  console.dir('Ce candidat a été detruit '); // eslint-disable-line no-console
-                  sendMailToAccount(candidatAurige, EPREUVE_ETG_KO);
-                }
-              });
-            } else if (moment().diff(candidatAurige.dateReussiteETG, 'years', true) > DATE_CODE_VALID) { // check si code moins de 5 ans
-              Candidat.findOneAndRemove({
-                $or: [
-                  {
-                    email: candidatAurige.email,
-                  },
-                  {
-                    nomNaissance: candidatAurige.nomNaissance,
-                  },
-                  {
-                    codeNeph: candidatAurige.codeNeph,
-                  },
-                ],
-              }, () => {
-                if (err) {
-                  console.warn(err);
-                } else {
-                  console.dir('Ce candidat a été detruit '); // eslint-disable-line no-console
-                  sendMailToAccount(candidatAurige, EPREUVE_ETG_KO);
-                }
-              });
-            } else { // permis non obtenu et code valid
-              Candidat.update(
-                { email: candidatAurige.email },
+          } else if (moment().diff(candidatAurige.dateReussiteETG, 'years', true) > DATE_CODE_VALID) { // check si code moins de 5 ans
+            Candidat.findOneAndRemove({
+              $or: [
                 {
-                  $set: {
-                    isValid: true,
-                    dateReussiteETG: candidatAurige.dateReussiteETG,
-                    dateDernierEchecPratique: candidatAurige.dateDernierEchecPratique,
-                    reussitePratique: candidatAurige.reussitePratique,
-                  },
+                  email: candidatAurige.email,
                 },
-                () => {
-                  if (err) {
-                    console.warn(err.message);  // eslint-disable-line no-console
-                  } else {
-                    const token = jwt.sign(
-                      {
-                        id: candidatCandilib._id,
-                      },
-                      serverConfig.secret,
-                      {
-                        expiresIn: 86400,
-                      },
-                    );
-                    sendMagicLink(candidatCandilib.email, token);
-                  }
+                {
+                  nomNaissance: candidatAurige.nomNaissance,
+                },
+                {
+                  codeNeph: candidatAurige.codeNeph,
+                },
+              ],
+            }, () => {
+              if (err) {
+                console.warn(err);
+              } else {
+                console.dir('Ce candidat a été detruit '); // eslint-disable-line no-console
+                sendMailToAccount(candidatAurige, EPREUVE_ETG_KO);
+              }
+            });
+          } else if (candidatAurige.reussitePratique === EPREUVE_PRATIQUE_OK) { // check si permis obtenu
+            Candidat.findOneAndRemove({
+              $or: [
+                {
+                  email: candidatAurige.email,
+                },
+                {
+                  nomNaissance: candidatAurige.nomNaissance,
+                },
+                {
+                  codeNeph: candidatAurige.codeNeph,
+                },
+              ],
+            }, () => {
+              if (err) {
+                console.warn(err);
+              } else {
+                console.dir('Ce candidat a été detruit '); // eslint-disable-line no-console
+                sendMailToAccount(candidatAurige, EPREUVE_PRATIQUE_OK);
+              }
+            });
+          } else { // eligible pour Candilib
+            Candidat.update(
+              { email: candidatAurige.email },
+              {
+                $set: {
+                  isValid: true,
+                  dateReussiteETG: candidatAurige.dateReussiteETG,
+                  dateDernierEchecPratique: candidatAurige.dateDernierEchecPratique,
+                  reussitePratique: candidatAurige.reussitePratique,
+                },
+              },
+              () => {
+                if (err) {
+                  console.warn(err.message);  // eslint-disable-line no-console
+                } else {
+                  const token = jwt.sign(
+                    {
+                      id: candidatCandilib._id,
+                    },
+                    serverConfig.secret,
+                    {
+                      expiresIn: 86400,
+                    },
+                  );
+                  sendMagicLink(candidatCandilib.email, token);
                 }
-              );
-            }
+              }
+            );
           }
         }
       }
     }
   });
-  Candidat.find({}, (err, candidatCandilib) => {
-    res.status(200).send({
-      candidats: candidatCandilib,
-      message: 'Synchonisation done',
-    });
+
+  res.status(200).send({
+    message: 'Synchonisation done',
   });
 }
 

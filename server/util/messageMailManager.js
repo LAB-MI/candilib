@@ -1,6 +1,6 @@
 import {
   CANDIDAT_NOK,
-  CANDIDATS_NOK_NOM,
+  CANDIDAT_NOK_NOM,
   EPREUVE_PRATIQUE_OK,
   EPREUVE_ETG_KO,
   INSCRIPTION_OK,
@@ -62,7 +62,7 @@ const mailMessage = (candidatAurige, flag) => {
       message.content = INSCRIPTION_VALID_MSG;
       message.subject = "Confirmation d'inscription Candilib <ne pas répondre>";
       return message;
-    case CANDIDATS_NOK_NOM:
+    case CANDIDAT_NOK_NOM:
       message.content = INSCRIPTION_KO_MSG;
       message.subject = "Problème inscription Candilib <ne pas répondre>";
       return message;

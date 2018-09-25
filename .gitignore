@@ -11,4 +11,4 @@ coverage/
 yarn.lock
 server/data_aurige
 server/models/__tests__
-
+.history
