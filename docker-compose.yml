@@ -9,6 +9,7 @@ services:
       - db
     ports:
       - "${WEB_PORT:-8000}:8000"
+      - "9229:9229"
     volumes:
       - ./client:/usr/src/app/client
       - ./Intl:/usr/src/app/Intl
@@ -27,6 +28,8 @@ services:
       MONGO_URL: mongodb://db:27017/mern-starter
     stdin_open: true
     tty: true
+    command: ./node_modules/.bin/nodemon --legacy-watch --inspect=0.0.0.0 index.js
+
   db:
     image: mongo:latest
     volumes:
