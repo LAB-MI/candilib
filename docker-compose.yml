@@ -5,6 +5,8 @@ services:
       context: ./
       dockerfile: Dockerfile
       target: development
+      args: 
+          proxy: ${http_proxy}
     depends_on:
       - db
     ports:
