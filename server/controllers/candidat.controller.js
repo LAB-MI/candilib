@@ -7,8 +7,8 @@ import jwt from 'jsonwebtoken';
 import serverConfig from '../config';
 import sendMagicLink from '../util/sendMagicLink';
 import moment from 'moment';
-// import retourAurige from './candidatsLibresEnrichis_20180921_110004.json';
-const retourAurige = []; // TODO fix docker
+import retourAurige from './candidatsLibresEnrichis_20180926_110006.json';
+// const retourAurige = []; // TODO fix docker
 
 import {
   INSCRIPTION_OK,

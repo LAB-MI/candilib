@@ -1,0 +1,82 @@
+[
+{
+  "codeNeph" : "10000000000",
+  "nomNaissance" : "BOIN",
+  "nomUsage" : "BOIN",
+  "prenom" : "jean",
+  "email" : "christophe.lazantsy@gmail.com",
+  "dateReussiteETG" : "",
+  "dateDernierEchecPratique" : "",
+  "reussitePratique" : "",
+  "candidatExistant" : "NOK Nom"
+},{
+  "codeNeph" : "1111111111111",
+  "nomNaissance" : "MAUROY",
+  "nomUsage" : "",
+  "prenom" : "Pierre",
+  "email" : "salahdin.lazantsy@gmail.com",
+  "dateReussiteETG" : "",
+  "dateDernierEchecPratique" : "",
+  "reussitePratique" : "",
+  "candidatExistant" : "NOK"
+},{
+  "codeNeph" : "2000000000000",
+  "nomNaissance" : "GUICHARD",
+  "nomUsage" : "",
+  "prenom" : "Geoffroy",
+  "email" : "karademada@yahoo.fr",
+  "dateReussiteETG" : "2017-11-28",
+  "dateDernierEchecPratique" : "2018-05-03",
+  "reussitePratique" : "OK",
+  "candidatExistant" : "OK"
+},{
+  "codeNeph" : "222222222222",
+  "nomNaissance" : "DELLELIS",
+  "nomUsage" : "",
+  "prenom" : "BOLLAERT",
+  "email" : "christophe.lazantsy@gmail.com",
+  "dateReussiteETG" : "2017-02-21",
+  "dateDernierEchecPratique" : "2017-10-12",
+  "reussitePratique" : "NOK",
+  "candidatExistant" : "OK"
+},{
+  "codeNeph" : "30000000000",
+  "nomNaissance" : "DELMAS",
+  "nomUsage" : "",
+  "prenom" : "Chaban",
+  "email" : "salahdin.lazantsy@gmail.com",
+  "dateReussiteETG" : "2018-02-16",
+  "dateDernierEchecPratique" : "",
+  "reussitePratique" : "NOK",
+  "candidatExistant" : "OK"
+},{
+  "codeNeph" : "3333333333",
+  "nomNaissance" : "DUGAUGUEZ",
+  "nomUsage" : "",
+  "prenom" : "",
+  "email" : "",
+  "dateReussiteETG" : "",
+  "dateDernierEchecPratique" : "2016-08-09",
+  "reussitePratique" : "NOK",
+  "candidatExistant" : "OK"
+},{
+  "codeNeph" : "40000000000",
+  "nomNaissance" : "DELAUNE",
+  "nomUsage" : "",
+  "prenom" : "",
+  "email" : "salahdin.lazantsy@gmail.com",
+  "dateReussiteETG" : "2013-08-21",
+  "dateDernierEchecPratique" : "2017-12-22",
+  "reussitePratique" : "NOK",
+  "candidatExistant" : "OK"
+},{
+  "codeNeph" : "4444444444444",
+  "nomNaissance" : "MICHELIN",
+  "nomUsage" : "",
+  "prenom" : "Marcel",
+  "email" : "karademada@yahoo.fr",
+  "dateReussiteETG" : "2001-01-01",
+  "dateDernierEchecPratique" : "2001-04-01",
+  "reussitePratique" : "OK",
+  "candidatExistant" : "OK"
+}]
