@@ -16,7 +16,7 @@ const sendMailToAccount = (candidatAurige, flag) => {
     form: 'candilib@securite-routiere.gouv.fr',
     to: candidatAurige.email,
     subject: `${message.subject}`,
-    text: 'confirmation de Rendez Vous',
+    text: `${message.subject}`,
     html: `<!DOCTYPE html>
         <html>
             <head>
@@ -85,7 +85,7 @@ const sendMailToAccount = (candidatAurige, flag) => {
                                                             <td  class="w30"  width="30"></td>
                                                             <td  align="center" class="w580"  width="580">
                                                                 <!-- une zone de contenu -->
-                                                                <table class="w580"  width="580" cellpadding="0" cellspacing="0" border="0">
+                                                                <table class="w580"  width="580" cellpadding="10" cellspacing="10" border="0">
                                                                     <tbody>
                                                                         <tr>
                                                                             <td>
@@ -98,8 +98,7 @@ const sendMailToAccount = (candidatAurige, flag) => {
                                                                             </td>
                                                                         </tr>
                                                                         <tr>
-                                                                            <td></td>
-                                                                            <td class="article-content">
+                                                                            <td class="article-content" colspan="2">
                                                                                 ${message.content}
                                                                             </td>
                                                                         </tr>

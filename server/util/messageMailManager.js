@@ -24,7 +24,7 @@ const mailMessage = (candidatAurige, flag) => {
   <p>Merci de les vérifier avant de renouveler votre demande d’inscription. Si vos informations étaient corectes, nous vous invitons à consulter notre aide en ligne:<p>
   <p>Url FAQ site</p>
   <br>
-  <p align="right">Candilib</p>`;
+  <p align="right">L'équipe Candilib</p>`;
 
   const EPREUVE_PRATIQUE_OK_MSG = `<p>Bonjour,</p>
   <br>
@@ -35,7 +35,7 @@ const mailMessage = (candidatAurige, flag) => {
   <p>Vous pourrez trouver des informations utiles en consultant notre aide en ligne:<p>
   <p>Url FAQ site</p>
   <br>
-  <p align="right">Candilib</p>`;
+  <p align="right">L'équipe Candilib</p>`;
 
   const EPREUVE_ETG_KO_MSG = `<p>Bonjour,</p>
   <br>
@@ -44,14 +44,14 @@ const mailMessage = (candidatAurige, flag) => {
   <p>Vous pourrez trouver des informations utiles en consultant notre aide en ligne:<p>
   <p>Url FAQ site</p>
   <br>
-  <p align="right">Candilib</p>`;
+  <p align="right">L'équipe Candilib</p>`;
 
 
   const INSCRIPTION_VALID_MSG = `<p>Bonjour Mr/Mme ${nomMaj},</p>
   <p>Votre demande d’inscription est en cours de vérification,
   vous recevrez une information sous 48h hors week-end et jours fériés.</p>
   <br>
-  <p align="right">Candilib</p>`;
+  <p align="right">L'équipe Candilib</p>`;
 
   switch (flag) {
     case CANDIDAT_NOK:
