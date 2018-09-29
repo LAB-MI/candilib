@@ -5,17 +5,25 @@ import {
   EPREUVE_ETG_KO,
   INSCRIPTION_OK,
   INSCRIPTION_VALID,
+  AURIGE_OK,
 } from './constant';
 
 const mailMessage = (candidatAurige, flag) => {
   const {
     codeNeph,
     nomNaissance,
+    email,
   } = candidatAurige;
 
   var message = new Object();
 
   const nomMaj = nomNaissance.toUpperCase();
+
+  const INSCRIPTION_OK_MSG = `Bienvenue sur Candilib !
+  <br>
+  <p>Vous êtes à présent inscrit sur le site de réservation de l'examen pratique du permis de conduire.</p>
+  <p><b>Conservez précieusement ce mail qui vous permettra de vous connecter si le site Candilib</b></p>
+  <p>Votre identifiant de connexion est l'adresse mail que vous nous avez fournie lors de votre inscription : ${candidatAurige.email}</p>`;
 
   const INSCRIPTION_KO_MSG = `<p>Bonjour,</p>
   <br>
@@ -77,6 +85,10 @@ const mailMessage = (candidatAurige, flag) => {
     case EPREUVE_ETG_KO:
       message.content = EPREUVE_ETG_KO_MSG;
       message.subject = "Problème inscription Candilib <ne pas répondre>";
+      return message;
+    case AURIGE_OK:
+      message.content = INSCRIPTION_OK_MSG;
+      message.subject = "Validation de votre inscription à Candilib <ne pas répondre>";
       return message;
     default:
       return '';
