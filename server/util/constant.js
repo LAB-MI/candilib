@@ -4,3 +4,4 @@ export const CANDIDAT_NOK_NOM = 'NOK Nom';
 export const EPREUVE_PRATIQUE_OK = 'OK';
 export const EPREUVE_ETG_KO = 'KO';
 export const INSCRIPTION_OK = 'SIGNUP_OK';
+export const AURIGE_OK = 'CHECK_OK';

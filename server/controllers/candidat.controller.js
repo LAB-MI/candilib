@@ -7,7 +7,7 @@ import jwt from 'jsonwebtoken';
 import serverConfig from '../config';
 import sendMagicLink from '../util/sendMagicLink';
 import moment from 'moment';
-import retourAurige from './candidatsLibresEnrichis_20180926_110006.json';
+import retourAurige from '../inbox/updateCandidats.json';
 // const retourAurige = []; // TODO fix docker
 
 import {
@@ -520,7 +520,7 @@ export function synchroAurige(req, res) {
                       expiresIn: 86400,
                     },
                   );
-                  sendMagicLink(candidatCandilib.email, token);
+                  sendMagicLink(candidatCandilib, token);
                 }
               }
             );
