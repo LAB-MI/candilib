@@ -6,16 +6,20 @@ const sendMailToAccount = (candidatAurige, flag) => {
   const message = mailMessage(candidatAurige, flag);
 
   const transporter = nodemailer.createTransport(smtpTransport({
-    service: 'gmail',
-    host: 'smtp.gmail.com',
+    host: '<smtp_server>',
+    port: 25,
     auth: {
-      user: 'salahdin.lazantsy@gmail.com',
-      pass: 'Salahdin@1314',
+      user: '<smtp_user>',
+      pass: '<password>',
     },
+    tls: {
+        // do not failed with selfsign certificates
+        rejectUnauthorized: false
+    }
   }));
 
   const mailOptions = {
-    form: 'candilib@securite-routiere.gouv.fr',
+    form: 'candilib@interieur.gouv.fr',
     to: candidatAurige.email,
     subject: `${message.subject}`,
     text: `${message.subject}`,
