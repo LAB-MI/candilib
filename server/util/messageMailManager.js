@@ -15,9 +15,9 @@ const mailMessage = (candidatAurige, flag) => {
     email,
   } = candidatAurige;
 
-  var message = new Object();
+  let message = {};
 
-  const nomMaj = nomNaissance.toUpperCase();
+  const nomMaj = nomNaissance ? nomNaissance.toUpperCase() : '';
 
   const INSCRIPTION_OK_MSG = `Bienvenue sur Candilib !
   <br>

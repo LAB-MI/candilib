@@ -57,6 +57,7 @@
     "mongoose": "^4.4.20",
     "morgan": "^1.9.0",
     "nodemailer": "^4.6.8",
+    "nodemailer-smtp-transport": "^2.7.4",
     "prop-types": "^15.6.2",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",

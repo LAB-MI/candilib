@@ -1,16 +1,18 @@
 import nodemailer from 'nodemailer';
 import mailMessage from '../util/messageMailManager';
+import smtpTransport from 'nodemailer-smtp-transport';
 
 const sendMailToAccount = (candidatAurige, flag) => {
   const message = mailMessage(candidatAurige, flag);
 
-  const transporter = nodemailer.createTransport({
+  const transporter = nodemailer.createTransport(smtpTransport({
     service: 'gmail',
+    host: 'smtp.gmail.com',
     auth: {
       user: 'salahdin.lazantsy@gmail.com',
       pass: 'Salahdin@1314',
     },
-  });
+  }));
 
   const mailOptions = {
     form: 'candilib@securite-routiere.gouv.fr',

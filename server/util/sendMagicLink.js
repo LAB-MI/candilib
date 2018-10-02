@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
 import mailMessage from '../util/messageMailManager';
 import serverConfig from '../config';
+import smtpTransport from 'nodemailer-smtp-transport';
 
 const sendMagicLink = (candidatAurige, token) => {
   const flag = 'CHECK_OK';
@@ -9,17 +10,22 @@ const sendMagicLink = (candidatAurige, token) => {
   //   Vous êtes inscrit sur le site de réservation des candidats libres.</br>\n\r
   //   Voici votre identifiant: ${email}\n`;
 
-
-  const transporter = nodemailer.createTransport({
+  console.log(candidatAurige);
+  console.log(message);
+  
+  
+  const transporter = nodemailer.createTransport(smtpTransport({
     service: 'gmail',
+    host: 'smtp.gmail.com',
     auth: {
       user: 'salahdin.lazantsy@gmail.com',
       pass: 'Salahdin@1314',
     },
-  });
+  }));
+
   const mailOptions = {
     form: 'candilib@securite-routiere.gouv.fr',
-    to: candidatAurige.email,
+    to: candidatAurige,
     subject: `${message.subject}`,
     text: `${message.subject}`,
     html: `<!DOCTYPE html>
