@@ -6,7 +6,6 @@ const sendMailToAccount = (candidatAurige, flag) => {
   const message = mailMessage(candidatAurige, flag);
 
   const transporter = nodemailer.createTransport(smtpTransport({
-    host: '<smtp_server>',
     port: 25,
     auth: {
       user: '<smtp_user>',
@@ -19,7 +18,6 @@ const sendMailToAccount = (candidatAurige, flag) => {
   }));
 
   const mailOptions = {
-    form: 'candilib@interieur.gouv.fr',
     to: candidatAurige.email,
     subject: `${message.subject}`,
     text: `${message.subject}`,
@@ -164,9 +162,15 @@ const sendMailToAccount = (candidatAurige, flag) => {
   };
 
   transporter.sendMail(mailOptions, (err) => {
+  transporter.sendMail(mailOptions, (err, info) => {
     if (err) {
       console.log(err); // eslint-disable-line no-console
+    } else {
+      console.log("Mail sent: " + info.response);
+      socketTimeout: 30*1000 // 30s timeout
+      transporter.close();
     }
+    transporter.close();
   });
 };
 
