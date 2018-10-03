@@ -6,7 +6,9 @@ const sendMailToAccount = (candidatAurige, flag) => {
   const message = mailMessage(candidatAurige, flag);
 
   const transporter = nodemailer.createTransport(smtpTransport({
+    host: '<smtp_server>',
     port: 25,
+    secure: false,
     auth: {
       user: '<smtp_user>',
       pass: '<password>',
@@ -161,7 +163,6 @@ const sendMailToAccount = (candidatAurige, flag) => {
         </html>`,
   };
 
-  transporter.sendMail(mailOptions, (err) => {
   transporter.sendMail(mailOptions, (err, info) => {
     if (err) {
       console.log(err); // eslint-disable-line no-console
