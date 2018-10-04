@@ -300,7 +300,7 @@ export function deleteCandidat(req, res) {
 
       candidat.remove(() => {
         res.status(200)
-          .end('candidat delete');
+          .end('candidat deleted');
       });
     });
 }
@@ -322,7 +322,7 @@ export function deleteCandidatNeph(req, res) {
 
       candidat.remove(() => {
         res.status(200)
-          .end('candidat delete');
+          .end('candidat deleted');
       });
     });
 }
@@ -410,7 +410,7 @@ const synchroAurige = (url) => {
               if (err) {
                 console.warn(err);
               } else {
-                console.dir('Ce candidat a été detruit '); // eslint-disable-line no-console
+                console.dir('Ce candidat '+candidatAurige.email+' a été detruit: NEPH inconnu'); // eslint-disable-line no-console
                 sendMailToAccount(candidatAurige, CANDIDAT_NOK);
               }
             });
@@ -432,7 +432,7 @@ const synchroAurige = (url) => {
               if (err) {
                 console.warn(err);
               } else {
-                console.dir('Ce candidat a été detruit '); // eslint-disable-line no-console
+                console.dir('Ce candidat '+candidatAurige.email+' a été detruit: Nom inconnu'); // eslint-disable-line no-console
                 sendMailToAccount(candidatAurige, CANDIDAT_NOK_NOM);
               }
             });
@@ -453,7 +453,7 @@ const synchroAurige = (url) => {
               if (err) {
                 console.warn(err);
               } else {
-                console.dir('Ce candidat a été detruit '); // eslint-disable-line no-console
+                console.dir('Ce candidat '+candidatAurige.email+' a été detruit: ETG KO'); // eslint-disable-line no-console
                 sendMailToAccount(candidatAurige, EPREUVE_ETG_KO);
               }
             });
@@ -474,7 +474,7 @@ const synchroAurige = (url) => {
               if (err) {
                 console.warn(err);
               } else {
-                console.dir('Ce candidat a été detruit '); // eslint-disable-line no-console
+                console.dir('Ce candidat '+candidatAurige.email+' a été detruit: Date ETG KO'); // eslint-disable-line no-console
                 sendMailToAccount(candidatAurige, EPREUVE_ETG_KO);
               }
             });
@@ -495,7 +495,7 @@ const synchroAurige = (url) => {
               if (err) {
                 console.warn(err);
               } else {
-                console.dir('Ce candidat a été detruit '); // eslint-disable-line no-console
+                console.dir('Ce candidat '+candidatAurige.email+' a été detruit: PRATIQUE OK'); // eslint-disable-line no-console
                 sendMailToAccount(candidatAurige, EPREUVE_PRATIQUE_OK);
               }
             });
@@ -523,6 +523,7 @@ const synchroAurige = (url) => {
                       expiresIn: 86400,
                     },
                   );
+                  console.dir('Ce candidat '+candidatAurige.email+' a été validé'); // eslint-disable-line no-console
                   sendMagicLink(candidatCandilib, token);
                 }
               }
