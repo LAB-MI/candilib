@@ -6,16 +6,20 @@ const sendMailToAccount = (candidatAurige, flag) => {
   const message = mailMessage(candidatAurige, flag);
 
   const transporter = nodemailer.createTransport(smtpTransport({
-    service: 'gmail',
-    host: 'smtp.gmail.com',
+    host: '<smtp_server>',
+    port: 25,
+    secure: false,
     auth: {
-      user: 'salahdin.lazantsy@gmail.com',
-      pass: 'Salahdin@1314',
+      user: '<smtp_user>',
+      pass: '<password>',
     },
+    tls: {
+        // do not failed with selfsign certificates
+        rejectUnauthorized: false
+    }
   }));
 
   const mailOptions = {
-    form: 'candilib@securite-routiere.gouv.fr',
     to: candidatAurige.email,
     subject: `${message.subject}`,
     text: `${message.subject}`,
@@ -159,10 +163,15 @@ const sendMailToAccount = (candidatAurige, flag) => {
         </html>`,
   };
 
-  transporter.sendMail(mailOptions, (err) => {
+  transporter.sendMail(mailOptions, (err, info) => {
     if (err) {
       console.log(err); // eslint-disable-line no-console
+    } else {
+      console.log("Mail sent: " + info.response);
+      socketTimeout: 30*1000 // 30s timeout
+      transporter.close();
     }
+    transporter.close();
   });
 };
 

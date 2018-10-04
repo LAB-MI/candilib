@@ -18,13 +18,15 @@ const mailMessage = (candidatAurige, flag) => {
 
   const nomMaj = nomNaissance ? nomNaissance.toUpperCase() : '';
 
-  const INSCRIPTION_OK_MSG = `Bienvenue sur Candilib !
+  const INSCRIPTION_OK_MSG = `<p>Bonjour Mr/Mme ${nomMaj},</p>
+  <br>
+  <p>Bienvenue sur Candilib !</p>
   <br>
   <p>Vous êtes à présent inscrit sur le site de réservation de l'examen pratique du permis de conduire.</p>
   <p><b>Conservez précieusement ce mail qui vous permettra de vous connecter si le site Candilib</b></p>
   <p>Votre identifiant de connexion est l'adresse mail que vous nous avez fournie lors de votre inscription : ${candidatAurige.email}</p>`;
 
-  const INSCRIPTION_KO_MSG = `<p>Bonjour,</p>
+  const INSCRIPTION_KO_MSG = `<p>Bonjour Mr/Mme ${nomMaj},</p>
   <br>
   <p>Vous avez demandé à rejoindre le site de réservation des candidats libres. Malheureusement les informations que vous avez fournies sont erronées :</p>
   <p align="center">NEPH ${codeNeph} / NOM ${nomMaj}</p>
@@ -33,7 +35,7 @@ const mailMessage = (candidatAurige, flag) => {
   <br>
   <p align="right">L'équipe Candilib</p>`;
 
-  const EPREUVE_PRATIQUE_OK_MSG = `<p>Bonjour,</p>
+  const EPREUVE_PRATIQUE_OK_MSG = `<p>Bonjour Mr/Mme ${nomMaj},</p>
   <br>
   <p>Selon nos informations vous avez déjà réussi votre examen du permis de conduire, notre service ne vous est plus utile.</p>
   <br>
@@ -44,7 +46,7 @@ const mailMessage = (candidatAurige, flag) => {
   <br>
   <p align="right">L'équipe Candilib</p>`;
 
-  const EPREUVE_ETG_KO_MSG = `<p>Bonjour,</p>
+  const EPREUVE_ETG_KO_MSG = `<p>Bonjour Mr/Mme ${nomMaj},</p>
   <br>
   <p>Votre code de la route n’est pas/plus valide.</p>
   </p>Vous ne pouvez pas rejoindre le site de réservation des candidats libres sans examen du code de la route réussi et en cours de validité.</p>
@@ -63,31 +65,31 @@ const mailMessage = (candidatAurige, flag) => {
   switch (flag) {
     case CANDIDAT_NOK:
       message.content = INSCRIPTION_KO_MSG;
-      message.subject = 'Problème inscription Candilib <ne pas répondre>';
+      message.subject = "<ne pas répondre> Problème inscription Candilib";
       return message;
     case INSCRIPTION_VALID:
       message.content = INSCRIPTION_VALID_MSG;
-      message.subject = 'Confirmation d\'inscription Candilib <ne pas répondre>';
+      message.subject = "<ne pas répondre> Confirmation d'inscription Candilib";
       return message;
     case CANDIDAT_NOK_NOM:
       message.content = INSCRIPTION_KO_MSG;
-      message.subject = 'Problème inscription Candilib <ne pas répondre>';
+      message.subject = "<ne pas répondre> Problème inscription Candilib";
       return message;
     case EPREUVE_PRATIQUE_OK:
       message.content = EPREUVE_PRATIQUE_OK_MSG;
-      message.subject = 'Problème inscription Candilib <ne pas répondre>';
+      message.subject = "<ne pas répondre> Problème inscription Candilib";
       return message;
     case INSCRIPTION_OK:
       message.content = INSCRIPTION_VALID_MSG;
-      message.subject = 'Confirmation d\'inscription Candilib <ne pas répondre>';
+      message.subject = "<ne pas répondre> Confirmation d'inscription Candilib";
       return message;
     case EPREUVE_ETG_KO:
       message.content = EPREUVE_ETG_KO_MSG;
-      message.subject = 'Problème inscription Candilib <ne pas répondre>';
+      message.subject = "<ne pas répondre> Problème inscription Candilib";
       return message;
     case AURIGE_OK:
       message.content = INSCRIPTION_OK_MSG;
-      message.subject = 'Validation de votre inscription à Candilib <ne pas répondre>';
+      message.subject = "<ne pas répondre> Validation de votre inscription à Candilib";
       return message;
     default:
       return '';
