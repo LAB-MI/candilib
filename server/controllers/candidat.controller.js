@@ -7,9 +7,9 @@ import jwt from 'jsonwebtoken';
 import serverConfig from '../config';
 import sendMagicLink from '../util/sendMagicLink';
 import moment from 'moment';
-import retourAurige from '../inbox/updateCandidats.json';
-// const retourAurige = []; // TODO fix docker
-
+import path from 'path';
+import fs from 'fs';
+import * as csvParser from 'fast-csv';
 import {
   INSCRIPTION_OK,
   EPREUVE_PRATIQUE_OK,
@@ -328,7 +328,7 @@ export function deleteCandidatNeph(req, res) {
 }
 
 
-export function exportToCSV(req, res) {
+export function exportToCSV(req, res, next) {
   const filename = 'candidatsLibresPrintel.csv';
 
   Candidat.find({}, {
@@ -355,10 +355,11 @@ export function exportToCSV(req, res) {
       });
 
       res.status(200);
-      res.setHeader('Content-Type', ['text/csv ; charset=utf-8']);
-      res.setHeader('Content-Disposition', `attachment; filename= ${filename}`);
+/*       res.setHeader('Content-Type', ['text/csv ; charset=utf-8']);
+      res.setHeader('Content-Disposition', `attachment; filename= ${filename}`); */
       res.csv(newData, 'utf-8', true);
     });
+  next();
 }
 
 
@@ -379,7 +380,9 @@ export const epreuveEtgInvalid = (candidatAurige) => {
 };
 
 
-export function synchroAurige(req, res) {
+const synchroAurige = (url) => {
+  const retourAurige = require(url);
+
   Candidat.find({}, (err, candidatsBase) => {
     const lgtCandilib = candidatsBase.length;
     const lgthsAurige = retourAurige.length;
@@ -529,11 +532,8 @@ export function synchroAurige(req, res) {
       }
     }
   });
+};
 
-  res.status(200).send({
-    message: 'Synchonisation done',
-  });
-}
 
 export function purgePermisOk(req, res) {
   Candidat.find({
@@ -558,3 +558,54 @@ export function purgePermisOk(req, res) {
     }
   });
 }
+
+export const uploadAurigeCSV = (req, res) => {
+  const csvFile = req.files.file;
+  const fileRows = [];
+
+  const csvFilePath = path.resolve(__dirname, '../../temp/csv/', csvFile.name);
+
+  const uploadCSV = async () => {
+    csvFile.mv(csvFilePath, await function (err) {
+      if (err) {
+        return res.status(500).send(err);
+      }
+      const stream = fs.createReadStream(csvFilePath);
+
+      csvParser.fromStream(stream, { headers: true, ignoreEmpty: true })
+        .on('data', (data) => {
+          fileRows.push(data);
+        })
+        .on('end', () => {
+          console.log('done');
+          console.log(fileRows);
+        });
+    });
+  };
+
+  uploadCSV();
+  res.status(200).send(csvFilePath);
+};
+
+
+export const uploadAurigeJSON = (req, res) => {
+  const jsonFile = req.files.file;
+  const jsonFilePath = path.resolve(__dirname, '../../temp/json/', jsonFile.name);
+
+  const uploadJSON = async () => {
+    jsonFile.mv(jsonFilePath, await function (err) {
+      if (err) {
+        return res.status(500).send(err);
+      }
+
+      synchroAurige(jsonFilePath);
+      res.status(200).send({
+        fileName: jsonFile.name,
+        success: true,
+        message: `Le fichier ${jsonFile.name} a été synchronisé.`
+      });
+    });
+  };
+
+  uploadJSON();
+};

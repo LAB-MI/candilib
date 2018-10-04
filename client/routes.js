@@ -3,6 +3,7 @@ import React from 'react';
 import { Route, IndexRoute } from 'react-router';
 import App from './modules/App/App';
 import PrivateRoute from './util/PrivateRoute';
+import AdminPage from './modules/Admin/pages/AdminPage/AdminPage';
 
 
 // require.ensure polyfill for node
@@ -20,6 +21,7 @@ if (process.env.NODE_ENV !== 'production') {
   // Require async routes only in development for react-hot-reloader to work.
   require('./modules/Home/components/Login/Login');
   require('./modules/Sites/pages/SiteListPage/SiteListPage');
+  require('./modules/Admin/pages/AdminPage/AdminPage');
 }
 
 // react-router setup with code-splitting
@@ -41,6 +43,10 @@ export default (
           cb(null, require('./modules/Sites/pages/SiteListPage/SiteListPage').default);
         });
       }}
+    />
+    <Route
+      path="/admin"
+      component={AdminPage}
     />
   </Route>
 );

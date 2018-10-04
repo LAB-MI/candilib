@@ -1,5 +1,11 @@
 import { Router } from 'express';
 import * as CandidatsController from '../controllers/candidat.controller';
+import multer from 'multer';
+
+const uploadCSV = multer({ dest: 'temp/csv/' });
+const uploadJSON = multer({ dest: 'temp/json/' });
+
+
 const router = new Router();
 
 // Sign In a new candidat
@@ -36,13 +42,16 @@ router.route('/candidats/neph/:neph').delete(CandidatsController.deleteCandidatN
 router.route('/candidats/destroy').get(CandidatsController.destroyAll);
 
 // Export candidats from Aurige to CSV
-router.route('/export').get(CandidatsController.exportToCSV);
+router.route('/candidats/export').get(CandidatsController.exportToCSV);
 
 // Purge candidats from Aurige permis OK
 router.route('/candidats/permis/ok').get(CandidatsController.purgePermisOk);
 
 // synchro candidats from Aurige
-router.route('/synchro').get(CandidatsController.synchroAurige);
+router.route('/candidats/upload/csv').post(uploadCSV.single('file'), CandidatsController.uploadAurigeCSV);
+
+router.route('/candidats/upload/json').post(uploadJSON.single('file'), CandidatsController.uploadAurigeJSON);
+
 
 export default router;
 

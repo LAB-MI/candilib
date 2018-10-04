@@ -4,6 +4,8 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import path from 'path';
 import IntlWrapper from '../client/modules/Intl/IntlWrapper';
+import fileUpload from 'express-fileupload';
+
 
 // Initialize the Express App
 const app = new Express();
@@ -69,6 +71,7 @@ if (process.env.NODE_ENV !== 'test') {
 app.use(compression());
 app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
+app.use(fileUpload());
 app.use(Express.static(path.resolve(__dirname, '../dist/client')));
 app.use('/api', verifyToken, candidats);
 

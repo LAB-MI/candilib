@@ -15,7 +15,7 @@ import {
 } from '@material-ui/core';
 
 import blue from '@material-ui/core/colors/blue';
-import SnackbarNotification from '../Notifications/SnackbarNotificationWrapper';
+import SnackbarNotification from '../../../../components/Notifications/SnackbarNotificationWrapper';
 import { setInStorage } from '../../../../util/storage';
 
 const styles = theme => ({

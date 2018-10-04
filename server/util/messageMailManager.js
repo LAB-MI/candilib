@@ -12,10 +12,9 @@ const mailMessage = (candidatAurige, flag) => {
   const {
     codeNeph,
     nomNaissance,
-    email,
   } = candidatAurige;
 
-  let message = {};
+  const message = {};
 
   const nomMaj = nomNaissance ? nomNaissance.toUpperCase() : '';
 
@@ -64,31 +63,31 @@ const mailMessage = (candidatAurige, flag) => {
   switch (flag) {
     case CANDIDAT_NOK:
       message.content = INSCRIPTION_KO_MSG;
-      message.subject = "Problème inscription Candilib <ne pas répondre>";
+      message.subject = 'Problème inscription Candilib <ne pas répondre>';
       return message;
     case INSCRIPTION_VALID:
       message.content = INSCRIPTION_VALID_MSG;
-      message.subject = "Confirmation d'inscription Candilib <ne pas répondre>";
+      message.subject = 'Confirmation d\'inscription Candilib <ne pas répondre>';
       return message;
     case CANDIDAT_NOK_NOM:
       message.content = INSCRIPTION_KO_MSG;
-      message.subject = "Problème inscription Candilib <ne pas répondre>";
+      message.subject = 'Problème inscription Candilib <ne pas répondre>';
       return message;
     case EPREUVE_PRATIQUE_OK:
       message.content = EPREUVE_PRATIQUE_OK_MSG;
-      message.subject = "Problème inscription Candilib <ne pas répondre>";
+      message.subject = 'Problème inscription Candilib <ne pas répondre>';
       return message;
     case INSCRIPTION_OK:
       message.content = INSCRIPTION_VALID_MSG;
-      message.subject = "Confirmation d'inscription Candilib <ne pas répondre>";
+      message.subject = 'Confirmation d\'inscription Candilib <ne pas répondre>';
       return message;
     case EPREUVE_ETG_KO:
       message.content = EPREUVE_ETG_KO_MSG;
-      message.subject = "Problème inscription Candilib <ne pas répondre>";
+      message.subject = 'Problème inscription Candilib <ne pas répondre>';
       return message;
     case AURIGE_OK:
       message.content = INSCRIPTION_OK_MSG;
-      message.subject = "Validation de votre inscription à Candilib <ne pas répondre>";
+      message.subject = 'Validation de votre inscription à Candilib <ne pas répondre>';
       return message;
     default:
       return '';

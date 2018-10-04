@@ -10,10 +10,6 @@ const sendMagicLink = (candidatAurige, token) => {
   //   Vous êtes inscrit sur le site de réservation des candidats libres.</br>\n\r
   //   Voici votre identifiant: ${email}\n`;
 
-  console.log(candidatAurige);
-  console.log(message);
-  
-  
   const transporter = nodemailer.createTransport(smtpTransport({
     service: 'gmail',
     host: 'smtp.gmail.com',
