@@ -108,7 +108,7 @@ export function signUp(req, res) {
       return res.status(200)
         .send({
           success: true,
-          message: 'Votre demande a été prise en compte, veuillez consulter votre messagerie.',
+          message: 'Votre demande a été prise en compte, veuillez consulter votre messagerie (pensez à vérifier dans vos courriers indésirables).',
           candidat,
           auth: true,
           token,
@@ -172,7 +172,7 @@ export function login(req, res) {
         },
       );
 
-      sendMagicLink(user.email, token);
+      sendMagicLink(user, token);
 
       return res.status(200).send({ success: true, token, message: 'Veuillez consulter votre boîte mail pour vous connecter.' });
     });

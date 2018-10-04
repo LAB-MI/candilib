@@ -2,6 +2,7 @@ import nodemailer from 'nodemailer';
 import mailMessage from '../util/messageMailManager';
 import serverConfig from '../config';
 import smtpTransport from 'nodemailer-smtp-transport';
+import mailConfig from '../config';
 
 const sendMagicLink = (candidatAurige, token) => {
   const flag = 'CHECK_OK';
@@ -11,17 +12,22 @@ const sendMagicLink = (candidatAurige, token) => {
   //   Voici votre identifiant: ${email}\n`;
 
   const transporter = nodemailer.createTransport(smtpTransport({
-    service: 'gmail',
-    host: 'smtp.gmail.com',
+    host: mailConfig.smtpServer,
+    port: mailConfig.smtpPort,
+    secure: false,
     auth: {
-      user: 'salahdin.lazantsy@gmail.com',
-      pass: 'Salahdin@1314',
+      user: mailConfig.mailUser,
+      pass: mailConfig.mailPassword,
     },
+    tls: {
+        // do not failed with selfsign certificates
+        rejectUnauthorized: false
+    }
   }));
 
   const mailOptions = {
-    form: 'candilib@securite-routiere.gouv.fr',
-    to: candidatAurige,
+    from: mailConfig.mailFrom,
+    to: candidatAurige.email,
     subject: `${message.subject}`,
     text: `${message.subject}`,
     html: `<!DOCTYPE html>
@@ -166,10 +172,15 @@ const sendMagicLink = (candidatAurige, token) => {
         </html>`,
   };
 
-  transporter.sendMail(mailOptions, (err) => {
+  transporter.sendMail(mailOptions, (err, info) => {
     if (err) {
       console.log(err); // eslint-disable-line no-console
+    } else {
+      console.log("MagicLink sent: " + info.response);
+      socketTimeout: 30*1000 // 30s timeout
+      transporter.close();
     }
+    transporter.close();
   });
 };
 
