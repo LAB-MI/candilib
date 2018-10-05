@@ -21,7 +21,7 @@ router.route('/candidats/login').post(CandidatsController.login);
 router.route('/candidats').get(CandidatsController.getCandidats);
 
 // Get one Candidat by id
-router.route('/candidats/:id').get(CandidatsController.getCandidat);
+router.route('/candidats/:id').post(CandidatsController.getCandidat);
 
 // Get one Candidat by neph
 router.route('/candidats/neph/:neph').get(CandidatsController.getCandidatNeph);

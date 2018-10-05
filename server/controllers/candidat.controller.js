@@ -239,12 +239,11 @@ export function addCandidat(req, res) {
  * @param res
  * @returns void
  */
-export function getCandidat(req, res) {
+export function getCandidat(req, res, next) {
   Candidat.findOne({ _id: req.params.id })
     .exec((err, candidat) => {
       if (err) {
-        res
-          .send(err);
+        next(err);
       }
       res.json({ candidat });
     });
@@ -328,7 +327,7 @@ export function deleteCandidatNeph(req, res) {
 }
 
 
-export function exportToCSV(req, res, next) {
+export function exportToCSV(req, res) {
   const filename = 'candidatsLibresPrintel.csv';
 
   Candidat.find({}, {
@@ -355,11 +354,10 @@ export function exportToCSV(req, res, next) {
       });
 
       res.status(200);
-/*       res.setHeader('Content-Type', ['text/csv ; charset=utf-8']);
-      res.setHeader('Content-Disposition', `attachment; filename= ${filename}`); */
-      res.csv(newData, 'utf-8', true);
+      res.setHeader('Content-Type', ['text/csv ; charset=utf-8']);
+      res.setHeader('Content-Disposition', `attachment; filename= ${filename}`);
+      return res.csv(newData, 'utf-8', true);
     });
-  next();
 }
 
 

@@ -4,15 +4,12 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import {
   Typography,
-  Paper,
   Button,
   FormControl,
   Input,
   InputLabel,
   withStyles,
-  CssBaseline,
   Snackbar,
-  CircularProgress,
 } from '@material-ui/core';
 import SnackbarNotification from '../../../../components/Notifications/SnackbarNotificationWrapper';
 
@@ -62,9 +59,9 @@ class AdminPage extends Component {
     }).then((response) => {
       response.json().then((body) => {
         // this.setState({ fileURL: `http://localhost:8000/${body.file}` })
-        console.log(body)
-      })
-    })
+        console.log(body);
+      });
+    });
   }
 
   handleUploadJSON(ev) {
@@ -80,7 +77,7 @@ class AdminPage extends Component {
       body: data,
     })
       .then(response => response.json())
-      .then(json => this.setState({ success: json.success, open: true, snackBarMessage: json.message, fileName: json.fileName }))
+      .then(json => this.setState({ success: json.success, open: true, snackBarMessage: json.message, fileName: json.fileName }));
   }
 
   handleClose = () => {
@@ -90,10 +87,8 @@ class AdminPage extends Component {
   handleDownLoadCSV(ev) {
     ev.preventDefault();
 
-    fetch('/api/candidats/export', {
-    })
-      .then(response => response.json())
-      .then(json => console.log(json));
+    fetch('/api/candidats/export')
+      .then(response => window.open(response.body));
   }
 
   render() {
@@ -119,9 +114,10 @@ class AdminPage extends Component {
                   >Synchronisation JSON Aurige</Button>
                 </FormControl>
               </form>
-              {success !== '' && <Typography variant="subheading" align="center">
-                Synchronisation {fileName} effectué.
-            </Typography>}
+              {success !== '' &&
+                <Typography variant="subheading" align="center">
+                  Synchronisation {fileName} effectué.
+                </Typography>}
 
             </CardContent>
             <CardContent>
@@ -129,7 +125,7 @@ class AdminPage extends Component {
                 type="submit"
                 color="primary"
                 variant="raised"
-                onClick={this.handleDownLoadCSV}
+                href="/api/candidats/export"
               >Export CSV</Button>
             </CardContent>
           </Card>
@@ -184,7 +180,7 @@ class AdminPage extends Component {
             />
           </Snackbar>}
       </Grid>
-    )
+    );
   }
 }
 
