@@ -23,7 +23,7 @@ const mailMessage = (candidatAurige, flag) => {
   <p>Bienvenue sur Candilib !</p>
   <br>
   <p>Vous êtes à présent inscrit sur le site de réservation de l'examen pratique du permis de conduire.</p>
-  <p><b>Conservez précieusement ce mail qui vous permettra de vous connecter si le site Candilib</b></p>
+  <p><b>Conservez précieusement ce mail qui vous permettra de vous connecter sur le site Candilib</b></p>
   <p>Votre identifiant de connexion est l'adresse mail que vous nous avez fournie lors de votre inscription : ${candidatAurige.email}</p>`;
 
   const INSCRIPTION_KO_MSG = `<p>Bonjour Mr/Mme ${nomMaj},</p>

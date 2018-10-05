@@ -1,17 +1,18 @@
 import nodemailer from 'nodemailer';
 import mailMessage from '../util/messageMailManager';
 import smtpTransport from 'nodemailer-smtp-transport';
+import mailConfig from '../config';
 
 const sendMailToAccount = (candidatAurige, flag) => {
   const message = mailMessage(candidatAurige, flag);
 
   const transporter = nodemailer.createTransport(smtpTransport({
-    host: '<smtp_server>',
-    port: 25,
+    host: mailConfig.smtpServer,
+    port: mailConfig.smtpPort,
     secure: false,
     auth: {
-      user: '<smtp_user>',
-      pass: '<password>',
+      user: mailConfig.mailUser,
+      pass: mailConfig.mailPassword,
     },
     tls: {
         // do not failed with selfsign certificates
@@ -20,6 +21,7 @@ const sendMailToAccount = (candidatAurige, flag) => {
   }));
 
   const mailOptions = {
+    from: mailConfig.mailFrom,
     to: candidatAurige.email,
     subject: `${message.subject}`,
     text: `${message.subject}`,
