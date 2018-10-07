@@ -147,7 +147,7 @@ export function login(req, res) {
 
       if (!user) {
         return res.status(404)
-          .send({ auth: false, message: 'Utilisateur non reconnu. ' });
+          .send({ auth: false, message: 'Utilisateur non reconnu.' });
       }
 
       const emailIsValid = email === user.email;
@@ -174,7 +174,7 @@ export function login(req, res) {
 
       sendMagicLink(user, token);
 
-      return res.status(200).send({ success: true, token, message: 'Veuillez consulter votre boîte mail pour vous connecter.' });
+      return res.status(200).send({ success: true, token, message: 'Veuillez consulter votre boîte mail pour vous connecter (pensez à vérifier dans vos courriers indésirables).' });
     });
 }
 
@@ -390,6 +390,8 @@ const synchroAurige = (url) => {
         const candidatAurige = retourAurige[j];
         const candidatCandilib = candidatsBase[i];
         if (candidatCandilib.codeNeph === candidatAurige.codeNeph) {
+          // get candidat status before update
+          const candidatCandilibStatus = candidatCandilib.isValid;
           if (candidatAurige.candidatExistant === CANDIDAT_NOK) { // Neph inconnu dans Aurige
             // Date du code valid
             Candidat.findOneAndRemove({
@@ -497,7 +499,7 @@ const synchroAurige = (url) => {
                 sendMailToAccount(candidatAurige, EPREUVE_PRATIQUE_OK);
               }
             });
-          } else { // eligible pour Candilib
+          } else if (!candidatCandilibStatus) { // Validation d'un nouveaur candidat pour Candilib
             Candidat.update(
               { email: candidatAurige.email },
               {
@@ -523,6 +525,24 @@ const synchroAurige = (url) => {
                   );
                   console.dir('Ce candidat '+candidatAurige.email+' a été validé'); // eslint-disable-line no-console
                   sendMagicLink(candidatCandilib, token);
+                }
+              }
+            );
+          } else if (candidatCandilibStatus) { // mise à jour candidat existant
+            Candidat.update(
+              { email: candidatAurige.email },
+              {
+                $set: {
+                  dateReussiteETG: candidatAurige.dateReussiteETG,
+                  dateDernierEchecPratique: candidatAurige.dateDernierEchecPratique,
+                  reussitePratique: candidatAurige.reussitePratique,
+                },
+              },
+              () => {
+                if (err) {
+                  console.warn(err.message);  // eslint-disable-line no-console
+                } else {
+                  console.dir('Ce candidat '+candidatAurige.email+' a été mis à jour'); // eslint-disable-line no-console
                 }
               }
             );

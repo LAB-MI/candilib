@@ -85,7 +85,6 @@ class Login extends Component {
       neph: '',
       nom: '',
       prenom: '',
-      naissance: '',
       nomUsage: '',
       portable: '',
       adresse: '',
@@ -122,7 +121,6 @@ class Login extends Component {
       nomUsage,
       email,
       prenom,
-      naissance,
       portable,
       adresse,
       isLogin,
@@ -146,7 +144,6 @@ class Login extends Component {
             nomUsage,
             prenom,
             email,
-            naissance,
             portable,
             adresse,
           }),
@@ -160,24 +157,38 @@ class Login extends Component {
                 isLoading: false,
                 open: true,
                 emailError: !json.success,
+                portableError: !json.success,
                 neph: '',
                 nom: '',
                 nomUsage: '',
                 email: '',
                 prenom: '',
-                naissance: 'dd/mm/yyyy',
                 portable: '',
                 adresse: '',
                 success: true,
               });
             } else {
-              this.setState({
-                signUpError: json.message,
-                emailError: !json.success,
-                isLoading: false,
-                open: true,
-                success: false,
-              });
+              console.log("message: "+ json.message);
+              console.log("status: " + json.success);
+              if (json.message.indexOf("email") > -1) {
+                this.setState({
+                  signUpError: "Vérifier votre email.",
+                  portableError: false,
+                  emailError: !json.success,
+                  isLoading: false,
+                  open: true,
+                  success: false,
+                });
+              } else if(json.message.indexOf("portable") > -1) {
+                this.setState({
+                  signUpError: "Vérifier votre numéro de téléphone.",
+                  portableError: !json.success,
+                  emailError: false,
+                  isLoading: false,
+                  open: true,
+                  success: false,
+                });
+              }
             }
           });
       } else {
@@ -198,6 +209,7 @@ class Login extends Component {
                 isLoading: false,
                 open: true,
                 emailError: !json.success,
+                portableError: !json.success,
                 email: '',
                 success: true,
               });
@@ -205,6 +217,7 @@ class Login extends Component {
               this.setState({
                 signUpError: json.message,
                 emailError: !json.success,
+                portableError: !json.success,
                 isLoading: false,
                 open: true,
                 success: false,
@@ -223,6 +236,7 @@ class Login extends Component {
       open,
       signUpError,
       emailError,
+      portableError,
       neph,
       nom,
       email,
@@ -243,11 +257,11 @@ class Login extends Component {
                 onSubmit={this.handleCreate}
               >
                 <FormControl margin="normal" required fullWidth>
-                  <InputLabel htmlFor="neph">Neph</InputLabel>
-                  <Input id="neph" name="neph" type="number" autoComplete="neph" value={neph} autoFocus onChange={this.handleChange} />
+                  <InputLabel htmlFor="neph">Neph (obligatoire)</InputLabel>
+                  <Input id="neph" name="neph" placeholder="numéro d'inscription" type="number" autoComplete="neph" value={neph} autoFocus onChange={this.handleChange} />
                 </FormControl>
                 <FormControl margin="normal" required fullWidth>
-                  <InputLabel htmlFor="nom">Nom</InputLabel>
+                  <InputLabel htmlFor="nom">Nom (obligatoire)</InputLabel>
                   <Input id="nom" name="nom" autoComplete="nom" value={nom} autoFocus onChange={this.handleChange} />
                 </FormControl>
                 <FormControl margin="normal" fullWidth>
@@ -255,12 +269,12 @@ class Login extends Component {
                   <Input id="prenom" name="prenom" autoComplete="prenom" value={prenom} autoFocus onChange={this.handleChange} />
                 </FormControl>
                 <FormControl margin="normal" required fullWidth>
-                  <InputLabel htmlFor="email">Email</InputLabel>
+                  <InputLabel htmlFor="email">Email (obligatoire)</InputLabel>
                   <Input id="email" error={emailError} name="email" autoComplete="email" value={email} autoFocus onChange={this.handleChange} />
                 </FormControl>
-                <FormControl margin="normal" fullWidth>
-                  <InputLabel htmlFor="portable">Portable</InputLabel>
-                  <Input id="portable" name="portable" type="number" autoComplete="portable" value={portable} autoFocus onChange={this.handleChange} />
+                <FormControl margin="normal" required fullWidth>
+                  <InputLabel htmlFor="portable">Portable (obligatoire)</InputLabel>
+                  <Input id="portable" error={portableError} name="portable" placeholder="06 12 34 56 78 ou +33 6 12 34 56 78" type="text" autoComplete="portable" value={portable} autoFocus onChange={this.handleChange} />
                 </FormControl>
                 <FormControl margin="normal" fullWidth>
                   <InputLabel htmlFor="adresse">Adresse</InputLabel>
@@ -282,7 +296,7 @@ class Login extends Component {
                     onClick={() => this.setState({ isLogin: true })}
                   >
                     <Typography variant="caption">
-                      Connection
+                      Connexion
                     </Typography>
                   </Button>
                 </FormControl>
@@ -304,7 +318,7 @@ class Login extends Component {
                     color="primary"
                     variant="raised"
                     disabled={isLoading}
-                  >Connection</Button>
+                  >Connexion</Button>
                   {isLoading && <CircularProgress size={24} className={classes.buttonProgress} />}
 
                 </FormControl>
@@ -314,7 +328,7 @@ class Login extends Component {
                     onClick={() => this.setState({ isLogin: false })}
                   >
                     <Typography variant="caption">
-                      inscription
+                      Inscription
                     </Typography>
                   </Button>
                 </FormControl>

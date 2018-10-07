@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 const candidatSchema = new Schema({
   nomNaissance: {
     type: String,
-    required: false,
+    required: true,
   },
   prenom: {
     type: String,
@@ -13,7 +13,8 @@ const candidatSchema = new Schema({
   },
   codeNeph: {
     type: String,
-    required: false,
+    required: true,
+    match: /^[0-9]*$/,
   },
   dateReussiteETG: {
     type: Date,
@@ -30,14 +31,17 @@ const candidatSchema = new Schema({
   email: {
     type: String,
     default: '',
-    trim: true, unique: true,
+    required: true,
+    trim: true,
+    unique: true,
     match: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
   },
   portable: {
-    type: Number,
+    type: String,
     default: '',
+    required: true,
     trim: true,
-    match: /^(?:0|\(?\+33\)?\s?|0033\s?)[1-79](?:[\.\-\s]?\d\d){4}$/,
+    match: /^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/,
   },
   adresse: {
     type: String,
@@ -45,6 +49,7 @@ const candidatSchema = new Schema({
   },
   isValid: {
     type: Boolean,
+    required: true,
     default: false,
   },
 });
