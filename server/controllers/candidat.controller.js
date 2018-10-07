@@ -147,7 +147,7 @@ export function login(req, res) {
 
       if (!user) {
         return res.status(404)
-          .send({ auth: false, message: 'Utilisateur non reconnu. ' });
+          .send({ auth: false, message: 'Utilisateur non reconnu.' });
       }
 
       const emailIsValid = email === user.email;
@@ -174,7 +174,7 @@ export function login(req, res) {
 
       sendMagicLink(user, token);
 
-      return res.status(200).send({ success: true, token, message: 'Veuillez consulter votre boîte mail pour vous connecter.' });
+      return res.status(200).send({ success: true, token, message: 'Veuillez consulter votre boîte mail pour vous connecter (pensez à vérifier dans vos courriers indésirables).' });
     });
 }
 
