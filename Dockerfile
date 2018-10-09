@@ -3,6 +3,8 @@ RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 EXPOSE 8000
 
+RUN npm install pm2 -g
+
 FROM base as development
 ENV NODE_ENV development
 COPY package.json package-lock.json ./
@@ -25,7 +27,7 @@ RUN npm run build && npm run build:server
 
 FROM base as production
 ENV NODE_ENV=production
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json processes.json ./
 RUN if [ ! -z "$proxy" ] ; then \
         npm config delete proxy; \
         npm config set proxy $proxy; \
@@ -35,4 +37,4 @@ RUN if [ ! -z "$proxy" ] ; then \
     npm install --production
 COPY index.js ./
 COPY --from=build /usr/src/app/dist ./dist
-CMD ["npm", "run", "start:prod"]
+CMD ["pm2-runtime", "processes.json"]

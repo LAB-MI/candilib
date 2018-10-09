@@ -160,7 +160,7 @@ app.use((req, res, next) => {
 // start app
 app.listen(serverConfig.port, (error) => {
   if (!error) {
-    console.log(`Candilb is running on port: ${serverConfig.port}! Build something amazing!`); // eslint-disable-line
+    console.log(`Candilib is running on port: ${process.env.PORT || serverConfig.port}! Build something amazing!`); // eslint-disable-line
   }
 });
 

@@ -174,7 +174,10 @@ export function login(req, res) {
 
       sendMagicLink(user, token);
 
-      return res.status(200).send({ success: true, token, message: 'Veuillez consulter votre boîte mail pour vous connecter (pensez à vérifier dans vos courriers indésirables).' });
+      return res.status(200).send({
+        success: true,
+        token, message: 'Veuillez consulter votre boîte mail pour vous connecter (pensez à vérifier dans vos courriers indésirables).',
+      });
     });
 }
 
@@ -378,8 +381,14 @@ export const epreuveEtgInvalid = (candidatAurige) => {
 };
 
 
-const synchroAurige = (url) => {
-  const retourAurige = require(url);
+const synchroAurige = (pathname) => {
+  const FileContents = fs.readFileSync(pathname, 'utf8');
+  let retourAurige = [];
+  try {
+    retourAurige = JSON.parse(FileContents);
+  } catch (err) {
+    console.log(err); // eslint-disable-line no-console
+  }
 
   Candidat.find({}, (err, candidatsBase) => {
     const lgtCandilib = candidatsBase.length;
@@ -410,7 +419,7 @@ const synchroAurige = (url) => {
               if (err) {
                 console.warn(err);
               } else {
-                console.dir('Ce candidat '+candidatAurige.email+' a été detruit: NEPH inconnu'); // eslint-disable-line no-console
+                console.dir(`Ce candidat ${candidatAurige.email} a été detruit: NEPH inconnu`); // eslint-disable-line no-console
                 sendMailToAccount(candidatAurige, CANDIDAT_NOK);
               }
             });
@@ -432,7 +441,7 @@ const synchroAurige = (url) => {
               if (err) {
                 console.warn(err);
               } else {
-                console.dir('Ce candidat '+candidatAurige.email+' a été detruit: Nom inconnu'); // eslint-disable-line no-console
+                console.dir(`Ce candidat ${candidatAurige.email} a été detruit: Nom inconnu`); // eslint-disable-line no-console
                 sendMailToAccount(candidatAurige, CANDIDAT_NOK_NOM);
               }
             });
@@ -453,7 +462,7 @@ const synchroAurige = (url) => {
               if (err) {
                 console.warn(err);
               } else {
-                console.dir('Ce candidat '+candidatAurige.email+' a été detruit: ETG KO'); // eslint-disable-line no-console
+                console.dir(`Ce candidat ${candidatAurige.email} a été detruit: ETG KO`); // eslint-disable-line no-console
                 sendMailToAccount(candidatAurige, EPREUVE_ETG_KO);
               }
             });
@@ -474,7 +483,7 @@ const synchroAurige = (url) => {
               if (err) {
                 console.warn(err);
               } else {
-                console.dir('Ce candidat '+candidatAurige.email+' a été detruit: Date ETG KO'); // eslint-disable-line no-console
+                console.dir(`Ce candidat ${candidatAurige.email} a été detruit: Date ETG KO`); // eslint-disable-line no-console
                 sendMailToAccount(candidatAurige, EPREUVE_ETG_KO);
               }
             });
@@ -495,7 +504,7 @@ const synchroAurige = (url) => {
               if (err) {
                 console.warn(err);
               } else {
-                console.dir('Ce candidat '+candidatAurige.email+' a été detruit: PRATIQUE OK'); // eslint-disable-line no-console
+                console.dir(`Ce candidat ${candidatAurige.email} a été detruit: PRATIQUE OK`); // eslint-disable-line no-console
                 sendMailToAccount(candidatAurige, EPREUVE_PRATIQUE_OK);
               }
             });
@@ -523,7 +532,7 @@ const synchroAurige = (url) => {
                       expiresIn: 86400,
                     },
                   );
-                  console.dir('Ce candidat '+candidatAurige.email+' a été validé'); // eslint-disable-line no-console
+                  console.dir(`Ce candidat ${candidatAurige.email} a été validé`); // eslint-disable-line no-console
                   sendMagicLink(candidatCandilib, token);
                 }
               }
@@ -542,7 +551,7 @@ const synchroAurige = (url) => {
                 if (err) {
                   console.warn(err.message);  // eslint-disable-line no-console
                 } else {
-                  console.dir('Ce candidat '+candidatAurige.email+' a été mis à jour'); // eslint-disable-line no-console
+                  console.dir(`Ce candidat ${candidatAurige.email} a été mis à jour`); // eslint-disable-line no-console
                 }
               }
             );
@@ -584,25 +593,22 @@ export const uploadAurigeCSV = (req, res) => {
 
   const csvFilePath = path.resolve(__dirname, '../../temp/csv/', csvFile.name);
 
-  const uploadCSV = async () => {
-    csvFile.mv(csvFilePath, await function (err) {
-      if (err) {
-        return res.status(500).send(err);
-      }
-      const stream = fs.createReadStream(csvFilePath);
+  csvFile.mv(csvFilePath, (err) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    const stream = fs.createReadStream(csvFilePath);
 
-      csvParser.fromStream(stream, { headers: true, ignoreEmpty: true })
-        .on('data', (data) => {
-          fileRows.push(data);
-        })
-        .on('end', () => {
-          console.log('done');
-          console.log(fileRows);
-        });
-    });
-  };
+    csvParser.fromStream(stream, { headers: true, ignoreEmpty: true })
+      .on('data', (data) => {
+        fileRows.push(data);
+      })
+      .on('end', () => {
+        console.log('done'); // eslint-disable-line no-console
+        console.log(fileRows); // eslint-disable-line no-console
+      });
+  });
 
-  uploadCSV();
   res.status(200).send(csvFilePath);
 };
 
@@ -611,20 +617,16 @@ export const uploadAurigeJSON = (req, res) => {
   const jsonFile = req.files.file;
   const jsonFilePath = path.resolve(__dirname, '../../temp/json/', jsonFile.name);
 
-  const uploadJSON = async () => {
-    jsonFile.mv(jsonFilePath, await function (err) {
-      if (err) {
-        return res.status(500).send(err);
-      }
+  jsonFile.mv(jsonFilePath, (err) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
 
-      synchroAurige(jsonFilePath);
-      res.status(200).send({
-        fileName: jsonFile.name,
-        success: true,
-        message: `Le fichier ${jsonFile.name} a été synchronisé.`
-      });
+    synchroAurige(jsonFilePath);
+    res.status(200).send({
+      fileName: jsonFile.name,
+      success: true,
+      message: `Le fichier ${jsonFile.name} a été synchronisé.`,
     });
-  };
-
-  uploadJSON();
+  });
 };
