@@ -5,8 +5,6 @@ import bodyParser from 'body-parser';
 import path from 'path';
 import IntlWrapper from '../client/modules/Intl/IntlWrapper';
 import fileUpload from 'express-fileupload';
-
-
 // Initialize the Express App
 const app = new Express();
 
@@ -50,6 +48,8 @@ import Helmet from 'react-helmet';
 import routes from '../client/routes';
 import { fetchComponentData } from './util/fetchData';
 import candidats from './routes/candidats.routes';
+import creneaux from './routes/creneaux.routes';
+
 import serverConfig from './config';
 import verifyToken from './util/verifyToken';
 
@@ -74,6 +74,7 @@ app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
 app.use(fileUpload());
 app.use(Express.static(path.resolve(__dirname, '../dist/client')));
 app.use('/api', verifyToken, candidats);
+app.use('/api', verifyToken, creneaux);
 
 // Render Initial HTML
 const renderFullPage = (html, initialState) => {

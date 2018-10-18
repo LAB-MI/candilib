@@ -18,6 +18,8 @@ import {
   CANDIDAT_NOK_NOM,
 } from '../util/constant';
 
+import Creneau from '../models/creneau';
+
 const DATE_CODE_VALID = 5;
 
 /**
@@ -53,6 +55,7 @@ export function signUp(req, res) {
 
   Candidat.find({
     email,
+    portable,
   }, (err, previousUsers) => {
     if (err) {
       return res.status(500)
@@ -601,15 +604,50 @@ export const uploadAurigeCSV = (req, res) => {
 
     csvParser.fromStream(stream, { headers: true, ignoreEmpty: true })
       .on('data', (data) => {
-        fileRows.push(data);
+        const creneau = new Creneau();
+
+        const myDate = `${data[0]} ${data[1]}`;
+        const formatDate = moment(myDate, "DD-MM-YYYY HH:mm:ss").format("YYYY-MM-DD HH:mm:ss");
+        console.log(formatDate);        
+
+        creneau.date = formatDate;
+        creneau.inspecteur = data[2];
+        creneau.centre = data[3];
+
+        const {
+          date,
+          inspecteur,
+          centre,
+        } = creneau;
+
+        Creneau.find({
+          date,
+          centre,
+          inspecteur,
+        }, (err, previousCreneau) => {
+          if (err) {
+            console.log(err);
+
+          } else if (previousCreneau.length > 0) {
+            console.log(previousCreneau, 'deja en base');
+            return;
+          } else {
+            creneau.save((err, saved) => {
+              if (err) {
+                console.log(err);
+              }
+              res.end('Done');
+            });
+          }
+        })
       })
       .on('end', () => {
         console.log('done'); // eslint-disable-line no-console
-        console.log(fileRows); // eslint-disable-line no-console
+        // console.log(fileRows); // eslint-disable-line no-console
       });
   });
 
-  res.status(200).send(csvFilePath);
+  res.status(200).send({ name: csvFile.name });
 };
 
 

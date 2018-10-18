@@ -63,6 +63,7 @@
     "nodemailer-smtp-transport": "^2.7.4",
     "prop-types": "^15.6.2",
     "react": "^16.4.1",
+    "react-big-calendar": "^0.20.1",
     "react-dom": "^16.4.1",
     "react-helmet": "^5.2.0",
     "react-intl": "^2.1.2",
