@@ -48,13 +48,44 @@ const styles = theme => ({
   },
   paper: {
     width: '95%',
-    height: 1700,
+    height: 1000,
     padding: theme.spacing.unit * 2,
   },
   media: {
     height: 140,
   },
 });
+
+const styleEvent = {
+  flex: 1,
+  left: 0,
+  fontSize: 10,
+}
+
+class MyCustomEvent extends Component {
+  render() {
+    const { event } = this.props;
+    return (
+      <span style={styleEvent}>
+        <p>{event.title}</p>
+      </span>
+    )
+  }
+}
+
+const eventPropGetter = (event) => {
+  return {
+    className: 'eventCustom',
+    style: {
+      flex: 1,
+      left: 0,
+      color: 'green',
+      margin: 0,
+      padding: 10,
+      backgroundColor: '#ffaacc',
+    },
+  }
+}
 
 class AdminPage extends Component {
   constructor(props) {
@@ -204,10 +235,13 @@ class AdminPage extends Component {
                 events={eventsCreneaux}
                 localizer={localizer}
                 views={allViews}
-                step={60}
+                step={30}
                 startAccessor="start"
                 endAccessor="end"
                 onSelectEvent={event => alert(`${event.title} : ${event.start}`)}
+                components={{
+                  event: MyCustomEvent,
+                }}
               />
 
             </Paper>
@@ -215,35 +249,35 @@ class AdminPage extends Component {
         </Grid>
         {
           success &&
-            <Snackbar
-              open={open}
-              autoHideDuration={8000}
+          <Snackbar
+            open={open}
+            autoHideDuration={8000}
+            onClose={this.handleClose}
+            className={classes.snackbar}
+          >
+            <SnackbarNotification
               onClose={this.handleClose}
-              className={classes.snackbar}
-            >
-              <SnackbarNotification
-                onClose={this.handleClose}
-                variant="success"
-                className={classes.snackbarContent}
-                message={snackBarMessage}
-              />
-            </Snackbar>
+              variant="success"
+              className={classes.snackbarContent}
+              message={snackBarMessage}
+            />
+          </Snackbar>
         }
         {
           !success &&
-            <Snackbar
-              open={open}
-              autoHideDuration={8000}
+          <Snackbar
+            open={open}
+            autoHideDuration={8000}
+            onClose={this.handleClose}
+            className={classes.snackbar}
+          >
+            <SnackbarNotification
               onClose={this.handleClose}
-              className={classes.snackbar}
-            >
-              <SnackbarNotification
-                onClose={this.handleClose}
-                variant="error"
-                className={classes.snackbarContent}
-                message={snackBarMessage}
-              />
-            </Snackbar>
+              variant="error"
+              className={classes.snackbarContent}
+              message={snackBarMessage}
+            />
+          </Snackbar>
         }
       </Grid >
     );
