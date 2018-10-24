@@ -592,8 +592,6 @@ export function purgePermisOk(req, res) {
 
 export const uploadAurigeCSV = (req, res) => {
   const csvFile = req.files.file;
-  const fileRows = [];
-
   const csvFilePath = path.resolve(__dirname, '../../temp/csv/', csvFile.name);
 
   csvFile.mv(csvFilePath, (err) => {
@@ -602,14 +600,12 @@ export const uploadAurigeCSV = (req, res) => {
     }
     const stream = fs.createReadStream(csvFilePath);
 
-    csvParser.fromStream(stream, { headers: true, ignoreEmpty: true })
+    csvParser.fromStream(stream, { headers: false, ignoreEmpty: true })
       .on('data', (data) => {
         const creneau = new Creneau();
 
         const myDate = `${data[0]} ${data[1]}`;
-        const formatDate = moment(myDate, "DD-MM-YYYY HH:mm:ss").format("YYYY-MM-DD HH:mm:ss");
-        console.log(formatDate);        
-
+        const formatDate = moment(myDate, 'DD-MM-YYYY HH:mm:ss').format('YYYY-MM-DD HH:mm:ss');
         creneau.date = formatDate;
         creneau.inspecteur = data[2];
         creneau.centre = data[3];

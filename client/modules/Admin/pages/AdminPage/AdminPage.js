@@ -16,9 +16,10 @@ import SnackbarNotification from '../../../../components/Notifications/SnackbarN
 
 import Grid from '@material-ui/core/Grid';
 import BigCalendar from 'react-big-calendar';
-import moment from 'moment';
 import 'moment/locale/fr';
+import moment from 'moment';
 moment.locale('fr');
+import CreneauEvent from '../AdminPage/CreneauEvent';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 const localizer = BigCalendar.momentLocalizer(moment);
@@ -37,7 +38,6 @@ const messages = {
   event: 'événement', // Or anything you want
   showMore: total => `+ ${total} événement(s) supplémentaire(s)`,
 };
-let allViews = Object.keys(BigCalendar.Views).map(k => BigCalendar.Views[k]);
 
 const styles = theme => ({
   gridRoot: {
@@ -47,45 +47,18 @@ const styles = theme => ({
     height: '100%',
   },
   paper: {
-    width: '95%',
+    width: '97%',
     height: 1000,
     padding: theme.spacing.unit * 2,
+    margin: theme.spacing.unit * 2,
+  },
+  rbcCalendar: {
+    height: '97%',
   },
   media: {
     height: 140,
   },
 });
-
-const styleEvent = {
-  flex: 1,
-  left: 0,
-  fontSize: 10,
-}
-
-class MyCustomEvent extends Component {
-  render() {
-    const { event } = this.props;
-    return (
-      <span style={styleEvent}>
-        <p>{event.title}</p>
-      </span>
-    )
-  }
-}
-
-const eventPropGetter = (event) => {
-  return {
-    className: 'eventCustom',
-    style: {
-      flex: 1,
-      left: 0,
-      color: 'green',
-      margin: 0,
-      padding: 10,
-      backgroundColor: '#ffaacc',
-    },
-  }
-}
 
 class AdminPage extends Component {
   constructor(props) {
@@ -113,9 +86,8 @@ class AdminPage extends Component {
           const crenauItem = {
             id: item._id,
             title: `${item.centre} - ${item.inspecteur}`,
-            start: moment(item.date).local().toDate(),
-            end: moment(item.date).add(30, 'minutes').local()
-              .toDate(),
+            start: moment(moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss')).toDate(),
+            end: moment(moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss')).add(30, 'minutes').toDate(),
           };
           eventsCreneaux.push(crenauItem);
         });
@@ -230,17 +202,18 @@ class AdminPage extends Component {
                 calendar
               </Typography>
               <BigCalendar
+                className={classes.rbcCalendar}
                 messages={messages}
                 selectable
                 events={eventsCreneaux}
                 localizer={localizer}
-                views={allViews}
+                views={{ month: true, week: true, day: true }}
                 step={30}
                 startAccessor="start"
                 endAccessor="end"
                 onSelectEvent={event => alert(`${event.title} : ${event.start}`)}
                 components={{
-                  event: MyCustomEvent,
+                  event: CreneauEvent,
                 }}
               />
 
@@ -249,35 +222,35 @@ class AdminPage extends Component {
         </Grid>
         {
           success &&
-          <Snackbar
-            open={open}
-            autoHideDuration={8000}
-            onClose={this.handleClose}
-            className={classes.snackbar}
-          >
-            <SnackbarNotification
+            <Snackbar
+              open={open}
+              autoHideDuration={8000}
               onClose={this.handleClose}
-              variant="success"
-              className={classes.snackbarContent}
-              message={snackBarMessage}
-            />
-          </Snackbar>
+              className={classes.snackbar}
+            >
+              <SnackbarNotification
+                onClose={this.handleClose}
+                variant="success"
+                className={classes.snackbarContent}
+                message={snackBarMessage}
+              />
+            </Snackbar>
         }
         {
           !success &&
-          <Snackbar
-            open={open}
-            autoHideDuration={8000}
-            onClose={this.handleClose}
-            className={classes.snackbar}
-          >
-            <SnackbarNotification
+            <Snackbar
+              open={open}
+              autoHideDuration={8000}
               onClose={this.handleClose}
-              variant="error"
-              className={classes.snackbarContent}
-              message={snackBarMessage}
-            />
-          </Snackbar>
+              className={classes.snackbar}
+            >
+              <SnackbarNotification
+                onClose={this.handleClose}
+                variant="error"
+                className={classes.snackbarContent}
+                message={snackBarMessage}
+              />
+            </Snackbar>
         }
       </Grid >
     );

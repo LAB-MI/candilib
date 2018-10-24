@@ -10,10 +10,6 @@ const sendMailToAccount = (candidatAurige, flag) => {
     host: mailConfig.smtpServer,
     port: mailConfig.smtpPort,
     secure: false,
-    auth: {
-      user: mailConfig.mailUser,
-      pass: mailConfig.mailPassword,
-    },
     tls: {
         // do not failed with selfsign certificates
         rejectUnauthorized: false

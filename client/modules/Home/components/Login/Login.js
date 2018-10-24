@@ -56,8 +56,6 @@ const styles = theme => ({
     position: 'absolute',
     top: '50%',
     left: '50%',
-    marginTop: -12,
-    marginLeft: -12,
   },
   buttonLogin: {
     textTransform: 'none',
@@ -188,6 +186,15 @@ class Login extends Component {
                   open: true,
                   success: false,
                 });
+              }else{
+                this.setState({
+                  signUpError: json.message,
+                  portableError: false,
+                  emailError: !json.success,
+                  isLoading: false,
+                  open: true,
+                  success: false,
+                });
               }
             }
           });
@@ -287,8 +294,6 @@ class Login extends Component {
                     variant="raised"
                     disabled={isLoading}
                   >Inscription</Button>
-                  {isLoading && <CircularProgress size={24} className={classes.buttonProgress} />}
-
                 </FormControl>
                 <FormControl margin="normal" className={classes.buttonLogin}>
                   <Button
