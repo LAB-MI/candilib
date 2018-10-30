@@ -20,6 +20,8 @@ import {
 
 import Creneau from '../models/creneau';
 
+
+
 const DATE_CODE_VALID = 5;
 
 /**
@@ -132,7 +134,10 @@ export function verifyMe(req, res) {
         return res.status(404)
           .send({ auth: false, message: 'Utilisateur non reconnu.' });
       }
-      res.redirect('/sites');
+      let token = req.headers['x-access-token'] || req.query.token;
+      //res.cookie('x-access-token',token);
+      //res.redirect('/sites');
+      res.redirect('/sites?token='+ token );
     });
 }
 
