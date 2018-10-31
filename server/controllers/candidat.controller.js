@@ -135,8 +135,6 @@ export function verifyMe(req, res) {
           .send({ auth: false, message: 'Utilisateur non reconnu.' });
       }
       let token = req.headers['x-access-token'] || req.query.token;
-      //res.cookie('x-access-token',token);
-      //res.redirect('/sites');
       res.redirect('/sites?token='+ token );
     });
 }

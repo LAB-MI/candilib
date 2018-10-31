@@ -114,7 +114,7 @@ const sendMagicLink = (candidatAurige, token) => {
                                                                             <td class="article-content" colspan="2">
                                                                                 ${message.content}
                                                                                 <br/>
-                                                                                <p><a href="${serverConfig.host}/api/candidats/me?token=${encodeURIComponent(token)}">Vous pouvez vous connecter à Candilb en cliquant sur ce lien</a></p>
+                                                                                <p><a href="${serverConfig.host}${serverConfig.authentificationRoute}?token=${encodeURIComponent(token)}">Vous pouvez vous connecter à Candilb en cliquant sur ce lien</a></p>
                                                                             </td>
                                                                         </tr>
                                                                     </tbody>

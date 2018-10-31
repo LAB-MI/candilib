@@ -4,6 +4,7 @@ import { Route, IndexRoute } from 'react-router';
 import App from './modules/App/App';
 import PrivateRoute from './util/PrivateRoute';
 import AdminPage from './modules/Admin/pages/AdminPage/AdminPage';
+import Auth from './modules/Auth/Auth';
 
 
 // require.ensure polyfill for node
@@ -44,9 +45,14 @@ export default (
         });
       }}
     />
-    <Route
+    <PrivateRoute
       path="/admin"
       component={AdminPage}
     />
+    <Route 
+      path="/auth"
+      component={Auth}
+    />
+
   </Route>
 );

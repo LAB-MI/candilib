@@ -49,6 +49,7 @@ import routes from '../client/routes';
 import { fetchComponentData } from './util/fetchData';
 import candidats from './routes/candidats.routes';
 import creneaux from './routes/creneaux.routes';
+import users from './routes/users.routes';
 
 import serverConfig from './config';
 import verifyToken from './util/verifyToken';
@@ -73,6 +74,7 @@ app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
 app.use(fileUpload());
 app.use(Express.static(path.resolve(__dirname, '../dist/client')));
+app.use('/api', users );
 app.use('/api', verifyToken, candidats);
 app.use('/api', verifyToken, creneaux);
 
@@ -144,14 +146,11 @@ app.use((req, res, next) => {
                                                                               && renderProps != undefined 
                                                                               && renderProps.location != undefined 
                                                                               && child.type.name === "PrivateRoute" 
-                                                                              && child.props.path === renderProps.location.pathname) });
-
-     if(childrenPrivateRoute != undefined){
-      let response = verifyToken(req, undefined, (response) => { return response;} )
-      if(response !=undefined && (response.status === 403 || response.status === 500)) {
-         return res.redirect(302, "/") 
-      };
-     }
+                                                                              && child.props.path === renderProps.location.pathname
+                                                                              && "/auth" !== renderProps.location.pathname) });
+      if(childrenPrivateRoute != undefined){
+        return res.redirect(302,"/auth?redirect="+ renderProps.location.pathname  );
+      }
     }
 
     const store = configureStore();
