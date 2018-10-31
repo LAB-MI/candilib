@@ -4,7 +4,7 @@ const config = {
   host: process.env.HOST || 'http://localhost:8000',
   secret: process.env.SECRET || 'secret',
   fastAccessApi : process.env.FAST_ACCESS_API || false,
-  smtpServer: '10.237.5.29',
+  smtpServer: '<smtp_server>',
   smtpPort: 25,
   mailUser: '<user>',
   mailPassword: '<passwd>',
