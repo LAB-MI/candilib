@@ -49,6 +49,7 @@ import routes from '../client/routes';
 import { fetchComponentData } from './util/fetchData';
 import candidats from './routes/candidats.routes';
 import creneaux from './routes/creneaux.routes';
+import users from './routes/users.routes';
 
 import serverConfig from './config';
 import verifyToken from './util/verifyToken';
@@ -73,6 +74,7 @@ app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
 app.use(fileUpload());
 app.use(Express.static(path.resolve(__dirname, '../dist/client')));
+app.use('/api', users );
 app.use('/api', verifyToken, candidats);
 app.use('/api', verifyToken, creneaux);
 
@@ -124,6 +126,7 @@ const renderError = err => {
 // Server Side Rendering based on routes matched by React-router.
 app.use((req, res, next) => {
   match({ routes, location: req.url }, (err, redirectLocation, renderProps) => {
+
     if (err) {
       return res.status(500).end(renderError(err));
     }
@@ -134,6 +137,20 @@ app.use((req, res, next) => {
 
     if (!renderProps) {
       return next();
+    }
+
+    //PrivateRoute 
+    if("object" === typeof routes.props.children){
+     let childrenPrivateRoute = routes.props.children.find(child => { return ( child.type!=undefined 
+                                                                              && child.props != undefined 
+                                                                              && renderProps != undefined 
+                                                                              && renderProps.location != undefined 
+                                                                              && child.type.name === "PrivateRoute" 
+                                                                              && child.props.path === renderProps.location.pathname
+                                                                              && "/auth" !== renderProps.location.pathname) });
+      if(childrenPrivateRoute != undefined){
+        return res.redirect(302,"/auth?redirect="+ renderProps.location.pathname  );
+      }
     }
 
     const store = configureStore();

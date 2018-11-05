@@ -149,7 +149,7 @@ class Login extends Component {
           .then(res => res.json())
           .then(json => {
             if (json.success) {
-              setInStorage('candilib', json.token);
+
               this.setState({
                 signUpError: json.message,
                 isLoading: false,

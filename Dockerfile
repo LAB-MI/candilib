@@ -1,9 +1,23 @@
 FROM node:8 as base
+ARG proxy
+ARG npm_registry
+# ARG sass_registry
+ARG no_proxy
+
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 EXPOSE 8000
 
-RUN npm install pm2 -g
+RUN if [ ! -z "$proxy" ] ; then \
+        npm config delete proxy; \
+        npm config set proxy $proxy; \
+        npm config set https-proxy $proxy ; \
+        npm config set no-proxy $no_proxy; \
+   fi ; \
+   [ -z "$npm_registry" ] || npm config set registry=$npm_registry ; \
+    npm install pm2 -g
+
+#RUN npm install pm2 -g
 
 FROM base as development
 ENV NODE_ENV development
@@ -15,6 +29,7 @@ RUN if [ ! -z "$proxy" ] ; then \
    fi ; \
    [ -z "$npm_registry" ] || npm config set registry=$npm_registry ; \
     npm install
+
 COPY .babelrc index.js nodemon.json webpack.config.babel.js webpack.config.dev.js webpack.config.prod.js webpack.config.server.js ./
 COPY client ./client
 COPY Intl ./Intl

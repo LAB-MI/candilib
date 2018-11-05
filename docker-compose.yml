@@ -7,6 +7,8 @@ services:
       target: development
       args: 
           proxy: ${http_proxy}
+          npm_registry: ${NPM_REGISTRY}
+          no_proxy: ${no_proxy} 
     depends_on:
       - db
     ports:

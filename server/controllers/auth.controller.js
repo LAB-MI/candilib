@@ -119,3 +119,20 @@ export function login(req, res) {
     });
 }
 
+
+export function validateToken(req, res){
+
+  const token = req.headers['x-access-token'] || req.query.token;
+  if (!token) {
+      return res.status(403)
+      .send({  message: 'Pas de Token ' });
+  }
+
+  jwt.verify(token, serverConfig.secret, (err, decoded) => {
+    if (err) {
+        return res.status(200)
+          .send({ isTokenValid:false  });
+    }
+    res.status(200).send({isTokenValid:true});
+  });
+}
