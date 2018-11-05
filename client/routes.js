@@ -6,7 +6,6 @@ import PrivateRoute from './util/PrivateRoute';
 import AdminPage from './modules/Admin/pages/AdminPage/AdminPage';
 import Auth from './modules/Auth/Auth';
 
-
 // require.ensure polyfill for node
 if (typeof require.ensure !== 'function') {
   require.ensure = function requireModule(deps, callback) {
@@ -41,18 +40,14 @@ export default (
       path="/sites"
       getComponent={(nextState, cb) => {
         require.ensure([], require => {
-          cb(null, require('./modules/Sites/pages/SiteListPage/SiteListPage').default);
+          cb(
+            null,
+            require('./modules/Sites/pages/SiteListPage/SiteListPage').default,
+          );
         });
       }}
     />
-    <PrivateRoute
-      path="/admin"
-      component={AdminPage}
-    />
-    <Route 
-      path="/auth"
-      component={Auth}
-    />
-
+    <PrivateRoute path="/admin" component={AdminPage} />
+    <Route path="/auth" component={Auth} />
   </Route>
 );

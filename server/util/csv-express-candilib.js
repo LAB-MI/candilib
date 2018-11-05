@@ -6,7 +6,6 @@
   MIT Licensed
  */
 
-
 const res = require('http').ServerResponse.prototype;
 const iconv = require('iconv-lite');
 
@@ -42,7 +41,13 @@ function escape(field) {
  {status} - Optional status code
 */
 
-export default res.csv = function (data, charset, csvHeaders, headers, status) {
+export default (res.csv = function sendCsv(
+  data,
+  charset,
+  csvHeaders,
+  headers,
+  status,
+) {
   let body = '';
   const headerRow = [];
   let statusCodeSet = true;
@@ -54,7 +59,7 @@ export default res.csv = function (data, charset, csvHeaders, headers, status) {
   if (headers && headers instanceof Object) {
     // Use res.header() instead of res.set() to maintain backward compatibility with Express 2
     // Change to res.set() in next major version so that iteration is not required
-    Object.keys(headers).forEach((header) => {
+    Object.keys(headers).forEach(header => {
       this.header(header, headers[header]);
     });
   }
@@ -70,7 +75,7 @@ export default res.csv = function (data, charset, csvHeaders, headers, status) {
   }
 
   // headerRow is used to ensure key order
-  Object.keys(data[0]).map((prop) => {
+  Object.keys(data[0]).map(prop => {
     if (data[0].hasOwnProperty(prop)) {
       headerRow.push(prop);
     }
@@ -84,7 +89,7 @@ export default res.csv = function (data, charset, csvHeaders, headers, status) {
   // Convert the data to a CSV-like structure
   for (let i = 0; i < data.length; i++) {
     if (!(data[i] instanceof Array)) {
-      data[i] = headerRow.map((key) => {
+      data[i] = headerRow.map(key => {
         if (data[i].hasOwnProperty(key)) {
           return data[i][key];
         }
@@ -104,4 +109,4 @@ export default res.csv = function (data, charset, csvHeaders, headers, status) {
   }
 
   return this.send(body);
-};
+});

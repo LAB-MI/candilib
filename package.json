@@ -19,6 +19,7 @@
     "import:csv": "mongoimport --db candilib --collection candidats --type csv --file candilib_iso.csv --headerline"
   },
   "pre-commit": [
+    "lint",
     "test"
   ],
   "repository": {

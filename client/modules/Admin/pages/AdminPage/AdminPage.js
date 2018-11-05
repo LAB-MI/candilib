@@ -27,7 +27,7 @@ const messages = {
   allDay: 'journée',
   previous: 'précédent',
   next: 'suivant',
-  today: 'aujourd\'hui',
+  today: "aujourd'hui",
   month: 'mois',
   week: 'semaine',
   work_week: 'semaine de travail',
@@ -78,16 +78,20 @@ class AdminPage extends Component {
   componentDidMount() {
     fetch('/api/creneaux', {
       method: 'GET',
-    }).then((response) => {
-      response.json().then((body) => {
+    }).then(response => {
+      response.json().then(body => {
         const eventsCreneaux = [];
         const { creneaux } = body;
-        creneaux.map((item) => {
+        creneaux.map(item => {
           const crenauItem = {
             id: item._id,
             title: `${item.centre} - ${item.inspecteur}`,
-            start: moment(moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss')).toDate(),
-            end: moment(moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss')).add(30, 'minutes').toDate(),
+            start: moment(
+              moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss'),
+            ).toDate(),
+            end: moment(moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss'))
+              .add(30, 'minutes')
+              .toDate(),
           };
           eventsCreneaux.push(crenauItem);
         });
@@ -106,9 +110,13 @@ class AdminPage extends Component {
     fetch('/api/candidats/upload/csv', {
       method: 'POST',
       body: data,
-    }).then((response) => {
-      response.json().then((body) => {
-        this.setState({ success: true, open: true, snackBarMessage: `${body.name} a été télécharger.` });
+    }).then(response => {
+      response.json().then(body => {
+        this.setState({
+          success: true,
+          open: true,
+          snackBarMessage: `${body.name} a été télécharger.`,
+        });
         window.location.reload();
       });
     });
@@ -125,7 +133,14 @@ class AdminPage extends Component {
       body: data,
     })
       .then(response => response.json())
-      .then(json => this.setState({ success: json.success, open: true, snackBarMessage: json.message, fileName: json.fileName }));
+      .then(json =>
+        this.setState({
+          success: json.success,
+          open: true,
+          snackBarMessage: json.message,
+          fileName: json.fileName,
+        }),
+      );
   }
 
   handleClose = () => {
@@ -135,13 +150,18 @@ class AdminPage extends Component {
   handleDownLoadCSV(ev) {
     ev.preventDefault();
 
-    fetch('/api/candidats/export')
-      .then(response => window.open(response.body));
+    fetch('/api/candidats/export').then(response => window.open(response.body));
   }
 
   render() {
     const { classes } = this.props;
-    const { success, snackBarMessage, open, fileName, eventsCreneaux } = this.state;
+    const {
+      success,
+      snackBarMessage,
+      open,
+      fileName,
+      eventsCreneaux,
+    } = this.state;
 
     return (
       <Grid container className={classes.gridRoot} spacing={16}>
@@ -149,24 +169,31 @@ class AdminPage extends Component {
           <Card className={classes.card}>
             <CardContent>
               <form onSubmit={this.handleUploadJSON}>
-                <FormControl margin="normal" required >
+                <FormControl margin="normal" required>
                   <InputLabel htmlFor="jsonFile">JSON Aurige</InputLabel>
-                  <Input type="file" name="jsonFile" accept=".json" inputRef={(ref) => { this.uploadInputJSON = ref; }} encType="multipart/form-data" autoFocus />
+                  <Input
+                    type="file"
+                    name="jsonFile"
+                    accept=".json"
+                    inputRef={ref => {
+                      this.uploadInputJSON = ref;
+                    }}
+                    encType="multipart/form-data"
+                    autoFocus
+                  />
                 </FormControl>
 
-                <FormControl margin="normal" required >
-                  <Button
-                    type="submit"
-                    color="primary"
-                    variant="raised"
-                  >Synchronisation JSON Aurige</Button>
+                <FormControl margin="normal" required>
+                  <Button type="submit" color="primary" variant="raised">
+                    Synchronisation JSON Aurige
+                  </Button>
                 </FormControl>
               </form>
-              {success !== '' &&
+              {success !== '' && (
                 <Typography variant="subheading" align="center">
                   Synchronisation {fileName} effectué.
-                </Typography>}
-
+                </Typography>
+              )}
             </CardContent>
             <CardContent>
               <Button
@@ -174,7 +201,9 @@ class AdminPage extends Component {
                 color="primary"
                 variant="raised"
                 href="/api/candidats/export"
-              >Export CSV</Button>
+              >
+                Export CSV
+              </Button>
             </CardContent>
           </Card>
         </Grid>
@@ -182,17 +211,22 @@ class AdminPage extends Component {
           <Card className={classes.card}>
             <CardContent>
               <form onSubmit={this.handleUploadCSV}>
-                <FormControl margin="normal" required >
+                <FormControl margin="normal" required>
                   <InputLabel htmlFor="csvFile">CSV Candilib</InputLabel>
-                  <Input type="file" name="csvFile" inputRef={(ref) => { this.uploadInputCVS = ref; }} autoFocus />
+                  <Input
+                    type="file"
+                    name="csvFile"
+                    inputRef={ref => {
+                      this.uploadInputCVS = ref;
+                    }}
+                    autoFocus
+                  />
                 </FormControl>
 
-                <FormControl margin="normal" required >
-                  <Button
-                    type="submit"
-                    color="primary"
-                    variant="raised"
-                  >Chargement CSV Candilib</Button>
+                <FormControl margin="normal" required>
+                  <Button type="submit" color="primary" variant="raised">
+                    Chargement CSV Candilib
+                  </Button>
                 </FormControl>
               </form>
             </CardContent>
@@ -211,48 +245,47 @@ class AdminPage extends Component {
                 step={30}
                 startAccessor="start"
                 endAccessor="end"
-                onSelectEvent={event => alert(`${event.title} : ${event.start}`)}
+                onSelectEvent={
+                  event => alert(`${event.title} : ${event.start}`) // eslint-disable-line no-alert
+                }
                 components={{
                   event: CreneauEvent,
                 }}
               />
-
             </Paper>
           </Card>
         </Grid>
-        {
-          success &&
-            <Snackbar
-              open={open}
-              autoHideDuration={8000}
+        {success && (
+          <Snackbar
+            open={open}
+            autoHideDuration={8000}
+            onClose={this.handleClose}
+            className={classes.snackbar}
+          >
+            <SnackbarNotification
               onClose={this.handleClose}
-              className={classes.snackbar}
-            >
-              <SnackbarNotification
-                onClose={this.handleClose}
-                variant="success"
-                className={classes.snackbarContent}
-                message={snackBarMessage}
-              />
-            </Snackbar>
-        }
-        {
-          !success &&
-            <Snackbar
-              open={open}
-              autoHideDuration={8000}
+              variant="success"
+              className={classes.snackbarContent}
+              message={snackBarMessage}
+            />
+          </Snackbar>
+        )}
+        {!success && (
+          <Snackbar
+            open={open}
+            autoHideDuration={8000}
+            onClose={this.handleClose}
+            className={classes.snackbar}
+          >
+            <SnackbarNotification
               onClose={this.handleClose}
-              className={classes.snackbar}
-            >
-              <SnackbarNotification
-                onClose={this.handleClose}
-                variant="error"
-                className={classes.snackbarContent}
-                message={snackBarMessage}
-              />
-            </Snackbar>
-        }
-      </Grid >
+              variant="error"
+              className={classes.snackbarContent}
+              message={snackBarMessage}
+            />
+          </Snackbar>
+        )}
+      </Grid>
     );
   }
 }

@@ -6,15 +6,17 @@ import mailConfig from '../config';
 const sendMailToAccount = (candidatAurige, flag) => {
   const message = mailMessage(candidatAurige, flag);
 
-  const transporter = nodemailer.createTransport(smtpTransport({
-    host: mailConfig.smtpServer,
-    port: mailConfig.smtpPort,
-    secure: false,
-    tls: {
+  const transporter = nodemailer.createTransport(
+    smtpTransport({
+      host: mailConfig.smtpServer,
+      port: mailConfig.smtpPort,
+      secure: false,
+      tls: {
         // do not failed with selfsign certificates
-        rejectUnauthorized: false
-    }
-  }));
+        rejectUnauthorized: false,
+      },
+    }),
+  );
 
   const mailOptions = {
     from: mailConfig.mailFrom,
@@ -103,7 +105,9 @@ const sendMailToAccount = (candidatAurige, flag) => {
                                                                         </tr>
                                                                         <tr>
                                                                             <td class="article-content" colspan="2">
-                                                                                ${message.content}
+                                                                                ${
+                                                                                  message.content
+                                                                                }
                                                                             </td>
                                                                         </tr>
                                                                     </tbody>
@@ -165,8 +169,7 @@ const sendMailToAccount = (candidatAurige, flag) => {
     if (err) {
       console.log(err); // eslint-disable-line no-console
     } else {
-      console.log("Mail sent: " + info.response);
-      socketTimeout: 30*1000 // 30s timeout
+      console.log('Mail sent: ' + info.response);
       transporter.close();
     }
     transporter.close();
