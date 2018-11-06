@@ -20,8 +20,6 @@ import {
 
 import Creneau from '../models/creneau';
 
-
-
 const DATE_CODE_VALID = 5;
 
 /**
@@ -31,160 +29,154 @@ const DATE_CODE_VALID = 5;
  * @returns void
  */
 export function signUp(req, res) {
-  const {
-    body,
-  } = req;
+  const { body } = req;
 
-  const {
-    nom,
-    neph,
-    email,
-    prenom,
-    portable,
-    adresse,
-  } = body;
+  const { nom, neph, email, prenom, portable, adresse } = body;
 
   if (!email) {
-    return res.status(403)
-      .send({
-        success: false,
-        message: 'Error: Email ne doit pas être vide.',
-      });
+    return res.status(403).send({
+      success: false,
+      message: 'Error: Email ne doit pas être vide.',
+    });
   }
   // Steps:
   // 1. Verify neph and mail doesn't exist
   // 2. Save
 
-  Candidat.find({
-    email,
-    portable,
-  }, (err, previousUsers) => {
-    if (err) {
-      return res.status(500)
-        .send({
+  Candidat.find(
+    {
+      email,
+      portable,
+    },
+    (err, previousUsers) => {
+      if (err) {
+        return res.status(500).send({
           success: false,
           message: 'Error: Server error',
         });
-    } else if (previousUsers.length > 0) {
-      return res.status(422)
-        .send({
+      } else if (previousUsers.length > 0) {
+        return res.status(422).send({
           success: false,
           message: 'Error: Candidat déjà existant',
         });
-    }
+      }
 
-    // Save the new user
-    const newCandidat = new Candidat();
+      // Save the new user
+      const newCandidat = new Candidat();
 
-    // Let's sanitize inputs
-    newCandidat.nomNaissance = sanitizeHtml(nom);
-    // see https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
-    newCandidat.prenom = sanitizeHtml(prenom.normalize('NFD').replace(/[\u0300-\u036f]/g, ''));
-    newCandidat.codeNeph = neph;
-    newCandidat.dateReussiteETG = null;
-    newCandidat.dateDernierEchecPratique = null;
-    newCandidat.reussitePratique = null;
-    newCandidat.portable = sanitizeHtml(portable);
-    newCandidat.adresse = sanitizeHtml(adresse);
-    newCandidat.email = sanitizeHtml(email);
-    newCandidat.isValid = false;
+      // Let's sanitize inputs
+      newCandidat.nomNaissance = sanitizeHtml(nom);
+      // see https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
+      newCandidat.prenom = sanitizeHtml(
+        prenom.normalize('NFD').replace(/[\u0300-\u036f]/g, ''),
+      );
+      newCandidat.codeNeph = neph;
+      newCandidat.dateReussiteETG = null;
+      newCandidat.dateDernierEchecPratique = null;
+      newCandidat.reussitePratique = null;
+      newCandidat.portable = sanitizeHtml(portable);
+      newCandidat.adresse = sanitizeHtml(adresse);
+      newCandidat.email = sanitizeHtml(email);
+      newCandidat.isValid = false;
 
-    newCandidat.save((error, candidat) => {
-      if (error) {
-        return res.status(500)
-          .send({
+      newCandidat.save((error, candidat) => {
+        if (error) {
+          return res.status(500).send({
             success: false,
             message: error.message,
           });
-      }
+        }
 
-      sendMailToAccount(candidat, INSCRIPTION_OK);
+        sendMailToAccount(candidat, INSCRIPTION_OK);
 
-      const token = jwt.sign(
-        {
-          id: candidat._id,
-        },
-        serverConfig.secret,
-        {
-          expiresIn: 86400,
-        },
-      );
+        const token = jwt.sign(
+          {
+            id: candidat._id,
+          },
+          serverConfig.secret,
+          {
+            expiresIn: 86400,
+          },
+        );
 
-      return res.status(200)
-        .send({
+        return res.status(200).send({
           success: true,
-          message: 'Votre demande a été prise en compte, veuillez consulter votre messagerie (pensez à vérifier dans vos courriers indésirables).',
+          message:
+            'Votre demande a été prise en compte, veuillez consulter votre messagerie (pensez à vérifier dans vos courriers indésirables).',
           candidat,
           auth: true,
           token,
         });
-    });
+      });
+    },
+  );
+}
+
+export function verifyMe(req, res) {
+  Candidat.findById(req.userId, (err, user) => {
+    if (err) {
+      return res.status(500).send({
+        auth: false,
+        message: 'Problème pour retrouver cet utilisateur .',
+      });
+    }
+    if (!user) {
+      return res
+        .status(404)
+        .send({ auth: false, message: 'Utilisateur non reconnu.' });
+    }
+    const token = req.headers['x-access-token'] || req.query.token;
+    res.redirect('/sites?token=' + token);
   });
 }
 
-
-export function verifyMe(req, res) {
-  Candidat.findById(req.userId,
-    (err, user) => {
-      if (err) {
-        return res.status(500)
-          .send({ auth: false, message: 'Problème pour retrouver cet utilisateur .' });
-      }
-      if (!user) {
-        return res.status(404)
-          .send({ auth: false, message: 'Utilisateur non reconnu.' });
-      }
-      let token = req.headers['x-access-token'] || req.query.token;
-      res.redirect('/sites?token='+ token );
-    });
-}
-
 export function login(req, res) {
-  const {
-    email,
-  } = req.body;
+  const { email } = req.body;
 
-  Candidat.findOne({ email },
-    (err, user) => {
-      if (err) {
-        return res.status(500)
-          .send({ auth: false, message: 'Erreur serveur.' });
-      }
+  Candidat.findOne({ email }, (err, user) => {
+    if (err) {
+      return res.status(500).send({ auth: false, message: 'Erreur serveur.' });
+    }
 
-      if (!user) {
-        return res.status(404)
-          .send({ auth: false, message: 'Utilisateur non reconnu.' });
-      }
+    if (!user) {
+      return res
+        .status(404)
+        .send({ auth: false, message: 'Utilisateur non reconnu.' });
+    }
 
-      const emailIsValid = email === user.email;
+    const emailIsValid = email === user.email;
 
-      if (!emailIsValid) {
-        return res.status(401)
-          .send({ auth: false, token: null });
-      }
+    if (!emailIsValid) {
+      return res.status(401).send({ auth: false, token: null });
+    }
 
-      if (!user.isValid) {
-        return res.status(401)
-          .send({ auth: false, token: null, message: 'Utiliseur en attente de validation.' });
-      }
-
-      const token = jwt.sign(
-        {
-          id: user._id,
-        },
-        serverConfig.secret,
-        {
-          expiresIn: '7d',
-        },
-      );
-
-      sendMagicLink(user, token);
-
-      return res.status(200).send({
-        success: true,
-        token, message: 'Veuillez consulter votre boîte mail pour vous connecter (pensez à vérifier dans vos courriers indésirables).',
+    if (!user.isValid) {
+      return res.status(401).send({
+        auth: false,
+        token: null,
+        message: 'Utiliseur en attente de validation.',
       });
+    }
+
+    const token = jwt.sign(
+      {
+        id: user._id,
+      },
+      serverConfig.secret,
+      {
+        expiresIn: '7d',
+      },
+    );
+
+    sendMagicLink(user, token);
+
+    return res.status(200).send({
+      success: true,
+      token,
+      message:
+        'Veuillez consulter votre boîte mail pour vous connecter (pensez à vérifier dans vos courriers indésirables).',
     });
+  });
 }
 
 /**
@@ -198,8 +190,7 @@ export function getCandidats(req, res) {
     .sort('-dateAdded')
     .exec((err, Candidats) => {
       if (err) {
-        res.status(500)
-          .send(err);
+        res.status(500).send(err);
       }
       res.status(200).json(Candidats);
     });
@@ -212,9 +203,12 @@ export function getCandidats(req, res) {
  * @returns void
  */
 export function addCandidat(req, res) {
-  if (!req.body.candidat.nomNaissance || !req.body.candidat.codeNeph || !req.body.candidat.email) {
-    res.status(403)
-      .end();
+  if (
+    !req.body.candidat.nomNaissance ||
+    !req.body.candidat.codeNeph ||
+    !req.body.candidat.email
+  ) {
+    res.status(403).end();
   }
 
   const newCandidat = new Candidat(req.body.candidat);
@@ -226,7 +220,9 @@ export function addCandidat(req, res) {
   newCandidat.codeNeph = sanitizeHtml(newCandidat.codeNeph);
   newCandidat.dateNaissance = sanitizeHtml(newCandidat.dateNaissance);
   newCandidat.dateReussiteETG = sanitizeHtml(newCandidat.dateReussiteETG);
-  newCandidat.dateDernierEchecPratique = sanitizeHtml(newCandidat.dateDernierEchecPratique);
+  newCandidat.dateDernierEchecPratique = sanitizeHtml(
+    newCandidat.dateDernierEchecPratique,
+  );
   newCandidat.reussitePratique = sanitizeHtml(newCandidat.reussitePratique);
   newCandidat.portable = sanitizeHtml(newCandidat.portable);
   newCandidat.adresse = sanitizeHtml(newCandidat.adresse);
@@ -234,11 +230,9 @@ export function addCandidat(req, res) {
 
   newCandidat.save((err, saved) => {
     if (err) {
-      res
-        .send(err);
+      res.send(err);
     }
-    res.status(200)
-      .json({ candidat: saved });
+    res.status(200).json({ candidat: saved });
   });
 }
 
@@ -249,13 +243,12 @@ export function addCandidat(req, res) {
  * @returns void
  */
 export function getCandidat(req, res, next) {
-  Candidat.findOne({ _id: req.params.id })
-    .exec((err, candidat) => {
-      if (err) {
-        next(err);
-      }
-      res.json({ candidat });
-    });
+  Candidat.findOne({ _id: req.params.id }).exec((err, candidat) => {
+    if (err) {
+      next(err);
+    }
+    res.json({ candidat });
+  });
 }
 
 /**
@@ -266,13 +259,12 @@ export function getCandidat(req, res, next) {
  */
 export function getCandidatNeph(req, res, next) {
   const neph = parseInt(req.params.neph, 10);
-  Candidat.find({ codeNeph: neph })
-    .exec((err, candidat) => {
-      if (err) {
-        next(err);
-      }
-      res.json({ candidat });
-    });
+  Candidat.find({ codeNeph: neph }).exec((err, candidat) => {
+    if (err) {
+      next(err);
+    }
+    res.json({ candidat });
+  });
 }
 
 /**
@@ -283,13 +275,18 @@ export function getCandidatNeph(req, res, next) {
  */
 
 export function updateCandidat(req, res, next) {
-  Candidat.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err, user) => {
-    if (err) {
-      next(err);
-    } else {
-      res.json(user);
-    }
-  });
+  Candidat.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true },
+    (err, user) => {
+      if (err) {
+        next(err);
+      } else {
+        res.json(user);
+      }
+    },
+  );
 }
 
 /**
@@ -299,20 +296,16 @@ export function updateCandidat(req, res, next) {
  * @returns void
  */
 export function deleteCandidat(req, res) {
-  Candidat.findOne({ _id: req.params.id })
-    .exec((err, candidat) => {
-      if (err) {
-        res.status(500)
-          .send(err);
-      }
+  Candidat.findOne({ _id: req.params.id }).exec((err, candidat) => {
+    if (err) {
+      res.status(500).send(err);
+    }
 
-      candidat.remove(() => {
-        res.status(200)
-          .end('candidat deleted');
-      });
+    candidat.remove(() => {
+      res.status(200).end('candidat deleted');
     });
+  });
 }
-
 
 /**
  * Delete a Candidat Neph
@@ -321,43 +314,42 @@ export function deleteCandidat(req, res) {
  * @returns void
  */
 export function deleteCandidatNeph(req, res) {
-  Candidat.findOne({ codeNeph: req.params.neph })
-    .exec((err, candidat) => {
-      if (err) {
-        res.status(500)
-          .send(err);
-      }
+  Candidat.findOne({ codeNeph: req.params.neph }).exec((err, candidat) => {
+    if (err) {
+      res.status(500).send(err);
+    }
 
-      candidat.remove(() => {
-        res.status(200)
-          .end('candidat deleted');
-      });
+    candidat.remove(() => {
+      res.status(200).end('candidat deleted');
     });
+  });
 }
-
 
 export function exportToCSV(req, res) {
   const filename = 'candidatsLibresPrintel.csv';
 
-  Candidat.find({}, {
-    _id: 0,
-    email: 1,
-    prenom: 1,
-    nomUsage: 1,
-    nomNaissance: 1,
-    codeNeph: 1,
-  })
+  Candidat.find(
+    {},
+    {
+      _id: 0,
+      email: 1,
+      prenom: 1,
+      nomUsage: 1,
+      nomNaissance: 1,
+      codeNeph: 1,
+    },
+  )
     .lean()
     .exec({}, (err, candidats) => {
       if (err) res.send(err);
       const newData = [];
-      candidats.map((n) => {
+      candidats.map(n => {
         newData.push({
           'Code NEPH': n.codeNeph,
           'Nom de naissance': n.nomNaissance,
-          'Nom d\'usage': n.nomUsage,
-          'Prénom': n.prenom,
-          'email': n.email,
+          "Nom d'usage": n.nomUsage,
+          Prénom: n.prenom,
+          email: n.email,
         });
         return true;
       });
@@ -369,11 +361,10 @@ export function exportToCSV(req, res) {
     });
 }
 
-
 export function destroyAll(req, res) {
-  Candidat.remove({}, (err) => {
+  Candidat.remove({}, err => {
     if (err) {
-      console.log(err); // eslint-disable-line no-console
+      console.warn(err); // eslint-disable-line no-console
     } else {
       res.send(' destroy success');
       res.end();
@@ -381,19 +372,20 @@ export function destroyAll(req, res) {
   });
 }
 
-
-export const epreuveEtgInvalid = (candidatAurige) => {
-  return !moment(candidatAurige.dateReussiteETG).isValid() || candidatAurige.dateReussiteETG === '';
+export const epreuveEtgInvalid = candidatAurige => {
+  return (
+    !moment(candidatAurige.dateReussiteETG).isValid() ||
+    candidatAurige.dateReussiteETG === ''
+  );
 };
 
-
-const synchroAurige = (pathname) => {
+const synchroAurige = pathname => {
   const FileContents = fs.readFileSync(pathname, 'utf8');
   let retourAurige = [];
   try {
     retourAurige = JSON.parse(FileContents);
   } catch (err) {
-    console.log(err); // eslint-disable-line no-console
+    console.warn(err); // eslint-disable-line no-console
   }
 
   Candidat.find({}, (err, candidatsBase) => {
@@ -407,127 +399,170 @@ const synchroAurige = (pathname) => {
         if (candidatCandilib.codeNeph === candidatAurige.codeNeph) {
           // get candidat status before update
           const candidatCandilibStatus = candidatCandilib.isValid;
-          if (candidatAurige.candidatExistant === CANDIDAT_NOK) { // Neph inconnu dans Aurige
+          if (candidatAurige.candidatExistant === CANDIDAT_NOK) {
+            // Neph inconnu dans Aurige
             // Date du code valid
-            Candidat.findOneAndRemove({
-              $or: [
-                {
-                  email: candidatAurige.email,
-                },
-                {
-                  nomNaissance: candidatAurige.nomNaissance,
-                },
-                {
-                  codeNeph: candidatAurige.codeNeph,
-                },
-              ],
-            }, () => {
-              if (err) {
-                console.warn(err);
-              } else {
-                console.dir(`Ce candidat ${candidatAurige.email} a été detruit: NEPH inconnu`); // eslint-disable-line no-console
-                sendMailToAccount(candidatAurige, CANDIDAT_NOK);
-              }
-            });
-          } else if (candidatAurige.candidatExistant === CANDIDAT_NOK_NOM) { // Nom inconnu de Aurige
+            Candidat.findOneAndRemove(
+              {
+                $or: [
+                  {
+                    email: candidatAurige.email,
+                  },
+                  {
+                    nomNaissance: candidatAurige.nomNaissance,
+                  },
+                  {
+                    codeNeph: candidatAurige.codeNeph,
+                  },
+                ],
+              },
+              () => {
+                if (err) {
+                  console.warn(err);
+                } else {
+                  console.warn(
+                    `Ce candidat ${
+                      candidatAurige.email
+                    } a été detruit: NEPH inconnu`,
+                  ); // eslint-disable-line no-console
+                  sendMailToAccount(candidatAurige, CANDIDAT_NOK);
+                }
+              },
+            );
+          } else if (candidatAurige.candidatExistant === CANDIDAT_NOK_NOM) {
+            // Nom inconnu de Aurige
             // Date du code valid
-            Candidat.findOneAndRemove({
-              $or: [
-                {
-                  email: candidatAurige.email,
-                },
-                {
-                  nomNaissance: candidatAurige.nomNaissance,
-                },
-                {
-                  codeNeph: candidatAurige.codeNeph,
-                },
-              ],
-            }, () => {
-              if (err) {
-                console.warn(err);
-              } else {
-                console.dir(`Ce candidat ${candidatAurige.email} a été detruit: Nom inconnu`); // eslint-disable-line no-console
-                sendMailToAccount(candidatAurige, CANDIDAT_NOK_NOM);
-              }
-            });
-          } else if (epreuveEtgInvalid(candidatAurige)) { // check si code invalid
-            Candidat.findOneAndRemove({
-              $or: [
-                {
-                  email: candidatAurige.email,
-                },
-                {
-                  nomNaissance: candidatAurige.nomNaissance,
-                },
-                {
-                  codeNeph: candidatAurige.codeNeph,
-                },
-              ],
-            }, () => {
-              if (err) {
-                console.warn(err);
-              } else {
-                console.dir(`Ce candidat ${candidatAurige.email} a été detruit: ETG KO`); // eslint-disable-line no-console
-                sendMailToAccount(candidatAurige, EPREUVE_ETG_KO);
-              }
-            });
-          } else if (moment().diff(candidatAurige.dateReussiteETG, 'years', true) > DATE_CODE_VALID) { // check si code moins de 5 ans
-            Candidat.findOneAndRemove({
-              $or: [
-                {
-                  email: candidatAurige.email,
-                },
-                {
-                  nomNaissance: candidatAurige.nomNaissance,
-                },
-                {
-                  codeNeph: candidatAurige.codeNeph,
-                },
-              ],
-            }, () => {
-              if (err) {
-                console.warn(err);
-              } else {
-                console.dir(`Ce candidat ${candidatAurige.email} a été detruit: Date ETG KO`); // eslint-disable-line no-console
-                sendMailToAccount(candidatAurige, EPREUVE_ETG_KO);
-              }
-            });
-          } else if (candidatAurige.reussitePratique === EPREUVE_PRATIQUE_OK) { // check si permis obtenu
-            Candidat.findOneAndRemove({
-              $or: [
-                {
-                  email: candidatAurige.email,
-                },
-                {
-                  nomNaissance: candidatAurige.nomNaissance,
-                },
-                {
-                  codeNeph: candidatAurige.codeNeph,
-                },
-              ],
-            }, () => {
-              if (err) {
-                console.warn(err);
-              } else {
-                console.dir(`Ce candidat ${candidatAurige.email} a été detruit: PRATIQUE OK`); // eslint-disable-line no-console
-                sendMailToAccount(candidatAurige, EPREUVE_PRATIQUE_OK);
-              }
-            });
-          } else if (!candidatCandilibStatus) { // Validation d'un nouveaur candidat pour Candilib
+            Candidat.findOneAndRemove(
+              {
+                $or: [
+                  {
+                    email: candidatAurige.email,
+                  },
+                  {
+                    nomNaissance: candidatAurige.nomNaissance,
+                  },
+                  {
+                    codeNeph: candidatAurige.codeNeph,
+                  },
+                ],
+              },
+              () => {
+                if (err) {
+                  console.warn(err);
+                } else {
+                  console.warn(
+                    `Ce candidat ${
+                      candidatAurige.email
+                    } a été detruit: Nom inconnu`,
+                  ); // eslint-disable-line no-console
+                  sendMailToAccount(candidatAurige, CANDIDAT_NOK_NOM);
+                }
+              },
+            );
+          } else if (epreuveEtgInvalid(candidatAurige)) {
+            // check si code invalid
+            Candidat.findOneAndRemove(
+              {
+                $or: [
+                  {
+                    email: candidatAurige.email,
+                  },
+                  {
+                    nomNaissance: candidatAurige.nomNaissance,
+                  },
+                  {
+                    codeNeph: candidatAurige.codeNeph,
+                  },
+                ],
+              },
+              () => {
+                if (err) {
+                  console.warn(err);
+                } else {
+                  console.warn(
+                    `Ce candidat ${candidatAurige.email} a été detruit: ETG KO`,
+                  ); // eslint-disable-line no-console
+                  sendMailToAccount(candidatAurige, EPREUVE_ETG_KO);
+                }
+              },
+            );
+          } else if (
+            moment().diff(candidatAurige.dateReussiteETG, 'years', true) >
+            DATE_CODE_VALID
+          ) {
+            // check si code moins de 5 ans
+            Candidat.findOneAndRemove(
+              {
+                $or: [
+                  {
+                    email: candidatAurige.email,
+                  },
+                  {
+                    nomNaissance: candidatAurige.nomNaissance,
+                  },
+                  {
+                    codeNeph: candidatAurige.codeNeph,
+                  },
+                ],
+              },
+              () => {
+                if (err) {
+                  console.warn(err);
+                } else {
+                  console.warn(
+                    `Ce candidat ${
+                      candidatAurige.email
+                    } a été detruit: Date ETG KO`,
+                  ); // eslint-disable-line no-console
+                  sendMailToAccount(candidatAurige, EPREUVE_ETG_KO);
+                }
+              },
+            );
+          } else if (candidatAurige.reussitePratique === EPREUVE_PRATIQUE_OK) {
+            // check si permis obtenu
+            Candidat.findOneAndRemove(
+              {
+                $or: [
+                  {
+                    email: candidatAurige.email,
+                  },
+                  {
+                    nomNaissance: candidatAurige.nomNaissance,
+                  },
+                  {
+                    codeNeph: candidatAurige.codeNeph,
+                  },
+                ],
+              },
+              () => {
+                if (err) {
+                  console.warn(err);
+                } else {
+                  console.warn(
+                    `Ce candidat ${
+                      candidatAurige.email
+                    } a été detruit: PRATIQUE OK`,
+                  ); // eslint-disable-line no-console
+                  sendMailToAccount(candidatAurige, EPREUVE_PRATIQUE_OK);
+                }
+              },
+            );
+          } else if (!candidatCandilibStatus) {
+            // Validation d'un nouveaur candidat pour Candilib
             Candidat.update(
               { email: candidatAurige.email },
               {
                 $set: {
                   isValid: true,
                   dateReussiteETG: candidatAurige.dateReussiteETG,
-                  dateDernierEchecPratique: candidatAurige.dateDernierEchecPratique,
+                  dateDernierEchecPratique:
+                    candidatAurige.dateDernierEchecPratique,
                   reussitePratique: candidatAurige.reussitePratique,
                 },
               },
               () => {
                 if (err) {
-                  console.warn(err.message);  // eslint-disable-line no-console
+                  console.warn(err.message); // eslint-disable-line no-console
                 } else {
                   const token = jwt.sign(
                     {
@@ -538,28 +573,34 @@ const synchroAurige = (pathname) => {
                       expiresIn: 86400,
                     },
                   );
-                  console.dir(`Ce candidat ${candidatAurige.email} a été validé`); // eslint-disable-line no-console
+                  console.warn(
+                    `Ce candidat ${candidatAurige.email} a été validé`,
+                  ); // eslint-disable-line no-console
                   sendMagicLink(candidatCandilib, token);
                 }
-              }
+              },
             );
-          } else if (candidatCandilibStatus) { // mise à jour candidat existant
+          } else if (candidatCandilibStatus) {
+            // mise à jour candidat existant
             Candidat.update(
               { email: candidatAurige.email },
               {
                 $set: {
                   dateReussiteETG: candidatAurige.dateReussiteETG,
-                  dateDernierEchecPratique: candidatAurige.dateDernierEchecPratique,
+                  dateDernierEchecPratique:
+                    candidatAurige.dateDernierEchecPratique,
                   reussitePratique: candidatAurige.reussitePratique,
                 },
               },
               () => {
                 if (err) {
-                  console.warn(err.message);  // eslint-disable-line no-console
+                  console.warn(err.message); // eslint-disable-line no-console
                 } else {
-                  console.dir(`Ce candidat ${candidatAurige.email} a été mis à jour`); // eslint-disable-line no-console
+                  console.warn(
+                    `Ce candidat ${candidatAurige.email} a été mis à jour`,
+                  ); // eslint-disable-line no-console
                 }
-              }
+              },
             );
           }
         }
@@ -568,93 +609,96 @@ const synchroAurige = (pathname) => {
   });
 };
 
-
 export function purgePermisOk(req, res) {
-  Candidat.find({
-    reussitePratique: 'OK',
-  }, (err, candidats) => {
-    if (err) {
-      console.log(err); // eslint-disable-line no-console
-    } else {
-      candidats.map((c) => {
-        Candidat.findOne({ _id: c._id })
-          .exec((error, cand) => {
+  Candidat.find(
+    {
+      reussitePratique: 'OK',
+    },
+    (err, candidats) => {
+      if (err) {
+        console.warn(err); // eslint-disable-line no-console
+      } else {
+        candidats.map(c => {
+          Candidat.findOne({ _id: c._id }).exec((error, cand) => {
             if (error) {
-              res
-                .send(error);
+              res.send(error);
             }
             cand.remove(() => {
-              res.status(200)
-                .end();
+              res.status(200).end();
             });
           });
-      });
-    }
-  });
+        });
+      }
+    },
+  );
 }
 
 export const uploadAurigeCSV = (req, res) => {
   const csvFile = req.files.file;
   const csvFilePath = path.resolve(__dirname, '../../temp/csv/', csvFile.name);
 
-  csvFile.mv(csvFilePath, (err) => {
+  csvFile.mv(csvFilePath, err => {
     if (err) {
       return res.status(500).send(err);
     }
     const stream = fs.createReadStream(csvFilePath);
 
-    csvParser.fromStream(stream, { headers: false, ignoreEmpty: true })
-      .on('data', (data) => {
+    csvParser
+      .fromStream(stream, { headers: false, ignoreEmpty: true })
+      .on('data', data => {
         const creneau = new Creneau();
 
         const myDate = `${data[0]} ${data[1]}`;
-        const formatDate = moment(myDate, 'DD-MM-YYYY HH:mm:ss').format('YYYY-MM-DD HH:mm:ss');
+        const formatDate = moment(myDate, 'DD-MM-YYYY HH:mm:ss').format(
+          'YYYY-MM-DD HH:mm:ss',
+        );
         creneau.date = formatDate;
         creneau.inspecteur = data[2];
         creneau.centre = data[3];
 
-        const {
-          date,
-          inspecteur,
-          centre,
-        } = creneau;
+        const { date, inspecteur, centre } = creneau;
 
-        Creneau.find({
-          date,
-          centre,
-          inspecteur,
-        }, (err, previousCreneau) => {
-          if (err) {
-            console.log(err);
-
-          } else if (previousCreneau.length > 0) {
-            console.log(previousCreneau, 'deja en base');
-            return;
-          } else {
-            creneau.save((err, saved) => {
-              if (err) {
-                console.log(err);
-              }
-              res.end('Done');
-            });
-          }
-        })
+        Creneau.find(
+          {
+            date,
+            centre,
+            inspecteur,
+          },
+          (errFind, previousCreneau) => {
+            if (errFind) {
+              console.warn(errFind);
+            } else if (previousCreneau.length > 0) {
+              console.warn(previousCreneau, 'deja en base');
+              return;
+            } else {
+              creneau.save(errSave => {
+                if (errSave) {
+                  console.warn(errSave);
+                }
+                res.end('Done');
+              });
+            }
+          },
+        );
       })
       .on('end', () => {
-        console.log('done'); // eslint-disable-line no-console
-        // console.log(fileRows); // eslint-disable-line no-console
+        console.warn('done'); // eslint-disable-line no-console
+        // console.warn(fileRows); // eslint-disable-line no-console
       });
   });
 
   res.status(200).send({ name: csvFile.name });
 };
 
-
 export const uploadAurigeJSON = (req, res) => {
   const jsonFile = req.files.file;
-  const jsonFilePath = path.resolve(__dirname, '../../temp/json/', jsonFile.name);
+  const jsonFilePath = path.resolve(
+    __dirname,
+    '../../temp/json/',
+    jsonFile.name,
+  );
 
-  jsonFile.mv(jsonFilePath, (err) => {
+  jsonFile.mv(jsonFilePath, err => {
     if (err) {
       return res.status(500).send(err);
     }

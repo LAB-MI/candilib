@@ -16,7 +16,6 @@ import {
 
 import blue from '@material-ui/core/colors/blue';
 import SnackbarNotification from '../../../../components/Notifications/SnackbarNotificationWrapper';
-import { setInStorage } from '../../../../util/storage';
 
 const styles = theme => ({
   layout: {
@@ -34,7 +33,8 @@ const styles = theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
+    padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme
+      .spacing.unit * 3}px`,
   },
   avatar: {
     margin: theme.spacing.unit,
@@ -69,7 +69,6 @@ const styles = theme => ({
   },
   textField: {
     width: '100%',
-
   },
 });
 
@@ -95,14 +94,11 @@ class Login extends Component {
     this.handleCreate = this.handleCreate.bind(this);
   }
 
-  componentDidMount() {
-
-  }
+  componentDidMount() {}
 
   handleClose = () => {
     this.setState({ open: false });
   };
-
 
   handleChange = ({ target: { name, value } }) =>
     this.setState({
@@ -149,7 +145,6 @@ class Login extends Component {
           .then(res => res.json())
           .then(json => {
             if (json.success) {
-
               this.setState({
                 signUpError: json.message,
                 isLoading: false,
@@ -166,27 +161,27 @@ class Login extends Component {
                 success: true,
               });
             } else {
-              console.log("message: "+ json.message);
-              console.log("status: " + json.success);
-              if (json.message.indexOf("email") > -1) {
+              console.log(`message: ${json.message}`);
+              console.log(`status: ${json.success}`);
+              if (json.message.indexOf('email') > -1) {
                 this.setState({
-                  signUpError: "Vérifier votre email.",
+                  signUpError: 'Vérifier votre email.',
                   portableError: false,
                   emailError: !json.success,
                   isLoading: false,
                   open: true,
                   success: false,
                 });
-              } else if(json.message.indexOf("portable") > -1) {
+              } else if (json.message.indexOf('portable') > -1) {
                 this.setState({
-                  signUpError: "Vérifier votre numéro de téléphone.",
+                  signUpError: 'Vérifier votre numéro de téléphone.',
                   portableError: !json.success,
                   emailError: false,
                   isLoading: false,
                   open: true,
                   success: false,
                 });
-              }else{
+              } else {
                 this.setState({
                   signUpError: json.message,
                   portableError: false,
@@ -259,90 +254,147 @@ class Login extends Component {
         <main className={classes.layout}>
           <Paper className={classes.paper}>
             <Typography variant="display1" align="center" gutterBottom>
-              {!isLogin && <form
-                className={classes.form}
-                onSubmit={this.handleCreate}
-              >
-                <FormControl margin="normal" required fullWidth>
-                  <InputLabel htmlFor="neph">Neph (obligatoire)</InputLabel>
-                  <Input id="neph" name="neph" placeholder="numéro d'inscription" type="number" autoComplete="neph" value={neph} autoFocus onChange={this.handleChange} />
-                </FormControl>
-                <FormControl margin="normal" required fullWidth>
-                  <InputLabel htmlFor="nom">Nom (obligatoire)</InputLabel>
-                  <Input id="nom" name="nom" autoComplete="nom" value={nom} autoFocus onChange={this.handleChange} />
-                </FormControl>
-                <FormControl margin="normal" fullWidth>
-                  <InputLabel htmlFor="prenom">Prénom</InputLabel>
-                  <Input id="prenom" name="prenom" autoComplete="prenom" value={prenom} autoFocus onChange={this.handleChange} />
-                </FormControl>
-                <FormControl margin="normal" required fullWidth>
-                  <InputLabel htmlFor="email">Email (obligatoire)</InputLabel>
-                  <Input id="email" error={emailError} name="email" autoComplete="email" value={email} autoFocus onChange={this.handleChange} />
-                </FormControl>
-                <FormControl margin="normal" required fullWidth>
-                  <InputLabel htmlFor="portable">Portable (obligatoire)</InputLabel>
-                  <Input id="portable" error={portableError} name="portable" placeholder="06 12 34 56 78 ou +33 6 12 34 56 78" type="text" autoComplete="portable" value={portable} autoFocus onChange={this.handleChange} />
-                </FormControl>
-                <FormControl margin="normal" fullWidth>
-                  <InputLabel htmlFor="adresse">Adresse</InputLabel>
-                  <Input id="adresse" name="adresse" autoComplete="adresse" value={adresse} autoFocus onChange={this.handleChange} />
-                </FormControl>
-                <FormControl margin="normal" required fullWidth>
-                  <Button
-                    type="submit"
-                    color="primary"
-                    variant="raised"
-                    disabled={isLoading}
-                  >Inscription</Button>
-                </FormControl>
-                <FormControl margin="normal" className={classes.buttonLogin}>
-                  <Button
-                    color="default"
-                    onClick={() => this.setState({ isLogin: true })}
-                  >
-                    <Typography variant="caption">
-                      Connexion
-                    </Typography>
-                  </Button>
-                </FormControl>
-              </form>
-              }
-              {isLogin && <form
-                className={classes.form}
-                onSubmit={this.handleCreate}
-              >
-
-                <FormControl margin="normal" required fullWidth>
-                  <InputLabel htmlFor="email">Email</InputLabel>
-                  <Input id="email" error={emailError} name="email" autoComplete="email" value={email} autoFocus onChange={this.handleChange} />
-                </FormControl>
-
-                <FormControl margin="normal" required fullWidth>
-                  <Button
-                    type="submit"
-                    color="primary"
-                    variant="raised"
-                    disabled={isLoading}
-                  >Connexion</Button>
-                  {isLoading && <CircularProgress size={24} className={classes.buttonProgress} />}
-
-                </FormControl>
-                <FormControl margin="normal" className={classes.buttonLogin}>
-                  <Button
-                    color="default"
-                    onClick={() => this.setState({ isLogin: false })}
-                  >
-                    <Typography variant="caption">
+              {!isLogin && (
+                <form className={classes.form} onSubmit={this.handleCreate}>
+                  <FormControl margin="normal" required fullWidth>
+                    <InputLabel htmlFor="neph">Neph (obligatoire)</InputLabel>
+                    <Input
+                      id="neph"
+                      name="neph"
+                      placeholder="numéro d'inscription"
+                      type="number"
+                      autoComplete="neph"
+                      value={neph}
+                      autoFocus
+                      onChange={this.handleChange}
+                    />
+                  </FormControl>
+                  <FormControl margin="normal" required fullWidth>
+                    <InputLabel htmlFor="nom">Nom (obligatoire)</InputLabel>
+                    <Input
+                      id="nom"
+                      name="nom"
+                      autoComplete="nom"
+                      value={nom}
+                      autoFocus
+                      onChange={this.handleChange}
+                    />
+                  </FormControl>
+                  <FormControl margin="normal" fullWidth>
+                    <InputLabel htmlFor="prenom">Prénom</InputLabel>
+                    <Input
+                      id="prenom"
+                      name="prenom"
+                      autoComplete="prenom"
+                      value={prenom}
+                      autoFocus
+                      onChange={this.handleChange}
+                    />
+                  </FormControl>
+                  <FormControl margin="normal" required fullWidth>
+                    <InputLabel htmlFor="email">Email (obligatoire)</InputLabel>
+                    <Input
+                      id="email"
+                      error={emailError}
+                      name="email"
+                      autoComplete="email"
+                      value={email}
+                      autoFocus
+                      onChange={this.handleChange}
+                    />
+                  </FormControl>
+                  <FormControl margin="normal" required fullWidth>
+                    <InputLabel htmlFor="portable">
+                      Portable (obligatoire)
+                    </InputLabel>
+                    <Input
+                      id="portable"
+                      error={portableError}
+                      name="portable"
+                      placeholder="06 12 34 56 78 ou +33 6 12 34 56 78"
+                      type="text"
+                      autoComplete="portable"
+                      value={portable}
+                      autoFocus
+                      onChange={this.handleChange}
+                    />
+                  </FormControl>
+                  <FormControl margin="normal" fullWidth>
+                    <InputLabel htmlFor="adresse">Adresse</InputLabel>
+                    <Input
+                      id="adresse"
+                      name="adresse"
+                      autoComplete="adresse"
+                      value={adresse}
+                      autoFocus
+                      onChange={this.handleChange}
+                    />
+                  </FormControl>
+                  <FormControl margin="normal" required fullWidth>
+                    <Button
+                      type="submit"
+                      color="primary"
+                      variant="raised"
+                      disabled={isLoading}
+                    >
                       Inscription
-                    </Typography>
-                  </Button>
-                </FormControl>
-              </form>
-              }
+                    </Button>
+                  </FormControl>
+                  <FormControl margin="normal" className={classes.buttonLogin}>
+                    <Button
+                      color="default"
+                      onClick={() => this.setState({ isLogin: true })}
+                    >
+                      <Typography variant="caption">Connexion</Typography>
+                    </Button>
+                  </FormControl>
+                </form>
+              )}
+              {isLogin && (
+                <form className={classes.form} onSubmit={this.handleCreate}>
+                  <FormControl margin="normal" required fullWidth>
+                    <InputLabel htmlFor="email">Email</InputLabel>
+                    <Input
+                      id="email"
+                      error={emailError}
+                      name="email"
+                      autoComplete="email"
+                      value={email}
+                      autoFocus
+                      onChange={this.handleChange}
+                    />
+                  </FormControl>
+
+                  <FormControl margin="normal" required fullWidth>
+                    <Button
+                      type="submit"
+                      color="primary"
+                      variant="raised"
+                      disabled={isLoading}
+                    >
+                      Connexion
+                    </Button>
+                    {isLoading && (
+                      <CircularProgress
+                        size={24}
+                        className={classes.buttonProgress}
+                      />
+                    )}
+                  </FormControl>
+                  <FormControl margin="normal" className={classes.buttonLogin}>
+                    <Button
+                      color="default"
+                      onClick={() => this.setState({ isLogin: false })}
+                    >
+                      <Typography variant="caption">Inscription</Typography>
+                    </Button>
+                  </FormControl>
+                </form>
+              )}
             </Typography>
           </Paper>
         </main>
-        {success &&
+        {success && (
           <Snackbar
             open={open}
             autoHideDuration={8000}
@@ -356,8 +408,8 @@ class Login extends Component {
               message={signUpError}
             />
           </Snackbar>
-        }
-        {!success &&
+        )}
+        {!success && (
           <Snackbar
             open={open}
             autoHideDuration={8000}
@@ -370,7 +422,8 @@ class Login extends Component {
               className={classes.snackbarContent}
               message={signUpError}
             />
-          </Snackbar>}
+          </Snackbar>
+        )}
       </React.Fragment>
     );
   }
