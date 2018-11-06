@@ -44,8 +44,8 @@ class Auth extends Component {
 }
 
 Auth.propTypes = {
-  location: PropTypes.location.isRequired,
-  router: PropTypes.location.isRequired,
+  location: PropTypes.isRequired,
+  router: PropTypes.isRequired,
 };
 
 export default Auth;
