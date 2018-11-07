@@ -25,6 +25,8 @@
     "quote-props": 1,
     "no-param-reassign": [1, { "props": true }],
     "react/prop-types": [1],
+    "react/prefer-stateless-function": 0,
+    "react/jsx-indent": 0,
     "prefer-template": 0,
     "func-names": 1
   }

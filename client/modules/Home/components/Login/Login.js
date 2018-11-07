@@ -16,6 +16,7 @@ import {
 
 import blue from '@material-ui/core/colors/blue';
 import SnackbarNotification from '../../../../components/Notifications/SnackbarNotificationWrapper';
+import AutoCompleteAddresses from '../../../../components/AutoCompleteAddresses/AutoCompleteAddresses';
 
 const styles = theme => ({
   layout: {
@@ -100,10 +101,11 @@ class Login extends Component {
     this.setState({ open: false });
   };
 
-  handleChange = ({ target: { name, value } }) =>
+  handleChange = ({ target: { name, value } }) => {
     this.setState({
       [name]: value,
     });
+  };
 
   handleCreate(e) {
     e.preventDefault();
@@ -119,7 +121,6 @@ class Login extends Component {
       adresse,
       isLogin,
     } = this.state;
-
     this.setState({
       isLoading: true,
     });
@@ -244,7 +245,6 @@ class Login extends Component {
       email,
       prenom,
       portable,
-      adresse,
       success,
     } = this.state;
 
@@ -319,17 +319,10 @@ class Login extends Component {
                       onChange={this.handleChange}
                     />
                   </FormControl>
-                  <FormControl margin="normal" fullWidth>
-                    <InputLabel htmlFor="adresse">Adresse</InputLabel>
-                    <Input
-                      id="adresse"
-                      name="adresse"
-                      autoComplete="adresse"
-                      value={adresse}
-                      autoFocus
-                      onChange={this.handleChange}
-                    />
-                  </FormControl>
+                  <AutoCompleteAddresses
+                    inputName={'adresse'}
+                    handleChange={this.handleChange}
+                  />
                   <FormControl margin="normal" required fullWidth>
                     <Button
                       type="submit"
