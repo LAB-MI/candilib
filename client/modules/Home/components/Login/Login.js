@@ -439,6 +439,7 @@ class Login extends Component {
 
 Login.propTypes = {
   classes: PropTypes.object.isRequired,
+  location: PropTypes.object,
 };
 
 export default withStyles(styles)(Login);
