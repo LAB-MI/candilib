@@ -2,7 +2,6 @@
  * Entry Script
  */
 const dotenv = require('dotenv');
-console.log(dotenv.config().parsed);
 
 
 if (process.env.NODE_ENV === 'production') {
