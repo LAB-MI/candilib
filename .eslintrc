@@ -28,6 +28,7 @@
     "react/prefer-stateless-function": 0,
     "react/jsx-indent": 0,
     "prefer-template": 0,
-    "func-names": 1
+    "func-names": 1,
+    "react/no-did-mount-set-state": 0
   }
 }

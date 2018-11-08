@@ -31,11 +31,17 @@ class Auth extends Component {
             router.push(redirect);
           }
         } else {
-          router.push('/');
+          router.push({
+            pathname: '/',
+            state: { error: 'token_no_valid' },
+          });
         }
       })
       .catch(() => {
-        router.push('/');
+        router.push({
+          pathname: '/',
+          state: { error: 'unknown' },
+        });
       });
   }
   render() {

@@ -17,6 +17,7 @@ import {
 import blue from '@material-ui/core/colors/blue';
 import SnackbarNotification from '../../../../components/Notifications/SnackbarNotificationWrapper';
 import AutoCompleteAddresses from '../../../../components/AutoCompleteAddresses/AutoCompleteAddresses';
+import { errorsConstants } from '../errors.constants';
 
 const styles = theme => ({
   layout: {
@@ -95,7 +96,21 @@ class Login extends Component {
     this.handleCreate = this.handleCreate.bind(this);
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    if (this.props.location.state !== undefined) {
+      const { error } = this.props.location.state;
+      if (error !== undefined) {
+        const message = errorsConstants[error];
+        if (message !== undefined) {
+          this.setState({
+            open: true,
+            success: false,
+            signUpError: message,
+          });
+        }
+      }
+    }
+  }
 
   handleClose = () => {
     this.setState({ open: false });
@@ -424,6 +439,7 @@ class Login extends Component {
 
 Login.propTypes = {
   classes: PropTypes.object.isRequired,
+  location: PropTypes.object,
 };
 
 export default withStyles(styles)(Login);
