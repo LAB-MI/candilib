@@ -13,3 +13,7 @@ server/data_aurige
 server/config.js
 server/models/__tests__
 .history
+
+server/util/sendMail\.js\.cloud
+
+server/config\.js\.cloud
