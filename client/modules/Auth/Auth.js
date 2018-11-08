@@ -1,5 +1,4 @@
 import { Component } from 'react';
-import PropTypes from 'prop-types';
 import { setInStorage, getFromStorage } from '../../util/storage';
 
 const KEYSTORAGETOKEN = 'candilib';
@@ -36,8 +35,6 @@ class Auth extends Component {
             pathname: '/',
             state: { error: 'token_no_valid' },
           });
-        } else {
-          router.push("/");
         }
       }).catch(error => {
         router.push("/");
@@ -53,10 +50,5 @@ class Auth extends Component {
     return null;
   }
 }
-
-Auth.propTypes = {
-  location: PropTypes.isRequired,
-  router: PropTypes.isRequired,
-};
 
 export default Auth;

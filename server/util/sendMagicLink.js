@@ -15,6 +15,10 @@ const sendMagicLink = (candidatAurige, token) => {
     host: serverConfig.smtpServer,
     port: serverConfig.smtpPort,
     secure: false,
+    auth: {
+      user: serverConfig.mailUser,
+      pass: serverConfig.mailPassword,
+    },
     tls: {
       // do not failed with selfsign certificates
       rejectUnauthorized: false,
@@ -109,10 +113,10 @@ const sendMagicLink = (candidatAurige, token) => {
                                                                         <tr>
                                                                             <td class="article-content" colspan="2">
                                                                                 ${
-                                                                                  message.content
-                                                                                }
+      message.content
+      }
                                                                                 <br/>
-                                                                                <p><a href="${serverConfig.host}:${serverConfig.port}${serverConfig.authentificationRoute}?token=${encodeURIComponent(token)}&redirect=calendar">Vous pouvez vous connecter à Candilb en cliquant sur ce lien</a></p>
+                                                                                <p><a href="${serverConfig.host}:${serverConfig.portMail}${serverConfig.authentificationRoute}?token=${encodeURIComponent(token)}&redirect=calendar">Vous pouvez vous connecter à Candilb en cliquant sur ce lien</a></p>
                                                                             </td>
                                                                         </tr>
                                                                     </tbody>

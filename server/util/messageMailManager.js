@@ -24,6 +24,7 @@ const mailMessage = (candidatAurige, flag) => {
 
   const nomMaj = nomNaissance ? nomNaissance.toUpperCase() : '';
 
+  const site = creneau && creneau.title ? creneau.title : '';
   const dateCreneau = creneau && creneau.start ? moment(creneau.start).format('DD MMMM YYYY') : '';
   const heureCreneau = creneau && creneau.start ? moment(creneau.start).add(1, 'hour').format('HH:mm') : '';
 
@@ -32,7 +33,7 @@ const mailMessage = (candidatAurige, flag) => {
   <p>Bonjour Mr/Mme ${nomMaj},</p>
   <br>
   <p>Nous avons bien pris en compte votre réservation à l'examen pratique 
-  du permis de conduire à ${creneau.title} le ${dateCreneau} à ${heureCreneau} avec
+  du permis de conduire à ${site} le ${dateCreneau} à ${heureCreneau} avec
    le numéro NEPH ${codeNeph}.!</p>
   <p>${adresse} </p>
   <br>

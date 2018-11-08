@@ -18,6 +18,7 @@ import blue from '@material-ui/core/colors/blue';
 import SnackbarNotification from '../../../../components/Notifications/SnackbarNotificationWrapper';
 import AutoCompleteAddresses from '../../../../components/AutoCompleteAddresses/AutoCompleteAddresses';
 import { errorsConstants } from '../errors.constants';
+import { setInStorage } from '../../../../util/storage';
 
 const styles = theme => ({
   layout: {
@@ -181,8 +182,6 @@ class Login extends Component {
                 success: true,
               });
             } else {
-              console.log(`message: ${json.message}`);
-              console.log(`status: ${json.success}`);
               if (json.message.indexOf('email') > -1) {
                 this.setState({
                   signUpError: 'Vérifier votre email.',

@@ -29,7 +29,7 @@ class CreneauDialog extends Component {
   };
 
   render() {
-    const { classes, onClose, selectedValue, ...other } = this.props;
+    const { selectedValue, ...other } = this.props;
     let maDate = '';
     let monSite = '';
 
@@ -39,7 +39,7 @@ class CreneauDialog extends Component {
       if (creneau && creneau.start && creneau.title) {
         maDate = moment(creneau.start).format('DD MMMM HH:mm');
         monSite = creneau.title;
-      } 
+      }
     }
 
     return (
