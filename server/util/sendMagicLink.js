@@ -11,14 +11,14 @@ const sendMagicLink = (candidatAurige, token) => {
   //   Voici votre identifiant: ${email}\n`;
 
   const transporter = nodemailer.createTransport(smtpTransport({
-    service: mailConfig.smtpService,
-    host: mailConfig.smtpServer,
-    port: mailConfig.smtpPort,
+    service: serverConfig.smtpService,
+    host: serverConfig.smtpServer,
+    port: serverConfig.smtpPort,
     secure: false,
     tls: {
       // do not failed with selfsign certificates
-      rejectUnauthorized: false
-    }
+      rejectUnauthorized: false,
+    },
   }));
 
   const mailOptions = {
@@ -174,8 +174,7 @@ const sendMagicLink = (candidatAurige, token) => {
     if (err) {
       console.log(err); // eslint-disable-line no-console
     } else {
-      console.log("MagicLink sent: " + info.response);
-      socketTimeout: 30 * 1000 // 30s timeout
+      console.log('MagicLink sent: ' + info.response);
       transporter.close();
     }
     transporter.close();

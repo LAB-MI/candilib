@@ -65,19 +65,19 @@ export function signUp(req, res) {
       // Save the new user
       const newCandidat = new Candidat();
 
-    // Let's sanitize inputs
-    newCandidat.nomNaissance = sanitizeHtml(nom);
-    // see https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
-    newCandidat.prenom = sanitizeHtml(prenom.normalize('NFD').replace(/[\u0300-\u036f]/g, ''));
-    newCandidat.codeNeph = neph;
-    newCandidat.dateReussiteETG = null;
-    newCandidat.dateDernierEchecPratique = null;
-    newCandidat.reussitePratique = null;
-    newCandidat.portable = sanitizeHtml(portable);
-    newCandidat.adresse = sanitizeHtml(adresse);
-    newCandidat.email = sanitizeHtml(email);
-    newCandidat.isValid = false;
-    newCandidat.creneau = new Creneau();
+      // Let's sanitize inputs
+      newCandidat.nomNaissance = sanitizeHtml(nom);
+      // see https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
+      newCandidat.prenom = sanitizeHtml(prenom.normalize('NFD').replace(/[\u0300-\u036f]/g, ''));
+      newCandidat.codeNeph = neph;
+      newCandidat.dateReussiteETG = null;
+      newCandidat.dateDernierEchecPratique = null;
+      newCandidat.reussitePratique = null;
+      newCandidat.portable = sanitizeHtml(portable);
+      newCandidat.adresse = sanitizeHtml(adresse);
+      newCandidat.email = sanitizeHtml(email);
+      newCandidat.isValid = false;
+      newCandidat.creneau = new Creneau();
 
       newCandidat.save((error, candidat) => {
         if (error) {
@@ -274,7 +274,7 @@ export function getCandidatNeph(req, res, next) {
  * @returns void
  */
 
-export function updateCandidat(req, res, next) {  
+export function updateCandidat(req, res, next) {
   Candidat.findByIdAndUpdate(req.params.id, req.body.value, { new: true }, (err, user) => {
     if (err) {
       next(err);
@@ -418,7 +418,7 @@ const synchroAurige = pathname => {
                 } else {
                   console.warn(
                     `Ce candidat ${
-                      candidatAurige.email
+                    candidatAurige.email
                     } a été detruit: NEPH inconnu`,
                   ); // eslint-disable-line no-console
                   sendMailToAccount(candidatAurige, CANDIDAT_NOK);
@@ -448,7 +448,7 @@ const synchroAurige = pathname => {
                 } else {
                   console.warn(
                     `Ce candidat ${
-                      candidatAurige.email
+                    candidatAurige.email
                     } a été detruit: Nom inconnu`,
                   ); // eslint-disable-line no-console
                   sendMailToAccount(candidatAurige, CANDIDAT_NOK_NOM);
@@ -507,7 +507,7 @@ const synchroAurige = pathname => {
                 } else {
                   console.warn(
                     `Ce candidat ${
-                      candidatAurige.email
+                    candidatAurige.email
                     } a été detruit: Date ETG KO`,
                   ); // eslint-disable-line no-console
                   sendMailToAccount(candidatAurige, EPREUVE_ETG_KO);
@@ -536,7 +536,7 @@ const synchroAurige = pathname => {
                 } else {
                   console.warn(
                     `Ce candidat ${
-                      candidatAurige.email
+                    candidatAurige.email
                     } a été detruit: PRATIQUE OK`,
                   ); // eslint-disable-line no-console
                   sendMailToAccount(candidatAurige, EPREUVE_PRATIQUE_OK);
@@ -582,7 +582,7 @@ const synchroAurige = pathname => {
               { email: candidatAurige.email },
               {
                 $set: {
-                  dateReussiteETG: moment(candidatAurige.dateReussiteETG, 'DD-MM-YYYY').format('YYYY-MM-DD'), //moment(myDate, 'DD-MM-YYYY HH:mm:ss').format('YYYY-MM-DD HH:mm:ss')
+                  dateReussiteETG: moment(candidatAurige.dateReussiteETG, 'DD-MM-YYYY').format('YYYY-MM-DD'),
                   dateDernierEchecPratique: moment(candidatAurige.dateDernierEchecPratique, 'DD-MM-YYYY').format('YYYY-MM-DD'),
                   reussitePratique: moment(candidatAurige.reussitePratique, 'DD-MM-YYYY').format('YYYY-MM-DD'),
                 },

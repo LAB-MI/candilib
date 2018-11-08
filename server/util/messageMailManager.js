@@ -9,12 +9,8 @@ import {
   MAIL_CONVOCATION,
 } from './constant';
 import moment from 'moment';
-import momentTimezone from 'moment-timezone';
-
-const timeZone = 'Europe/Paris';
 
 const mailMessage = (candidatAurige, flag) => {
-
   console.log(candidatAurige);
 
   const {
@@ -22,7 +18,6 @@ const mailMessage = (candidatAurige, flag) => {
     nomNaissance,
     adresse,
     creneau,
-    portable,
   } = candidatAurige;
 
   const message = {};
@@ -190,7 +185,7 @@ const mailMessage = (candidatAurige, flag) => {
       return message;
     case MAIL_CONVOCATION:
       message.content = MAIL_CONVOCATION_MSG;
-      message.subject = "<ne pas répondre> Validation de votre inscription à Candilib";
+      message.subject = '<ne pas répondre> Validation de votre inscription à Candilib';
       return message;
     default:
       return '';

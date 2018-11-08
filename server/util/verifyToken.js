@@ -16,7 +16,7 @@ export default function verifyToken(req, res, next) {
     return next();
   }
 
-  const token = req.headers['x-access-token'] || req.query.token || req.body.token;
+  const token = req.headers['x-access-token'] || req.query.token || req.body.token; // TODO check if use
   if (!token) {
     if (res !== undefined) {
       return res.status(403).send({ auth: false, message: 'Pas de Token ' });

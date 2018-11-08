@@ -13,3 +13,4 @@ server/data_aurige
 server/config.js
 server/models/__tests__
 .history
+.env

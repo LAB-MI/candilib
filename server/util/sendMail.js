@@ -13,8 +13,8 @@ const sendMailToAccount = (candidatAurige, flag) => {
     secure: false,
     tls: {
       // do not failed with selfsign certificates
-      rejectUnauthorized: false
-    }
+      rejectUnauthorized: false,
+    },
   }));
 
   const mailOptions = {
@@ -168,8 +168,7 @@ const sendMailToAccount = (candidatAurige, flag) => {
     if (err) {
       console.log(err); // eslint-disable-line no-console
     } else {
-      console.log("Mail sent: " + info.response);
-      socketTimeout: 30 * 1000 // 30s timeout
+      console.log('Mail sent: ' + info.response);
       transporter.close();
     }
     transporter.close();

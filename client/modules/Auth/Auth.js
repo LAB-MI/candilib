@@ -36,8 +36,7 @@ class Auth extends Component {
             pathname: '/',
             state: { error: 'token_no_valid' },
           });
-        }
-        else {
+        } else {
           router.push("/");
         }
       }).catch(error => {
