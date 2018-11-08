@@ -16,3 +16,6 @@ server/models/__tests__
 .env
 .env-prod
 
+server/util/sendMail\.js\.cloud
+
+server/config\.js\.cloud
