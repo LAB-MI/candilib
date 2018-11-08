@@ -36,6 +36,7 @@ export default function verifyToken(req, res, next) {
       return next({ status: 500, auth: false, message: 'Pas de Token ' });
     }
     req.userId = decoded.id;
+    req.userLevel = decoded.level;
     return next();
   });
 }

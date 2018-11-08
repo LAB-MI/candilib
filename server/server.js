@@ -48,11 +48,14 @@ import Helmet from 'react-helmet';
 import routes from '../client/routes';
 import { fetchComponentData } from './util/fetchData';
 import candidats from './routes/candidats.routes';
+import authAdminCandidats from './routes/auth.admin.candidats.routers';
+import authCandidats from './routes/auth.candidats.routes';
 import creneaux from './routes/creneaux.routes';
 import users from './routes/users.routes';
 
 import serverConfig from './config';
 import verifyToken from './util/verifyToken';
+import isAdmin from './util/isAdmin';
 
 // Set native promises as mongoose promise
 mongoose.Promise = global.Promise;
@@ -77,7 +80,9 @@ app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
 app.use(fileUpload());
 app.use(Express.static(path.resolve(__dirname, '../dist/client')));
 app.use('/api', users);
-app.use('/api', verifyToken, candidats);
+app.use('/api', candidats);
+app.use('/api', verifyToken, authCandidats);
+app.use('/api', verifyToken, isAdmin, authAdminCandidats);
 app.use('/api', verifyToken, creneaux);
 
 // Render Initial HTML
@@ -177,6 +182,7 @@ app.use((req, res, next) => {
         );
       });
       if (childrenPrivateRoute !== undefined) {
+        console.log(childrenPrivateRoute);
         return res.redirect(
           302,
           '/auth?redirect=' + renderProps.location.pathname,

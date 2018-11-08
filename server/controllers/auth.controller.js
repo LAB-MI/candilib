@@ -3,7 +3,6 @@ import User from '../models/user';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import serverConfig from '../config';
-import sendMagicLink from '../util/sendMagicLink';
 
 export function register(req, res, next) {
   const hashPassowrd = bcrypt.hashSync(req.body.password, 8);
@@ -76,8 +75,17 @@ export function verifyMe(req, res) {
   });
 }
 
+const USER_STATUS2EXPIRESIN = {
+  admin: '1d',
+  candidat: '86400',
+};
+
+const USER_STATUS2LEVEL = {
+  admin: 1,
+};
+
 export function login(req, res) {
-  const { email } = req.body;
+  const { email, password } = req.body;
 
   User.findOne({ email }, (err, user) => {
     if (err) {
@@ -90,25 +98,31 @@ export function login(req, res) {
         .send({ auth: false, message: 'Utilisateur non reconnu. ' });
     }
 
-    // const passwordIsValid = bcrypt.compareSync(password, user.password) check pour passord
-    const emailIsValid = email === user.email;
+    console.log(user);
+    let passwordIsValid = false;
+    if (password !== undefined) {
+      passwordIsValid = bcrypt.compareSync(password, user.password);
+    }
+    const usernameIsValid = email === user.email;
 
-    if (!emailIsValid) {
+    console.log(passwordIsValid);
+    if (!usernameIsValid || !passwordIsValid) {
       return res.status(401).send({ auth: false, token: null });
     }
 
     const token = jwt.sign(
       {
         id: user._id,
+        email: user.email,
+        level: USER_STATUS2LEVEL[user.status],
       },
       serverConfig.secret,
       {
-        expiresIn: 86400,
+        expiresIn: USER_STATUS2EXPIRESIN[user.status],
       },
     );
 
-    sendMagicLink(user.email, token);
-    res.status(200).end();
+    res.status(200).send({ auth: true, 'access-token': token });
   });
 }
 

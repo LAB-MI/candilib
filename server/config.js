@@ -5,7 +5,7 @@ const config = {
   authentificationRoute: '/auth',
   secret: process.env.SECRET || 'secret',
   fastAccessApi: process.env.FAST_ACCESS_API || false,
-  smtpServer: '10.237.5.29',
+  smtpServer: '10.237.10.52',
   smtpPort: 25,
   mailUser: '<user>',
   mailPassword: '<passwd>',
