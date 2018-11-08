@@ -9,8 +9,8 @@ class Auth extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      shouldRedirect: false,
-    };
+      shouldRedirect: false
+    }
   }
 
   componentDidMount() {
@@ -21,10 +21,11 @@ class Auth extends Component {
       tokenToSend = getFromStorage(KEYSTORAGETOKEN);
     }
     fetch(`/api/users/validate_token?token=${tokenToSend}`)
-      .then(response => response.json())
-      .then(response => {
+      .then((response) => response.json())
+      .then((response) => {
         if (response.isTokenValid) {
           setInStorage(KEYSTORAGETOKEN, tokenToSend);
+          setInStorage('candidatId', response.id);
           if (redirect === undefined) {
             router.push(DEFAULT_REDIRECT);
           } else {
@@ -36,6 +37,11 @@ class Auth extends Component {
             state: { error: 'token_no_valid' },
           });
         }
+        else {
+          router.push("/");
+        }
+      }).catch(error => {
+        router.push("/");
       })
       .catch(() => {
         router.push({

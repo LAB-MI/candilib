@@ -5,3 +5,4 @@ export const EPREUVE_PRATIQUE_OK = 'OK';
 export const EPREUVE_ETG_KO = 'KO';
 export const INSCRIPTION_OK = 'SIGNUP_OK';
 export const AURIGE_OK = 'CHECK_OK';
+export const MAIL_CONVOCATION = 'MAIL_CONVOCATION';

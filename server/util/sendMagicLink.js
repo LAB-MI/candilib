@@ -10,21 +10,16 @@ const sendMagicLink = (candidatAurige, token) => {
   //   Vous êtes inscrit sur le site de réservation des candidats libres.</br>\n\r
   //   Voici votre identifiant: ${email}\n`;
 
-  const transporter = nodemailer.createTransport(
-    smtpTransport({
-      host: serverConfig.smtpServer,
-      port: serverConfig.smtpPort,
-      secure: false,
-      auth: {
-        user: serverConfig.mailUser,
-        pass: serverConfig.mailPassword,
-      },
-      tls: {
-        // do not failed with selfsign certificates
-        rejectUnauthorized: false,
-      },
-    }),
-  );
+  const transporter = nodemailer.createTransport(smtpTransport({
+    service: mailConfig.smtpService,
+    host: mailConfig.smtpServer,
+    port: mailConfig.smtpPort,
+    secure: false,
+    tls: {
+      // do not failed with selfsign certificates
+      rejectUnauthorized: false
+    }
+  }));
 
   const mailOptions = {
     from: serverConfig.mailFrom,
@@ -117,13 +112,7 @@ const sendMagicLink = (candidatAurige, token) => {
                                                                                   message.content
                                                                                 }
                                                                                 <br/>
-                                                                                <p><a href="${
-                                                                                  serverConfig.host
-                                                                                }${
-      serverConfig.authentificationRoute
-    }?token=${encodeURIComponent(
-      token,
-    )}">Vous pouvez vous connecter à Candilb en cliquant sur ce lien</a></p>
+                                                                                <p><a href="${serverConfig.host}:${serverConfig.port}${serverConfig.authentificationRoute}?token=${encodeURIComponent(token)}&redirect=calendar">Vous pouvez vous connecter à Candilb en cliquant sur ce lien</a></p>
                                                                             </td>
                                                                         </tr>
                                                                     </tbody>
@@ -185,7 +174,8 @@ const sendMagicLink = (candidatAurige, token) => {
     if (err) {
       console.log(err); // eslint-disable-line no-console
     } else {
-      console.log('MagicLink sent: ' + info.response);
+      console.log("MagicLink sent: " + info.response);
+      socketTimeout: 30 * 1000 // 30s timeout
       transporter.close();
     }
     transporter.close();

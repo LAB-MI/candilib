@@ -16,6 +16,7 @@ import {
   EPREUVE_ETG_KO,
   CANDIDAT_NOK,
   CANDIDAT_NOK_NOM,
+  MAIL_CONVOCATION,
 } from '../util/constant';
 
 import Creneau from '../models/creneau';
@@ -64,20 +65,19 @@ export function signUp(req, res) {
       // Save the new user
       const newCandidat = new Candidat();
 
-      // Let's sanitize inputs
-      newCandidat.nomNaissance = sanitizeHtml(nom);
-      // see https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
-      newCandidat.prenom = sanitizeHtml(
-        prenom.normalize('NFD').replace(/[\u0300-\u036f]/g, ''),
-      );
-      newCandidat.codeNeph = neph;
-      newCandidat.dateReussiteETG = null;
-      newCandidat.dateDernierEchecPratique = null;
-      newCandidat.reussitePratique = null;
-      newCandidat.portable = sanitizeHtml(portable);
-      newCandidat.adresse = sanitizeHtml(adresse);
-      newCandidat.email = sanitizeHtml(email);
-      newCandidat.isValid = false;
+    // Let's sanitize inputs
+    newCandidat.nomNaissance = sanitizeHtml(nom);
+    // see https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
+    newCandidat.prenom = sanitizeHtml(prenom.normalize('NFD').replace(/[\u0300-\u036f]/g, ''));
+    newCandidat.codeNeph = neph;
+    newCandidat.dateReussiteETG = null;
+    newCandidat.dateDernierEchecPratique = null;
+    newCandidat.reussitePratique = null;
+    newCandidat.portable = sanitizeHtml(portable);
+    newCandidat.adresse = sanitizeHtml(adresse);
+    newCandidat.email = sanitizeHtml(email);
+    newCandidat.isValid = false;
+    newCandidat.creneau = new Creneau();
 
       newCandidat.save((error, candidat) => {
         if (error) {
@@ -274,19 +274,15 @@ export function getCandidatNeph(req, res, next) {
  * @returns void
  */
 
-export function updateCandidat(req, res, next) {
-  Candidat.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    { new: true },
-    (err, user) => {
-      if (err) {
-        next(err);
-      } else {
-        res.json(user);
-      }
-    },
-  );
+export function updateCandidat(req, res, next) {  
+  Candidat.findByIdAndUpdate(req.params.id, req.body.value, { new: true }, (err, user) => {
+    if (err) {
+      next(err);
+    } else {
+      sendMailToAccount(user, MAIL_CONVOCATION);
+      res.json(user);
+    }
+  });
 }
 
 /**
@@ -586,10 +582,9 @@ const synchroAurige = pathname => {
               { email: candidatAurige.email },
               {
                 $set: {
-                  dateReussiteETG: candidatAurige.dateReussiteETG,
-                  dateDernierEchecPratique:
-                    candidatAurige.dateDernierEchecPratique,
-                  reussitePratique: candidatAurige.reussitePratique,
+                  dateReussiteETG: moment(candidatAurige.dateReussiteETG, 'DD-MM-YYYY').format('YYYY-MM-DD'), //moment(myDate, 'DD-MM-YYYY HH:mm:ss').format('YYYY-MM-DD HH:mm:ss')
+                  dateDernierEchecPratique: moment(candidatAurige.dateDernierEchecPratique, 'DD-MM-YYYY').format('YYYY-MM-DD'),
+                  reussitePratique: moment(candidatAurige.reussitePratique, 'DD-MM-YYYY').format('YYYY-MM-DD'),
                 },
               },
               () => {
@@ -682,8 +677,7 @@ export const uploadAurigeCSV = (req, res) => {
         );
       })
       .on('end', () => {
-        console.warn('done'); // eslint-disable-line no-console
-        // console.warn(fileRows); // eslint-disable-line no-console
+        console.log('done'); // eslint-disable-line no-console
       });
   });
 

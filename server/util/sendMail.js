@@ -6,17 +6,16 @@ import mailConfig from '../config';
 const sendMailToAccount = (candidatAurige, flag) => {
   const message = mailMessage(candidatAurige, flag);
 
-  const transporter = nodemailer.createTransport(
-    smtpTransport({
-      host: mailConfig.smtpServer,
-      port: mailConfig.smtpPort,
-      secure: false,
-      tls: {
-        // do not failed with selfsign certificates
-        rejectUnauthorized: false,
-      },
-    }),
-  );
+  const transporter = nodemailer.createTransport(smtpTransport({
+    service: mailConfig.smtpService,
+    host: mailConfig.smtpServer,
+    port: mailConfig.smtpPort,
+    secure: false,
+    tls: {
+      // do not failed with selfsign certificates
+      rejectUnauthorized: false
+    }
+  }));
 
   const mailOptions = {
     from: mailConfig.mailFrom,
@@ -169,7 +168,8 @@ const sendMailToAccount = (candidatAurige, flag) => {
     if (err) {
       console.log(err); // eslint-disable-line no-console
     } else {
-      console.log('Mail sent: ' + info.response);
+      console.log("Mail sent: " + info.response);
+      socketTimeout: 30 * 1000 // 30s timeout
       transporter.close();
     }
     transporter.close();

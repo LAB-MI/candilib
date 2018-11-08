@@ -67,7 +67,7 @@ const styles = theme => ({
     position: 'absolute',
   },
   snackbarContent: {
-    width: theme.spacing.unit * 50,
+    width: theme.spacing.unit * 150,
   },
   textField: {
     width: '100%',
@@ -161,6 +161,10 @@ class Login extends Component {
           .then(res => res.json())
           .then(json => {
             if (json.success) {
+              setInStorage('candilib', {
+                token: json.token,
+                id: json.candidat._id,
+              });
               this.setState({
                 signUpError: json.message,
                 isLoading: false,
