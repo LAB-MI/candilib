@@ -46,6 +46,7 @@ import Helmet from 'react-helmet';
 
 // Import required modules
 import routes from '../client/routes';
+import { REDIRECTTOLEVEL } from './util/redirect2Level';
 import { fetchComponentData } from './util/fetchData';
 import candidats from './routes/candidats.routes';
 import authAdminCandidats from './routes/auth.admin.candidats.routers';
@@ -73,6 +74,13 @@ if (process.env.NODE_ENV !== 'test') {
   );
 }
 
+// Set Level to redirect
+routes.props.children.forEach(child => {
+  if (child.type.name === 'PrivateRoute') {
+    REDIRECTTOLEVEL[child.props.path] = child.props.admin ? 1 : 0;
+  }
+});
+
 // Apply body Parser and server public assets and routes
 app.use(compression());
 app.use(bodyParser.json({ limit: '20mb' }));
@@ -81,9 +89,9 @@ app.use(fileUpload());
 app.use(Express.static(path.resolve(__dirname, '../dist/client')));
 app.use('/api', users);
 app.use('/api', candidats);
-app.use('/api', verifyToken, authCandidats);
-app.use('/api', verifyToken, isAdmin, authAdminCandidats);
-app.use('/api', verifyToken, creneaux);
+app.use('/api/auth', verifyToken, authCandidats);
+app.use('/api/admin', verifyToken, isAdmin, authAdminCandidats);
+app.use('/api/auth', verifyToken, creneaux);
 
 // Render Initial HTML
 const renderFullPage = (html, initialState) => {
@@ -182,7 +190,6 @@ app.use((req, res, next) => {
         );
       });
       if (childrenPrivateRoute !== undefined) {
-        console.log(childrenPrivateRoute);
         return res.redirect(
           302,
           '/auth?redirect=' + renderProps.location.pathname,
