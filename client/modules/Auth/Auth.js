@@ -1,9 +1,7 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { setInStorage, getFromStorage } from '../../util/storage';
-
-const KEYSTORAGETOKEN = 'candilib';
-const DEFAULT_REDIRECT = '/sites';
+import { DEFAULT_REDIRECT, KEYSTORAGETOKEN } from '../../util/app.constants';
 
 class Auth extends Component {
   constructor(props) {
@@ -20,7 +18,11 @@ class Auth extends Component {
     if (token === undefined) {
       tokenToSend = getFromStorage(KEYSTORAGETOKEN);
     }
-    fetch(`/api/users/validate_token?token=${tokenToSend}`)
+    let url = `/api/users/validate_token?token=${tokenToSend}`;
+    if (redirect !== undefined) {
+      url = url + `&redirect=${redirect}`;
+    }
+    fetch(url)
       .then(response => response.json())
       .then(response => {
         if (response.isTokenValid) {
@@ -44,8 +46,8 @@ class Auth extends Component {
 }
 
 Auth.propTypes = {
-  location: PropTypes.isRequired,
-  router: PropTypes.isRequired,
+  location: PropTypes.object.isRequired,
+  router: PropTypes.object.isRequired,
 };
 
 export default Auth;

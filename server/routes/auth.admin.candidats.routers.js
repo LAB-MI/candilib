@@ -7,12 +7,6 @@ const uploadJSON = multer({ dest: 'temp/json/' });
 
 const router = new Router();
 
-// Sign In a new candidat
-router.route('/candidats/signup').post(CandidatsController.signUp);
-
-// login with email
-router.route('/candidats/login').post(CandidatsController.login);
-
 // Add a new Candidat
 router.route('/candidats').post(CandidatsController.addCandidat);
 
