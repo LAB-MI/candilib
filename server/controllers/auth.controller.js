@@ -3,7 +3,7 @@ import User from '../models/user';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import serverConfig from '../config';
-
+import { REDIRECTTOLEVEL } from '../util/redirect2Level';
 export function register(req, res, next) {
   const hashPassowrd = bcrypt.hashSync(req.body.password, 8);
   const { email, name } = req.body;
@@ -128,6 +128,9 @@ export function login(req, res) {
 
 
 export function validateToken(req, res) {
+  console.log(REDIRECTTOLEVEL);
+  console.log(req.query.redirect);
+
   const token = req.headers['x-access-token'] || req.query.token;
 
   if (!token) {
@@ -140,6 +143,18 @@ export function validateToken(req, res) {
       return res.status(200)
         .send({ isTokenValid: false });
     }
-    res.status(200).send({ isTokenValid: true, id: decoded.id });
+    if (req.query.redirect !== undefined) {
+      if (REDIRECTTOLEVEL[req.query.redirect] === undefined) {
+        return res.status(200).send({ isTokenValid: false });
+      }
+      const level = decoded.level === undefined ? 0 : decoded.level;
+      console.log(level);
+      if (REDIRECTTOLEVEL[req.query.redirect] <= level) {
+        return res.status(200).send({ isTokenValid: true });
+      }
+      return res.status(200).send({ isTokenValid: false });
+    }
+
+    return res.status(200).send({ isTokenValid: true });
   });
 }

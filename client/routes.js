@@ -48,6 +48,8 @@ export default (
         });
       }}
     />
+    <PrivateRoute admin="true" path="/admin" component={AdminPage} />
+    <Route path="/auth" component={Auth} />
     <PrivateRoute
       path="/calendar"
       getComponent={(nextState, cb) => {
@@ -56,14 +58,5 @@ export default (
         });
       }}
     />
-    <PrivateRoute
-      path="/admin"
-      component={AdminPage}
-    />
-    <Route 
-      path="/auth"
-      component={Auth}
-    />
-
   </Route>
 );
