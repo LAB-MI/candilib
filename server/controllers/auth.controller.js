@@ -125,6 +125,9 @@ export function login(req, res) {
 }
 
 export function validateToken(req, res) {
+  console.log(REDIRECTTOLEVEL);
+  console.log(req.query.redirect);
+
   const token = req.headers['x-access-token'] || req.query.token;
 
   if (!token) {
