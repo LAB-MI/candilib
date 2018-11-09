@@ -152,17 +152,6 @@ export function validateToken(req, res) {
       }
       return res.status(200).send({ isTokenValid: false });
     }
-    if (req.query.redirect !== undefined) {
-      if (REDIRECTTOLEVEL[req.query.redirect] === undefined) {
-        return res.status(200).send({ isTokenValid: false });
-      }
-      const level = decoded.level === undefined ? 0 : decoded.level;
-      console.log(level);
-      if (REDIRECTTOLEVEL[req.query.redirect] <= level) {
-        return res.status(200).send({ isTokenValid: true });
-      }
-      return res.status(200).send({ isTokenValid: false });
-    }
 
     res.status(200).send({ isTokenValid: true, id: decoded.id });
   });
