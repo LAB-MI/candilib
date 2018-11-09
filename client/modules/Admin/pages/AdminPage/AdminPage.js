@@ -21,6 +21,7 @@ import moment from 'moment';
 moment.locale('fr');
 import CreneauEvent from '../AdminPage/CreneauEvent';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { callApi } from '../../../../util/apiCaller.admin';
 
 const localizer = BigCalendar.momentLocalizer(moment);
 const messages = {
@@ -76,28 +77,27 @@ class AdminPage extends Component {
   }
 
   componentDidMount() {
-    fetch('/api/creneaux', {
-      method: 'GET',
-    }).then(response => {
-      response.json().then(body => {
-        const eventsCreneaux = [];
-        const { creneaux } = body;
-        creneaux.map(item => {
-          const crenauItem = {
-            id: item._id,
-            title: `${item.centre} - ${item.inspecteur}`,
-            start: moment(
-              moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss'),
-            ).toDate(),
-            end: moment(moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss'))
-              .add(30, 'minutes')
-              .toDate(),
-          };
-          eventsCreneaux.push(crenauItem);
-        });
-
-        this.setState({ eventsCreneaux });
+    callApi('auth/creneaux').then(body => {
+      const eventsCreneaux = [];
+      const { creneaux } = body;
+      if (creneaux === undefined) {
+        return;
+      }
+      creneaux.map(item => {
+        const crenauItem = {
+          id: item._id,
+          title: `${item.centre} - ${item.inspecteur}`,
+          start: moment(
+            moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss'),
+          ).toDate(),
+          end: moment(moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss'))
+            .add(30, 'minutes')
+            .toDate(),
+        };
+        eventsCreneaux.push(crenauItem);
       });
+
+      this.setState({ eventsCreneaux });
     });
   }
 
@@ -107,11 +107,9 @@ class AdminPage extends Component {
     const data = new FormData();
     data.append('file', this.uploadInputCVS.files[0]);
 
-    fetch('/api/candidats/upload/csv', {
-      method: 'POST',
-      body: data,
-    }).then(response => {
-      response.json().then(body => {
+    callApi('auth/candidats/upload/csv')
+      .post(data)
+      .then(body => {
         this.setState({
           success: true,
           open: true,
@@ -119,7 +117,6 @@ class AdminPage extends Component {
         });
         window.location.reload();
       });
-    });
   }
 
   handleUploadJSON(ev) {
@@ -128,11 +125,8 @@ class AdminPage extends Component {
     const data = new FormData();
     data.append('file', this.uploadInputJSON.files[0]);
 
-    fetch('/api/candidats/upload/json', {
-      method: 'POST',
-      body: data,
-    })
-      .then(response => response.json())
+    callApi('admin/candidats/upload/json')
+      .post(data)
       .then(json =>
         this.setState({
           success: json.success,
@@ -150,7 +144,7 @@ class AdminPage extends Component {
   handleDownLoadCSV(ev) {
     ev.preventDefault();
 
-    fetch('/api/candidats/export').then(response => window.open(response.body));
+    callApi('admin/candidats/export').download();
   }
 
   render() {
@@ -200,7 +194,7 @@ class AdminPage extends Component {
                 type="submit"
                 color="primary"
                 variant="raised"
-                href="/api/candidats/export"
+                onClick={this.handleDownLoadCSV}
               >
                 Export CSV
               </Button>

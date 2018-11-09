@@ -47,7 +47,7 @@ export default (
         });
       }}
     />
-    <PrivateRoute path="/admin" component={AdminPage} />
+    <PrivateRoute admin="true" path="/admin" component={AdminPage} />
     <Route path="/auth" component={Auth} />
   </Route>
 );
