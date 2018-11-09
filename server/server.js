@@ -190,7 +190,6 @@ app.use((req, res, next) => {
         );
       });
       if (childrenPrivateRoute !== undefined) {
-        console.log(childrenPrivateRoute);
         return res.redirect(
           302,
           '/auth?redirect=' + renderProps.location.pathname,
