@@ -1,5 +1,4 @@
 import { Component } from 'react';
-import PropTypes from 'prop-types';
 import { setInStorage, getFromStorage } from '../../util/storage';
 
 const KEYSTORAGETOKEN = 'candilib';
@@ -9,8 +8,8 @@ class Auth extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      shouldRedirect: false,
-    };
+      shouldRedirect: false
+    }
   }
 
   componentDidMount() {
@@ -21,10 +20,11 @@ class Auth extends Component {
       tokenToSend = getFromStorage(KEYSTORAGETOKEN);
     }
     fetch(`/api/users/validate_token?token=${tokenToSend}`)
-      .then(response => response.json())
-      .then(response => {
+      .then((response) => response.json())
+      .then((response) => {
         if (response.isTokenValid) {
           setInStorage(KEYSTORAGETOKEN, tokenToSend);
+          setInStorage('candidatId', response.id);
           if (redirect === undefined) {
             router.push(DEFAULT_REDIRECT);
           } else {
@@ -36,6 +36,8 @@ class Auth extends Component {
             state: { error: 'token_no_valid' },
           });
         }
+      }).catch(error => {
+        router.push("/");
       })
       .catch(() => {
         router.push({
@@ -48,10 +50,5 @@ class Auth extends Component {
     return null;
   }
 }
-
-Auth.propTypes = {
-  location: PropTypes.isRequired,
-  router: PropTypes.isRequired,
-};
 
 export default Auth;

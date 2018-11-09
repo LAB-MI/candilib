@@ -19,25 +19,11 @@ import BigCalendar from 'react-big-calendar';
 import 'moment/locale/fr';
 import moment from 'moment';
 moment.locale('fr');
-import CreneauEvent from '../AdminPage/CreneauEvent';
+import CreneauEvent from '../../../../components/calendar/CreneauEvent';
+import messages from '../../../../components/calendar/messages';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 const localizer = BigCalendar.momentLocalizer(moment);
-const messages = {
-  allDay: 'journée',
-  previous: 'précédent',
-  next: 'suivant',
-  today: "aujourd'hui",
-  month: 'mois',
-  week: 'semaine',
-  work_week: 'semaine de travail',
-  day: 'jour',
-  agenda: 'Agenda',
-  date: 'date',
-  time: 'heure',
-  event: 'événement', // Or anything you want
-  showMore: total => `+ ${total} événement(s) supplémentaire(s)`,
-};
 
 const styles = theme => ({
   gridRoot: {

@@ -21,6 +21,7 @@ if (process.env.NODE_ENV !== 'production') {
   // Require async routes only in development for react-hot-reloader to work.
   require('./modules/Home/components/Login/Login');
   require('./modules/Sites/pages/SiteListPage/SiteListPage');
+  require('./modules/Calendar/pages/CalendarListPage/CalendarListPage');
   require('./modules/Admin/pages/AdminPage/AdminPage');
 }
 
@@ -47,7 +48,22 @@ export default (
         });
       }}
     />
-    <PrivateRoute path="/admin" component={AdminPage} />
-    <Route path="/auth" component={Auth} />
+    <PrivateRoute
+      path="/calendar"
+      getComponent={(nextState, cb) => {
+        require.ensure([], require => {
+          cb(null, require('./modules/Calendar/pages/CalendarListPage/CalendarListPage').default);
+        });
+      }}
+    />
+    <PrivateRoute
+      path="/admin"
+      component={AdminPage}
+    />
+    <Route 
+      path="/auth"
+      component={Auth}
+    />
+
   </Route>
 );

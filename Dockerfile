@@ -30,7 +30,7 @@ RUN if [ ! -z "$proxy" ] ; then \
    [ -z "$npm_registry" ] || npm config set registry=$npm_registry ; \
     npm install
 
-COPY .babelrc index.js nodemon.json webpack.config.babel.js webpack.config.dev.js webpack.config.prod.js webpack.config.server.js ./
+COPY .env .babelrc index.js nodemon.json webpack.config.babel.js webpack.config.dev.js webpack.config.prod.js webpack.config.server.js ./
 COPY client ./client
 COPY Intl ./Intl
 COPY server ./server
@@ -50,6 +50,6 @@ RUN if [ ! -z "$proxy" ] ; then \
    fi ; \
    [ -z "$npm_registry" ] || npm config set registry=$npm_registry ; \
     npm install --production
-COPY index.js ./
+COPY index.js .env ./
 COPY --from=build /usr/src/app/dist ./dist
 CMD ["pm2-runtime", "processes.json"]

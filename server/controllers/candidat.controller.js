@@ -16,6 +16,7 @@ import {
   EPREUVE_ETG_KO,
   CANDIDAT_NOK,
   CANDIDAT_NOK_NOM,
+  MAIL_CONVOCATION,
 } from '../util/constant';
 
 import Creneau from '../models/creneau';
@@ -67,9 +68,7 @@ export function signUp(req, res) {
       // Let's sanitize inputs
       newCandidat.nomNaissance = sanitizeHtml(nom);
       // see https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
-      newCandidat.prenom = sanitizeHtml(
-        prenom.normalize('NFD').replace(/[\u0300-\u036f]/g, ''),
-      );
+      newCandidat.prenom = sanitizeHtml(prenom.normalize('NFD').replace(/[\u0300-\u036f]/g, ''));
       newCandidat.codeNeph = neph;
       newCandidat.dateReussiteETG = null;
       newCandidat.dateDernierEchecPratique = null;
@@ -78,6 +77,7 @@ export function signUp(req, res) {
       newCandidat.adresse = sanitizeHtml(adresse);
       newCandidat.email = sanitizeHtml(email);
       newCandidat.isValid = false;
+      newCandidat.creneau = new Creneau();
 
       newCandidat.save((error, candidat) => {
         if (error) {
@@ -275,18 +275,14 @@ export function getCandidatNeph(req, res, next) {
  */
 
 export function updateCandidat(req, res, next) {
-  Candidat.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    { new: true },
-    (err, user) => {
-      if (err) {
-        next(err);
-      } else {
-        res.json(user);
-      }
-    },
-  );
+  Candidat.findByIdAndUpdate(req.params.id, req.body.value, { new: true }, (err, user) => {
+    if (err) {
+      next(err);
+    } else {
+      sendMailToAccount(user, MAIL_CONVOCATION);
+      res.json(user);
+    }
+  });
 }
 
 /**
@@ -422,7 +418,7 @@ const synchroAurige = pathname => {
                 } else {
                   console.warn(
                     `Ce candidat ${
-                      candidatAurige.email
+                    candidatAurige.email
                     } a été detruit: NEPH inconnu`,
                   ); // eslint-disable-line no-console
                   sendMailToAccount(candidatAurige, CANDIDAT_NOK);
@@ -452,7 +448,7 @@ const synchroAurige = pathname => {
                 } else {
                   console.warn(
                     `Ce candidat ${
-                      candidatAurige.email
+                    candidatAurige.email
                     } a été detruit: Nom inconnu`,
                   ); // eslint-disable-line no-console
                   sendMailToAccount(candidatAurige, CANDIDAT_NOK_NOM);
@@ -511,7 +507,7 @@ const synchroAurige = pathname => {
                 } else {
                   console.warn(
                     `Ce candidat ${
-                      candidatAurige.email
+                    candidatAurige.email
                     } a été detruit: Date ETG KO`,
                   ); // eslint-disable-line no-console
                   sendMailToAccount(candidatAurige, EPREUVE_ETG_KO);
@@ -540,7 +536,7 @@ const synchroAurige = pathname => {
                 } else {
                   console.warn(
                     `Ce candidat ${
-                      candidatAurige.email
+                    candidatAurige.email
                     } a été detruit: PRATIQUE OK`,
                   ); // eslint-disable-line no-console
                   sendMailToAccount(candidatAurige, EPREUVE_PRATIQUE_OK);
@@ -586,10 +582,9 @@ const synchroAurige = pathname => {
               { email: candidatAurige.email },
               {
                 $set: {
-                  dateReussiteETG: candidatAurige.dateReussiteETG,
-                  dateDernierEchecPratique:
-                    candidatAurige.dateDernierEchecPratique,
-                  reussitePratique: candidatAurige.reussitePratique,
+                  dateReussiteETG: moment(candidatAurige.dateReussiteETG, 'DD-MM-YYYY').format('YYYY-MM-DD'),
+                  dateDernierEchecPratique: moment(candidatAurige.dateDernierEchecPratique, 'DD-MM-YYYY').format('YYYY-MM-DD'),
+                  reussitePratique: moment(candidatAurige.reussitePratique, 'DD-MM-YYYY').format('YYYY-MM-DD'),
                 },
               },
               () => {
@@ -682,8 +677,7 @@ export const uploadAurigeCSV = (req, res) => {
         );
       })
       .on('end', () => {
-        console.warn('done'); // eslint-disable-line no-console
-        // console.warn(fileRows); // eslint-disable-line no-console
+        console.log('done'); // eslint-disable-line no-console
       });
   });
 

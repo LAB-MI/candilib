@@ -10,21 +10,20 @@ const sendMagicLink = (candidatAurige, token) => {
   //   Vous êtes inscrit sur le site de réservation des candidats libres.</br>\n\r
   //   Voici votre identifiant: ${email}\n`;
 
-  const transporter = nodemailer.createTransport(
-    smtpTransport({
-      host: serverConfig.smtpServer,
-      port: serverConfig.smtpPort,
-      secure: false,
-      auth: {
-        user: serverConfig.mailUser,
-        pass: serverConfig.mailPassword,
-      },
-      tls: {
-        // do not failed with selfsign certificates
-        rejectUnauthorized: false,
-      },
-    }),
-  );
+  const transporter = nodemailer.createTransport(smtpTransport({
+    service: serverConfig.smtpService,
+    host: serverConfig.smtpServer,
+    port: serverConfig.smtpPort,
+    secure: false,
+    auth: {
+      user: serverConfig.mailUser,
+      pass: serverConfig.mailPassword,
+    },
+    tls: {
+      // do not failed with selfsign certificates
+      rejectUnauthorized: false,
+    },
+  }));
 
   const mailOptions = {
     from: serverConfig.mailFrom,
@@ -114,16 +113,10 @@ const sendMagicLink = (candidatAurige, token) => {
                                                                         <tr>
                                                                             <td class="article-content" colspan="2">
                                                                                 ${
-                                                                                  message.content
-                                                                                }
+      message.content
+      }
                                                                                 <br/>
-                                                                                <p><a href="${
-                                                                                  serverConfig.host
-                                                                                }${
-      serverConfig.authentificationRoute
-    }?token=${encodeURIComponent(
-      token,
-    )}">Vous pouvez vous connecter à Candilb en cliquant sur ce lien</a></p>
+                                                                                <p><a href="${serverConfig.host}:${serverConfig.portMail}${serverConfig.authentificationRoute}?token=${encodeURIComponent(token)}&redirect=calendar">Vous pouvez vous connecter à Candilb en cliquant sur ce lien</a></p>
                                                                             </td>
                                                                         </tr>
                                                                     </tbody>

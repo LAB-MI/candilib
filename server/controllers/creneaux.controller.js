@@ -66,7 +66,7 @@ export function getCreneau(req, res) {
  */
 
 export function updateCreneau(req, res, next) {
-  Creneau.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err, creneau) => {
+  Creneau.findByIdAndUpdate(req.params.id, req.body.creneau, { new: true }, (err, creneau) => {
     if (err) {
       next(err);
     } else {

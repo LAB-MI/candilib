@@ -6,14 +6,108 @@ import {
   INSCRIPTION_OK,
   INSCRIPTION_VALID,
   AURIGE_OK,
+  MAIL_CONVOCATION,
 } from './constant';
+import moment from 'moment';
 
 const mailMessage = (candidatAurige, flag) => {
-  const { codeNeph, nomNaissance } = candidatAurige;
+  console.log(candidatAurige);
+
+  const {
+    codeNeph,
+    nomNaissance,
+    adresse,
+    creneau,
+  } = candidatAurige;
 
   const message = {};
 
   const nomMaj = nomNaissance ? nomNaissance.toUpperCase() : '';
+
+  const site = creneau && creneau.title ? creneau.title : '';
+  const dateCreneau = creneau && creneau.start ? moment(creneau.start).format('DD MMMM YYYY') : '';
+  const heureCreneau = creneau && creneau.start ? moment(creneau.start).add(1, 'hour').format('HH:mm') : '';
+
+  const MAIL_CONVOCATION_MSG = `
+  <p>Le présent mail vaut convocation.</p>
+  <p>Bonjour Mr/Mme ${nomMaj},</p>
+  <br>
+  <p>Nous avons bien pris en compte votre réservation à l'examen pratique 
+  du permis de conduire à ${site} le ${dateCreneau} à ${heureCreneau} avec
+   le numéro NEPH ${codeNeph}.!</p>
+  <p>${adresse} </p>
+  <br>
+  <p>Nous vous rappelons les éléments à vérifier le jour de l'examen :</p>
+  <div>
+    <ul>
+      <li>Vous fournirez un véhicule en parfait état, équipé d’une double 
+      commande de frein et d’embrayage, de 2 rétroviseurs intérieurs et 
+      de 2 rétroviseurs latéraux.
+      </li>
+      <li>
+        <p>Votre accompagnateur sera :<p>
+          <ul>
+            <li>
+              soit un enseignant de la conduite en possession de l'original de son 
+              autorisation d'enseigner pour la présenter à l'inspecteur,
+            </li>
+            <li>
+              soit une personne dont le permis B est en cours de validité. 
+              Cette dernière devra présenter son permis ainsi que 
+              la « charte de l’accompagnateur »
+              (https://www.legifrance.gouv.fr/jo_pdf.do?id=JORFTEXT000036251681) remplie et signée pour la remettre à l’inspecteur avant le début de l’examen.
+            </li>
+            <li>
+              <p>Vous présenterez un titre d’identité en cours de validité : carte nationale 
+              d’identité, passeport ou titre de séjour
+              (liste complète https://legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000033736411&categorieLien=id).<p>
+              
+            </li>
+            <li> 
+              <p>Votre permis de conduire original si vous avez obtenu une autre 
+              catégorie depuis moins de 5 ans afin de bénéficier d’une dispense 
+              d’examen théorique général.</p>
+            </li>
+            <li>
+              L'attestation d'assurance du véhicule, en cours de validité, 
+              comportant obligatoirement les mentions suivantes :
+              <uL>
+                <li>la raison sociale de la société d'assurance ;</li>
+                <li>les nom et prénom du candidat bénéficiant de la police d'assurance ;</li>
+                <li>le numéro d'immatriculation du véhicule couvert ;</li>
+                <li>le type d'assurance (couverture de l'ensemble des dommages
+                pouvant être causés aux tiers à l'occasion de l'examen)</li>
+              </ul>
+            </li>
+          </ul>
+      </li>
+      <li>
+        Une enveloppe affranchie à 20 g.
+      </li>
+      <li>
+        Lorsque vous avez fait l'objet d'une annulation du permis, le récépissé 
+        de la « fiche retour au permis de conduire » que vous aurez imprimé 
+        sur le site de l’ ANTS : 
+        https://permisdeconduire.ants.gouv.fr/.
+      </li>
+    </ul>
+  </div>
+  <p>
+    Attention : le mauvais état du véhicule (pneus lisses, rétros cassés ou 
+    absents, non fonctionnement de tous les feux, etc.),
+    ou l'absence ou la non-validité d'un des documents exigés ci-dessus, 
+    pour le candidat ou pour l'accompagnateur, entraîne le report de l'examen 
+    À une date ultérieure.
+  </p>
+  <p>
+    Si besoin, vous pouvez annuler votre réservation sur [lien à définir].
+    Si vous annulez 7 jours avant la date prévue, vous pourrez choisir un autre créneau disponible.
+    Nous vous souhaitons une bonne préparation et le succès à l'examen.
+    Pour toute information, vous pouvez consulter la FAQ [lien à définir].
+    Sincères salutations,
+  </p>
+  <p>Candilib</p>
+  `;
 
   const INSCRIPTION_OK_MSG = `<p>Bonjour Mr/Mme ${nomMaj},</p>
   <br>
@@ -89,6 +183,10 @@ const mailMessage = (candidatAurige, flag) => {
       message.content = INSCRIPTION_OK_MSG;
       message.subject =
         '<ne pas répondre> Validation de votre inscription à Candilib';
+      return message;
+    case MAIL_CONVOCATION:
+      message.content = MAIL_CONVOCATION_MSG;
+      message.subject = '<ne pas répondre> Validation de votre inscription à Candilib';
       return message;
     default:
       return '';

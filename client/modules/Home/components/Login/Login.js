@@ -18,6 +18,7 @@ import blue from '@material-ui/core/colors/blue';
 import SnackbarNotification from '../../../../components/Notifications/SnackbarNotificationWrapper';
 import AutoCompleteAddresses from '../../../../components/AutoCompleteAddresses/AutoCompleteAddresses';
 import { errorsConstants } from '../errors.constants';
+import { setInStorage } from '../../../../util/storage';
 
 const styles = theme => ({
   layout: {
@@ -67,7 +68,7 @@ const styles = theme => ({
     position: 'absolute',
   },
   snackbarContent: {
-    width: theme.spacing.unit * 50,
+    width: theme.spacing.unit * 150,
   },
   textField: {
     width: '100%',
@@ -161,6 +162,10 @@ class Login extends Component {
           .then(res => res.json())
           .then(json => {
             if (json.success) {
+              setInStorage('candilib', {
+                token: json.token,
+                id: json.candidat._id,
+              });
               this.setState({
                 signUpError: json.message,
                 isLoading: false,
@@ -177,8 +182,6 @@ class Login extends Component {
                 success: true,
               });
             } else {
-              console.log(`message: ${json.message}`);
-              console.log(`status: ${json.success}`);
               if (json.message.indexOf('email') > -1) {
                 this.setState({
                   signUpError: 'Vérifier votre email.',

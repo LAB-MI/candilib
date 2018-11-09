@@ -7,6 +7,7 @@ import styles from './App.css';
 
 // Import Components
 import Helmet from 'react-helmet';
+import { CssBaseline } from '@material-ui/core';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 
@@ -27,7 +28,7 @@ export class App extends Component {
   }
 
   componentDidMount() {
-    this.setState({isMounted: true}); // eslint-disable-line
+    this.setState({ isMounted: true }); // eslint-disable-line
   }
 
   toggleAddPostSection = () => {
@@ -36,35 +37,38 @@ export class App extends Component {
 
   render() {
     return (
-      <div>
-        {this.state.isMounted && !window.devToolsExtension && process.env.NODE_ENV === 'development' && <DevTools />}
+      <React.Fragment>
+        <CssBaseline />
         <div>
-          <Helmet
-            title="Candlib Dev en cours"
-            titleTemplate="%s -candilib"
-            meta={[
-              { charset: 'utf-8' },
-              {
-                'http-equiv': 'X-UA-Compatible',
-                content: 'IE=edge',
-              },
-              {
-                name: 'viewport',
-                content: 'width=device-width, initial-scale=1',
-              },
-            ]}
-          />
-          <Header
-            switchLanguage={lang => this.props.dispatch(switchLanguage(lang))}
-            intl={this.props.intl}
-            toggleAddPost={this.toggleAddPostSection}
-          />
-          <div className={styles.container}>
-            {this.props.children}
+          <div>
+            <Helmet
+              title="Candlib Dev en cours"
+              titleTemplate="%s -candilib"
+              meta={[
+                { charset: 'utf-8' },
+                {
+                  'http-equiv': 'X-UA-Compatible',
+                  content: 'IE=edge',
+                },
+                {
+                  name: 'viewport',
+                  content: 'width=device-width, initial-scale=1',
+                },
+              ]}
+            />
+            <Header
+              switchLanguage={lang => this.props.dispatch(switchLanguage(lang))}
+              intl={this.props.intl}
+              toggleAddPost={this.toggleAddPostSection}
+            />
+            <div className={styles.container}>
+              {this.props.children}
+            </div>
+            <Footer />
           </div>
-          <Footer />
         </div>
-      </div>
+      </React.Fragment>
+
     );
   }
 }
