@@ -4,7 +4,8 @@ import {
   Grid,
   Paper,
   Typography,
-  Card, CardHeader,
+  Card,
+  CardHeader,
   Avatar,
   CardContent,
   Snackbar,
@@ -21,14 +22,13 @@ import { getFromStorage } from '../../../../util/storage';
 import CreneauDialog from '../../components/CreneauDialog';
 import SnackbarNotification from '../../../../components/Notifications/SnackbarNotificationWrapper';
 
-
 const localizer = BigCalendar.momentLocalizer(moment);
 
 const styles = theme => ({
   '@global': {
     body: {
       backgroundColor: theme.palette.common.white,
-    }
+    },
   },
   gridRoot: {
     flexGrow: 1,
@@ -74,37 +74,40 @@ class CalendarListPage extends Component {
       openSnack: false,
       success: false,
       message: '',
-    }
+    };
     this.selectCreneau = this.selectCreneau.bind(this);
   }
 
   componentDidMount() {
-
     const token = getFromStorage('candilib');
     const id = getFromStorage('candidatId');
 
-    callApi('creneaux', 'get').then((res) => {
+    callApi('creneaux', 'get').then(res => {
       const creneauxCandidats = [];
       const { creneaux } = res;
 
-      creneaux.map((item) => {
+      creneaux.map(item => {
         const crenauItem = {
           id: item._id,
           title: `${item.centre}`,
-          start: moment(moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss')).toDate(),
-          end: moment(moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss')).add(30, 'minutes').toDate(),
+          start: moment(
+            moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss'),
+          ).toDate(),
+          end: moment(moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss'))
+            .add(30, 'minutes')
+            .toDate(),
         };
         creneauxCandidats.push(crenauItem);
       });
       this.setState({ creneauxCandidats, success: true });
     });
-    
-    callApi(`candidats/${id}`, 'post',
-      {
-        token,
-      }
-    ).then((res) => {
-      res.candidat.initialCandidat = `${res.candidat.nomNaissance.charAt(0).toUpperCase()}${res.candidat.prenom.charAt(0).toUpperCase()}`
+
+    callApi(`candidats/${id}`, 'post', {
+      token,
+    }).then(res => {
+      res.candidat.initialCandidat = `${res.candidat.nomNaissance
+        .charAt(0)
+        .toUpperCase()}${res.candidat.prenom.charAt(0).toUpperCase()}`;
       this.setState({ candidat: res.candidat, success: true });
     });
   }
@@ -126,19 +129,24 @@ class CalendarListPage extends Component {
   handleClose = value => {
     const token = getFromStorage('candilib');
 
-
     this.setState({ candidat: value, open: false });
 
-    callApi(`candidats/${value._id}`, 'put',
-      {
-        token,
-        value,
-      }
-    ).then((candidat) => {
+    callApi(`candidats/${value._id}`, 'put', {
+      token,
+      value,
+    }).then(candidat => {
       console.log(candidat);
 
-      candidat.initialCandidat = `${candidat.nomNaissance.charAt(0).toUpperCase()}${candidat.prenom.charAt(0).toUpperCase()}`
-      this.setState({ candidat, success: true, openSnack: true, message: 'Votre réservation à l\'examen a été prise en compte. Veuillez consulter votre boîte mail.' });
+      candidat.initialCandidat = `${candidat.nomNaissance
+        .charAt(0)
+        .toUpperCase()}${candidat.prenom.charAt(0).toUpperCase()}`;
+      this.setState({
+        candidat,
+        success: true,
+        openSnack: true,
+        message:
+          "Votre réservation à l'examen a été prise en compte. Veuillez consulter votre boîte mail.",
+      });
       this.forceUpdate();
     });
   };
@@ -149,7 +157,14 @@ class CalendarListPage extends Component {
 
   render() {
     const { classes } = this.props;
-    const { creneauxCandidats, candidat, success, signUpError, openSnack, message } = this.state;
+    const {
+      creneauxCandidats,
+      candidat,
+      success,
+      signUpError,
+      openSnack,
+      message,
+    } = this.state;
 
     return (
       <div>
@@ -163,14 +178,14 @@ class CalendarListPage extends Component {
         <Grid container className={classes.gridRoot} spacing={16}>
           <Grid item xs={3}>
             <Card className={classes.card}>
-              <CardHeader avatar={
-                <Avatar aria-label="Candidat" className={classes.avatar}>
-                  {candidat.initialCandidat}
-                </Avatar>
-              }
+              <CardHeader
+                avatar={
+                  <Avatar aria-label="Candidat" className={classes.avatar}>
+                    {candidat.initialCandidat}
+                  </Avatar>
+                }
                 className={classes.cardHeader}
-              >
-              </CardHeader>
+              />
               <CardContent>
                 <Typography component="p">
                   Nom : {candidat.nomNaissance} {candidat.prenom}
@@ -178,31 +193,36 @@ class CalendarListPage extends Component {
                 <Typography component="p">
                   Neph : {candidat.codeNeph}
                 </Typography>
-                <Typography component="p">
-                  Email : {candidat.email}
-                </Typography>
+                <Typography component="p">Email : {candidat.email}</Typography>
                 <Typography component="p">
                   Portable : {candidat.portable}
                 </Typography>
                 <Typography component="p">
                   adresse : {candidat.adresse}
                 </Typography>
-                {candidat.dateReussiteETG &&
+                {candidat.dateReussiteETG && (
                   <Typography component="p">
-                    Date Code : {moment(candidat.dateReussiteETG).format('DD MMMM YYYY')}
+                    Date Code :{' '}
+                    {moment(candidat.dateReussiteETG).format('DD MMMM YYYY')}
                   </Typography>
-                }
-                {candidat.dateDernierEchecPratique &&
+                )}
+                {candidat.dateDernierEchecPratique && (
                   <Typography component="p">
-                    Date Echec Permis : {moment(candidat.dateDernierEchecPratique).format('DD MMMM YYYY')}
+                    Date Echec Permis :{' '}
+                    {moment(candidat.dateDernierEchecPratique).format(
+                      'DD MMMM YYYY',
+                    )}
                   </Typography>
-
-                }
-                {candidat.creneau && candidat.creneau.start &&
-                  <Typography component="p">
-                    Date de Convocation: {moment(candidat.creneau.start).format('DD MMMM YYYY HH:mm')}
-                  </Typography>
-                }
+                )}
+                {candidat.creneau &&
+                  candidat.creneau.start && (
+                    <Typography component="p">
+                      Date de Convocation:{' '}
+                      {moment(candidat.creneau.start).format(
+                        'DD MMMM YYYY HH:mm',
+                      )}
+                    </Typography>
+                  )}
               </CardContent>
             </Card>
           </Grid>
@@ -223,7 +243,7 @@ class CalendarListPage extends Component {
             </Paper>
           </Grid>
         </Grid>
-        {success &&
+        {success && (
           <Snackbar
             open={openSnack}
             autoHideDuration={8000}
@@ -237,8 +257,8 @@ class CalendarListPage extends Component {
               message={message}
             />
           </Snackbar>
-        }
-        {!success &&
+        )}
+        {!success && (
           <Snackbar
             open={openSnack}
             autoHideDuration={8000}
@@ -251,9 +271,10 @@ class CalendarListPage extends Component {
               className={classes.snackbarContent}
               message={signUpError}
             />
-          </Snackbar>}
+          </Snackbar>
+        )}
       </div>
-    )
+    );
   }
 }
 

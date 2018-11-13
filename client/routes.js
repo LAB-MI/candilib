@@ -5,6 +5,7 @@ import App from './modules/App/App';
 import PrivateRoute from './util/PrivateRoute';
 import AdminPage from './modules/Admin/pages/AdminPage/AdminPage';
 import Auth from './modules/Auth/Auth';
+import LoginAdmin from './modules/Admin/pages/Login/Login';
 
 // require.ensure polyfill for node
 if (typeof require.ensure !== 'function') {
@@ -52,10 +53,16 @@ export default (
       path="/calendar"
       getComponent={(nextState, cb) => {
         require.ensure([], require => {
-          cb(null, require('./modules/Calendar/pages/CalendarListPage/CalendarListPage').default);
+          cb(
+            null,
+            require('./modules/Calendar/pages/CalendarListPage/CalendarListPage')
+              .default,
+          );
         });
       }}
     />
+
+    <Route path="/admin/login" component={LoginAdmin} />
     <PrivateRoute admin="true" path="/admin" component={AdminPage} />
     <Route path="/auth" component={Auth} />
   </Route>
