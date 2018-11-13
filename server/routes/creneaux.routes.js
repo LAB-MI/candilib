@@ -12,7 +12,6 @@ router.route('/creneaux').get(CreneauxController.getCreneaux);
 // Get one Candidat by id
 router.route('/creneaux/:id').post(CreneauxController.getCreneau);
 
-
 // Add a new Candidat
 router.route('/creneaux').post(CreneauxController.addCreneau);
 
@@ -22,9 +21,4 @@ router.route('/creneaux/:id').put(CreneauxController.updateCreneau);
 // Delete Candidat by id
 router.route('/creneaux/:id').delete(CreneauxController.deleteCreneau);
 
-// synchro creneaux from Aurige
-router.route('/creneaux/upload/csv').post(uploadCSV.single('file'), CreneauxController.uploadAurigeCSV);
-
-
 export default router;
-
