@@ -126,7 +126,6 @@ export function login(req, res) {
   });
 }
 
-
 export function validateToken(req, res) {
   console.log(REDIRECTTOLEVEL);
   console.log(req.query.redirect);
@@ -134,22 +133,21 @@ export function validateToken(req, res) {
   const token = req.headers['x-access-token'] || req.query.token;
 
   if (!token) {
-    return res.status(403)
-      .send({ message: 'Pas de Token ' });
+    return res.status(403).send({ message: 'Pas de Token ' });
   }
 
   jwt.verify(token, serverConfig.secret, (err, decoded) => {
     if (err) {
-      return res.status(200)
-        .send({ isTokenValid: false });
+      return res.status(200).send({ isTokenValid: false });
     }
     if (req.query.redirect !== undefined) {
-      if (REDIRECTTOLEVEL[req.query.redirect] === undefined) {
+      const redirect = req.query.redirect.toLowerCase();
+      if (REDIRECTTOLEVEL[redirect] === undefined) {
         return res.status(200).send({ isTokenValid: false });
       }
       const level = decoded.level === undefined ? 0 : decoded.level;
       console.log(level);
-      if (REDIRECTTOLEVEL[req.query.redirect] <= level) {
+      if (REDIRECTTOLEVEL[redirect] <= level) {
         return res.status(200).send({ isTokenValid: true });
       }
       return res.status(200).send({ isTokenValid: false });
