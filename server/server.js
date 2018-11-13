@@ -52,6 +52,7 @@ import candidats from './routes/candidats.routes';
 import authAdminCandidats from './routes/auth.admin.candidats.routers';
 import authCandidats from './routes/auth.candidats.routes';
 import creneaux from './routes/creneaux.routes';
+import adminCreneaux from './routes/auth.admin.creneaux.routes';
 import users from './routes/users.routes';
 
 import serverConfig from './config';
@@ -92,6 +93,7 @@ app.use('/api', candidats);
 app.use('/api/auth', verifyToken, authCandidats);
 app.use('/api/admin', verifyToken, isAdmin, authAdminCandidats);
 app.use('/api/auth', verifyToken, creneaux);
+app.use('/api/admin', verifyToken, adminCreneaux);
 
 // Render Initial HTML
 const renderFullPage = (html, initialState) => {
