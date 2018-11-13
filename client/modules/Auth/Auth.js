@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import PropTypes from 'prop-types';
 import { setInStorage, getFromStorage } from '../../util/storage';
 import { DEFAULT_REDIRECT, KEYSTORAGETOKEN } from '../../util/app.constants';
 
@@ -6,8 +7,8 @@ class Auth extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      shouldRedirect: false
-    }
+      shouldRedirect: false,
+    };
   }
 
   componentDidMount() {
@@ -38,10 +39,8 @@ class Auth extends Component {
             state: { error: 'token_no_valid' },
           });
         }
-      }).catch(error => {
-        router.push("/");
       })
-      .catch(() => {
+      .catch(error => {
         router.push({
           pathname: '/',
           state: { error: 'unknown' },

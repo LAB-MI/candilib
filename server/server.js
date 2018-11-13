@@ -78,7 +78,10 @@ if (process.env.NODE_ENV !== 'test') {
 // Set Level to redirect
 routes.props.children.forEach(child => {
   if (child.type.name === 'PrivateRoute') {
-    REDIRECTTOLEVEL[child.props.path] = child.props.admin ? 1 : 0;
+    if (child.props.path !== undefined) {
+      const pathAdmin = child.props.path.toLowerCase();
+      REDIRECTTOLEVEL[pathAdmin] = child.props.admin ? 1 : 0;
+    }
   }
 });
 
