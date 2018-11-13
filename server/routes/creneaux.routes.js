@@ -1,9 +1,5 @@
 import { Router } from 'express';
 import * as CreneauxController from '../controllers/creneaux.controller';
-import multer from 'multer';
-
-const uploadCSV = multer({ dest: 'temp/csv/' });
-
 const router = new Router();
 
 // Get all Creneaux
