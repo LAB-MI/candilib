@@ -40,7 +40,7 @@ class Auth extends Component {
           });
         }
       })
-      .catch(() => {
+      .catch(error => {
         router.push({
           pathname: '/',
           state: { error: 'unknown' },
