@@ -98,14 +98,12 @@ export function login(req, res) {
         .send({ auth: false, message: 'Utilisateur non reconnu. ' });
     }
 
-    console.log(user);
     let passwordIsValid = false;
     if (password !== undefined) {
       passwordIsValid = bcrypt.compareSync(password, user.password);
     }
     const usernameIsValid = email === user.email;
 
-    console.log(passwordIsValid);
     if (!usernameIsValid || !passwordIsValid) {
       return res.status(401).send({ auth: false, token: null });
     }
@@ -127,9 +125,6 @@ export function login(req, res) {
 }
 
 export function validateToken(req, res) {
-  console.log(REDIRECTTOLEVEL);
-  console.log(req.query.redirect);
-
   const token = req.headers['x-access-token'] || req.query.token;
 
   if (!token) {
@@ -141,14 +136,16 @@ export function validateToken(req, res) {
       return res.status(200).send({ isTokenValid: false });
     }
     if (req.query.redirect !== undefined) {
-      const redirect = req.query.redirect.toLowerCase();
+      let redirect = req.query.redirect.toLowerCase();
+      if (!redirect.startsWith('/')) {
+        redirect = '/' + redirect;
+      }
       if (REDIRECTTOLEVEL[redirect] === undefined) {
         return res.status(200).send({ isTokenValid: false });
       }
       const level = decoded.level === undefined ? 0 : decoded.level;
-      console.log(level);
       if (REDIRECTTOLEVEL[redirect] <= level) {
-        return res.status(200).send({ isTokenValid: true });
+        return res.status(200).send({ isTokenValid: true, id: decoded.id });
       }
       return res.status(200).send({ isTokenValid: false });
     }

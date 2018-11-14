@@ -10,10 +10,15 @@ export const API_URL =
     : '/api';
 
 export default function callApi(endpoint, method = 'get', body) {
+  // const { token } = getFromStorage(KEYSTORAGETOKEN);
+  let tokenCandidat = getFromStorage(KEYSTORAGETOKEN);
+  if (tokenCandidat !== null && tokenCandidat.token !== undefined) {
+    tokenCandidat = tokenCandidat.token;
+  }
   return fetch(`${API_URL}/${endpoint}`, {
     headers: {
       'content-type': 'application/json',
-      'x-access-token': getFromStorage(KEYSTORAGETOKEN),
+      'x-access-token': tokenCandidat,
     },
     method,
     body: JSON.stringify(body),
