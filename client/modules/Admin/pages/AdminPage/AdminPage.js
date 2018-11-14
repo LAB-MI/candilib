@@ -63,28 +63,32 @@ class AdminPage extends Component {
   }
 
   componentDidMount() {
-    callApi('auth/creneaux').then(body => {
-      const eventsCreneaux = [];
-      const { creneaux } = body;
-      if (creneaux === undefined) {
-        return;
-      }
-      creneaux.map(item => {
-        const crenauItem = {
-          id: item._id,
-          title: `${item.centre} - ${item.inspecteur}`,
-          start: moment(
-            moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss'),
-          ).toDate(),
-          end: moment(moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss'))
-            .add(30, 'minutes')
-            .toDate(),
-        };
-        eventsCreneaux.push(crenauItem);
-      });
+    callApi('auth/creneaux')
+      .then(response => {
+        return response.json();
+      })
+      .then(body => {
+        const eventsCreneaux = [];
+        const { creneaux } = body;
+        if (creneaux === undefined) {
+          return;
+        }
+        creneaux.map(item => {
+          const crenauItem = {
+            id: item._id,
+            title: `${item.centre} - ${item.inspecteur}`,
+            start: moment(
+              moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss'),
+            ).toDate(),
+            end: moment(moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss'))
+              .add(30, 'minutes')
+              .toDate(),
+          };
+          eventsCreneaux.push(crenauItem);
+        });
 
-      this.setState({ eventsCreneaux });
-    });
+        this.setState({ eventsCreneaux });
+      });
   }
 
   handleUploadCSV(ev) {
