@@ -6,9 +6,10 @@ export class ApiCaller {
   constructor(endpoint, method = 'get', body) {
     this._endpoint = endpoint;
     this._method = method;
+    const token = getFromStorage(KEYSTORAGETOKEN);
     this._headers = {
       'content-type': 'application/json',
-      'x-access-token': getFromStorage(KEYSTORAGETOKEN),
+      'x-access-token': token,
     };
     this._body = body;
   }
