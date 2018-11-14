@@ -93,7 +93,7 @@ class AdminPage extends Component {
     const data = new FormData();
     data.append('file', this.uploadInputCVS.files[0]);
 
-    callApi('auth/candidats/upload/csv')
+    callApi('admin/candidats/upload/csv')
       .post(data)
       .then(body => {
         this.setState({
@@ -113,14 +113,16 @@ class AdminPage extends Component {
 
     callApi('admin/candidats/upload/json')
       .post(data)
-      .then(json =>
+      .then(response => response.json())
+      .then(json => {
+        console.log(json);
         this.setState({
           success: json.success,
           open: true,
           snackBarMessage: json.message,
           fileName: json.fileName,
-        }),
-      );
+        });
+      });
   }
 
   handleClose = () => {
