@@ -49,10 +49,10 @@ import routes from '../client/routes';
 import { REDIRECTTOLEVEL } from './util/redirect2Level';
 import { fetchComponentData } from './util/fetchData';
 import candidats from './routes/candidats.routes';
-import authAdminCandidats from './routes/auth.admin.candidats.routers';
+import authAdminCandidats from './routes/admin.candidats.routes';
 import authCandidats from './routes/auth.candidats.routes';
 import creneaux from './routes/creneaux.routes';
-import adminCreneaux from './routes/auth.admin.creneaux.routes';
+import adminCreneaux from './routes/admin.creneaux.routes';
 import users from './routes/users.routes';
 
 import serverConfig from './config';
