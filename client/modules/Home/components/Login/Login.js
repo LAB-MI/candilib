@@ -11,7 +11,6 @@ import {
   withStyles,
   CssBaseline,
   Snackbar,
-  CircularProgress,
 } from '@material-ui/core';
 
 import blue from '@material-ui/core/colors/blue';
@@ -19,6 +18,7 @@ import SnackbarNotification from '../../../../components/Notifications/SnackbarN
 import AutoCompleteAddresses from '../../../../components/AutoCompleteAddresses/AutoCompleteAddresses';
 import { errorsConstants } from '../errors.constants';
 import { setInStorage } from '../../../../util/storage';
+import { Circle } from 'better-react-spinkit';
 
 const styles = theme => ({
   layout: {
@@ -57,8 +57,8 @@ const styles = theme => ({
     margin: theme.spacing.unit * 2,
     color: blue[500],
     position: 'absolute',
-    top: '50%',
-    left: '50%',
+    top: '-30%',
+    left: '40%',
   },
   buttonLogin: {
     textTransform: 'none',
@@ -353,6 +353,12 @@ class Login extends Component {
                     >
                       Inscription
                     </Button>
+                    {isLoading && (
+                      <Circle
+                        size={25}
+                        className={classes.buttonProgress}
+                      />
+                    )}
                   </FormControl>
                   <FormControl margin="normal" className={classes.buttonLogin}>
                     <Button
@@ -389,8 +395,8 @@ class Login extends Component {
                       Connexion
                     </Button>
                     {isLoading && (
-                      <CircularProgress
-                        size={24}
+                      <Circle
+                        size={25}
                         className={classes.buttonProgress}
                       />
                     )}
