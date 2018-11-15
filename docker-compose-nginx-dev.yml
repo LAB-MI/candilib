@@ -1,0 +1,67 @@
+version: '3.4'
+services:
+  nginx.dev:
+    image: nginx:latest
+    restart: always
+    container_name: ${APP}_nginx
+    volumes:
+      - ./nginx/candilib_nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/candilib_proxy.conf:/etc/nginx/proxy.conf
+      - ./nginx/logs:/var/log/nginx/
+    container_name: ${APP}_nginx
+    depends_on:
+      - web
+    ports:
+      - "${APP_PORT}:80"
+    networks:
+      - candilib-network
+  web:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      target: development
+      args: 
+          proxy: ${http_proxy}
+    container_name: ${APP}_front
+    depends_on:
+      - db
+    ports:
+      - "${WEB_PORT:-8000}:8000"
+    volumes:
+      - ./client:/usr/src/app/client
+      - ./Intl:/usr/src/app/Intl
+      - ./server:/usr/src/app/server
+      - ./.babelrc:/usr/src/app/.babelrc
+      - ./index.js:/usr/src/app/index.js
+      - ./nodemon.json:/usr/src/app/nodemon.json
+      - ./package.json:/usr/src/app/package.json
+      - ./package-lock.json:/usr/src/app/package-lock.json
+      - ./webpack.config.babel.js:/usr/src/app/webpack.config.babel.js
+      - ./webpack.config.dev.js:/usr/src/app/webpack.config.dev.js
+      - ./webpack.config.prod.js:/usr/src/app/webpack.config.prod.js
+      - ./webpack.config.server.js:/usr/src/app/webpack.config.server.js
+    environment:
+      NODE_ENV: development
+      MONGO_URL: mongodb://db:27017/candilib
+    stdin_open: true
+    tty: true
+    command: ./node_modules/.bin/nodemon --legacy-watch --inspect=0.0.0.0 index.js
+    networks:
+      - candilib-network
+
+  db:
+    image: mongo:latest
+    container_name: ${APP}_db
+    volumes:
+      - dbdata:/data/db
+    ports:
+      - "${WEB_PORT:-27017}:27017"
+    networks:
+      - candilib-network
+volumes:
+  dbdata:
+networks:
+  candilib-network:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1450
