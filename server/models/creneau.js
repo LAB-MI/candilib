@@ -14,6 +14,10 @@ const creneauDateSchema = new Schema({
     type: Date,
     required: false,
   },
+  isSelected: {
+    type: Boolean,
+    required: false,
+  },
 });
 
 export default mongoose.model('Creneau', creneauDateSchema);

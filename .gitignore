@@ -15,4 +15,5 @@ server/models/__tests__
 .history
 .env
 .env-prod
+env/*
 

@@ -275,7 +275,7 @@ export function getCandidatNeph(req, res, next) {
  */
 
 export function updateCandidat(req, res, next) {
-  Candidat.findByIdAndUpdate(req.params.id, req.body.value, { new: true }, (err, user) => {
+  Candidat.findByIdAndUpdate(req.params.id, req.body.candidat, { new: true }, (err, user) => {
     if (err) {
       next(err);
     } else {
