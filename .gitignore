@@ -20,3 +20,6 @@ server/util/sendMail\.js\.cloud
 
 server/config\.js\.cloud
 logs/
+server/inbox/updateCandidats\.json
+
+server/config\.home\.js
