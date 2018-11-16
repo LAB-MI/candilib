@@ -63,6 +63,7 @@ const styles = theme => ({
     padding: theme.spacing.unit,
   },
   gridCandidat: {
+    minHeight: 'fit-content',
     // backgroundColor: 'red',
     [theme.breakpoints.up('sm')]: {
     },
@@ -95,12 +96,9 @@ const styles = theme => ({
   cardResa: {
     // backgroundColor: 'blue',
     marginTop: 10,
-    marginBottom: 120,
     [theme.breakpoints.down('sm')]: {
-      height: '50%',
     },
     [theme.breakpoints.up('md')]: {
-      height: '30%',
     },
   },
   cardHeader: {
@@ -149,9 +147,13 @@ class CalendarListPage extends Component {
 
   componentDidMount() {
 
-    const id = getFromStorage('candidatId');
+    this.getCreneauxCandidats();
+    this.getCandidats();
 
-    callApi('auth/creneaux', 'get').then(res => {
+  }
+
+  getCreneauxCandidats() {
+    callApi('creneaux', 'get').then((res) => {
       const creneauxCandidats = [];
       const { creneaux } = res;
 
@@ -167,6 +169,10 @@ class CalendarListPage extends Component {
       });
       this.setState({ creneauxCandidats, success: true });
     });
+  }
+
+  getCandidats() {
+    const id = getFromStorage('candidatId');
 
     callApi(`candidats/${id}`, 'post')
       .then((res) => {
@@ -174,6 +180,7 @@ class CalendarListPage extends Component {
         this.setState({ candidat: res.candidat, success: true });
       });
   }
+
 
   selectCreneau(ev) {
     const creneau = { ...ev };
@@ -208,14 +215,8 @@ class CalendarListPage extends Component {
     });
   };
 
-  handleClose = creneau => {
-    this.setState({ open: false });
-    if (!creneau) {
-      this.state.candidat.creneau = this.state.lastReserved;
-      this.forceUpdate();
-      return;
-    }
-
+  deselectCreneaux() {
+    // on deselection tous les creneaux
     callApi('creneaux', 'get').then((res) => {
       const { creneaux } = res;
 
@@ -233,14 +234,9 @@ class CalendarListPage extends Component {
         });
       });
     });
+  }
 
-    creneau.isSelected = true;
-
-    const candidat = { ...this.state.candidat };
-
-    candidat.creneau = creneau;
-
-
+  updateCreneaux(creneau) {
     callApi(`creneaux/${creneau.id}`, 'put',
       {
         creneau,
@@ -248,7 +244,9 @@ class CalendarListPage extends Component {
     ).then((cr) => {
       console.log(cr);
     });
+  }
 
+  updateCandidat() {
     callApi(`candidats/${candidat._id}`, 'put',
       {
         candidat,
@@ -256,14 +254,70 @@ class CalendarListPage extends Component {
     ).then(() => {
       candidat.initialCandidat = `${candidat.nomNaissance.charAt(0).toUpperCase()}${candidat.prenom.charAt(0).toUpperCase()}`
       this.setState({ candidat, success: true, openSnack: true, message: 'Votre réservation à l\'examen a été prise en compte. Veuillez consulter votre boîte mail.' });
-      this.forceUpdate();
-      window.location.reload();
     });
+  }
+
+  refreshAndUpdate() {
+    this.forceUpdate();
+    window.location.reload();
+  }
+
+  handleClose = creneau => {
+    this.setState({ open: false });
+    if (!creneau) {
+      this.state.candidat.creneau = this.state.lastReserved;
+      this.forceUpdate();
+      return;
+    }
+
+    this.deselectCreneaux();
+
+    creneau.isSelected = true;
+
+    const candidat = { ...this.state.candidat };
+
+    candidat.creneau = creneau;
+
+    this.updateCreneaux(creneau);
+
+    this.updateCandidat();
+
+    this.refreshAndUpdate();
   };
 
   handleCloseSnack = () => {
     this.setState({ openSnack: false });
   };
+
+  deleteReservation = () => {
+    console.log('deleteReservation');
+    //creneau.isSelected = true;
+
+    // on deselection tous les creneaux
+    callApi('creneaux', 'get').then((res) => {
+      const { creneaux } = res;
+
+      const creneauxSelected = creneaux.filter((item) => item.isSelected === true);
+
+      creneauxSelected.map(creneauSelected => {
+        creneauSelected.isSelected = false;
+
+        callApi(`creneaux/${creneauSelected._id}`, 'put',
+          {
+            creneau: creneauSelected,
+          }
+        ).then((cr) => {
+          console.log(cr);
+        });
+      });
+
+      const { candidat } = this.state;
+      candidat.creneau = {};
+
+      this.setState({ candidat });
+      this.forceUpdate();
+    });
+  }
 
   render() {
     const { classes } = this.props;
@@ -359,7 +413,7 @@ class CalendarListPage extends Component {
 
               </CardContent>
               <CardContent>
-                <Button>
+                <Button onClick={this.deleteReservation}>
                   Annuler ma reservation
                 </Button>
               </CardContent>
