@@ -19,4 +19,3 @@ env/*
 server/util/sendMail\.js\.cloud
 
 server/config\.js\.cloud
-logs/
