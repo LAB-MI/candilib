@@ -12,6 +12,7 @@ const config = {
   mailUser: process.env.MAIL_USER || '<user>',
   mailPassword: process.env.MAIL_PASSWORD || '<passwd>',
   mailFrom: process.env.MAIL_FROM || '<mail_from>',
+  appURL: process.env.APP_URL || 'http://localhost:8000',
 };
 
 export default config;

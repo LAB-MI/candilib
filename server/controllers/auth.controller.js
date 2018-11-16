@@ -3,8 +3,7 @@ import User from '../models/user';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import serverConfig from '../config';
-import sendMagicLink from '../util/sendMagicLink';
-
+import { REDIRECTTOLEVEL } from '../util/redirect2Level';
 export function register(req, res, next) {
   const hashPassowrd = bcrypt.hashSync(req.body.password, 8);
   const { email, name } = req.body;
@@ -76,8 +75,17 @@ export function verifyMe(req, res) {
   });
 }
 
+const USER_STATUS2EXPIRESIN = {
+  admin: '1d',
+  candidat: '86400',
+};
+
+const USER_STATUS2LEVEL = {
+  admin: 1,
+};
+
 export function login(req, res) {
-  const { email } = req.body;
+  const { email, password } = req.body;
 
   User.findOne({ email }, (err, user) => {
     if (err) {
@@ -90,42 +98,58 @@ export function login(req, res) {
         .send({ auth: false, message: 'Utilisateur non reconnu. ' });
     }
 
-    // const passwordIsValid = bcrypt.compareSync(password, user.password) check pour passord
-    const emailIsValid = email === user.email;
+    let passwordIsValid = false;
+    if (password !== undefined) {
+      passwordIsValid = bcrypt.compareSync(password, user.password);
+    }
+    const usernameIsValid = email === user.email;
 
-    if (!emailIsValid) {
+    if (!usernameIsValid || !passwordIsValid) {
       return res.status(401).send({ auth: false, token: null });
     }
 
     const token = jwt.sign(
       {
         id: user._id,
+        email: user.email,
+        level: USER_STATUS2LEVEL[user.status],
       },
       serverConfig.secret,
       {
-        expiresIn: 86400,
+        expiresIn: USER_STATUS2EXPIRESIN[user.status],
       },
     );
 
-    sendMagicLink(user.email, token);
-    res.status(200).end();
+    res.status(200).send({ auth: true, 'access-token': token });
   });
 }
-
 
 export function validateToken(req, res) {
   const token = req.headers['x-access-token'] || req.query.token;
 
   if (!token) {
-    return res.status(403)
-      .send({ message: 'Pas de Token ' });
+    return res.status(403).send({ message: 'Pas de Token ' });
   }
 
   jwt.verify(token, serverConfig.secret, (err, decoded) => {
     if (err) {
-      return res.status(200)
-        .send({ isTokenValid: false });
+      return res.status(200).send({ isTokenValid: false });
     }
+    if (req.query.redirect !== undefined) {
+      let redirect = req.query.redirect.toLowerCase();
+      if (!redirect.startsWith('/')) {
+        redirect = '/' + redirect;
+      }
+      if (REDIRECTTOLEVEL[redirect] === undefined) {
+        return res.status(200).send({ isTokenValid: false });
+      }
+      const level = decoded.level === undefined ? 0 : decoded.level;
+      if (REDIRECTTOLEVEL[redirect] <= level) {
+        return res.status(200).send({ isTokenValid: true, id: decoded.id });
+      }
+      return res.status(200).send({ isTokenValid: false });
+    }
+
     res.status(200).send({ isTokenValid: true, id: decoded.id });
   });
 }

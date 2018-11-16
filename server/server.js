@@ -46,13 +46,18 @@ import Helmet from 'react-helmet';
 
 // Import required modules
 import routes from '../client/routes';
+import { REDIRECTTOLEVEL } from './util/redirect2Level';
 import { fetchComponentData } from './util/fetchData';
 import candidats from './routes/candidats.routes';
+import authAdminCandidats from './routes/admin.candidats.routes';
+import authCandidats from './routes/auth.candidats.routes';
 import creneaux from './routes/creneaux.routes';
+import adminCreneaux from './routes/admin.creneaux.routes';
 import users from './routes/users.routes';
 
 import serverConfig from './config';
 import verifyToken from './util/verifyToken';
+import isAdmin from './util/isAdmin';
 
 // Set native promises as mongoose promise
 mongoose.Promise = global.Promise;
@@ -70,6 +75,16 @@ if (process.env.NODE_ENV !== 'test') {
   );
 }
 
+// Set Level to redirect
+routes.props.children.forEach(child => {
+  if (child.type.name === 'PrivateRoute') {
+    if (child.props.path !== undefined) {
+      const pathAdmin = child.props.path.toLowerCase();
+      REDIRECTTOLEVEL[pathAdmin] = child.props.admin ? 1 : 0;
+    }
+  }
+});
+
 // Apply body Parser and server public assets and routes
 app.use(compression());
 app.use(bodyParser.json({ limit: '20mb' }));
@@ -77,8 +92,11 @@ app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
 app.use(fileUpload());
 app.use(Express.static(path.resolve(__dirname, '../dist/client')));
 app.use('/api', users);
-app.use('/api', verifyToken, candidats);
-app.use('/api', verifyToken, creneaux);
+app.use('/api', candidats);
+app.use('/api/auth', verifyToken, authCandidats);
+app.use('/api/admin', verifyToken, isAdmin, authAdminCandidats);
+app.use('/api/auth', verifyToken, creneaux);
+app.use('/api/admin', verifyToken, isAdmin, adminCreneaux);
 
 // Render Initial HTML
 const renderFullPage = (html, initialState) => {
