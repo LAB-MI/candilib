@@ -123,8 +123,7 @@ const mailMessage = (candidatAurige, flag) => {
   <br>
   <p>Vous avez demandé à rejoindre le site de réservation des candidats libres. Malheureusement les informations que vous avez fournies sont erronées :</p>
   <p align="center">NEPH ${codeNeph} / NOM ${nomMaj}</p>
-  <p>Merci de les vérifier avant de renouveler votre demande d’inscription. Si vos informations étaient corectes, nous vous invitons à consulter notre aide en ligne:<p>
-  <p>Url FAQ site</p>
+  <p>Merci de les vérifier avant de renouveler votre demande d’inscription.</p>
   <br>
   <p align="right">L'équipe Candilib</p>`;
 
@@ -157,7 +156,7 @@ const mailMessage = (candidatAurige, flag) => {
   switch (flag) {
     case CANDIDAT_NOK:
       message.content = INSCRIPTION_KO_MSG;
-      message.subject = '<ne pas répondre> Problème inscription Candilib';
+      message.subject = "<ne pas répondre> Problème inscription Candilib";
       return message;
     case INSCRIPTION_VALID:
       message.content = INSCRIPTION_VALID_MSG;
@@ -165,28 +164,27 @@ const mailMessage = (candidatAurige, flag) => {
       return message;
     case CANDIDAT_NOK_NOM:
       message.content = INSCRIPTION_KO_MSG;
-      message.subject = '<ne pas répondre> Problème inscription Candilib';
+      message.subject = "<ne pas répondre> Problème inscription Candilib";
       return message;
     case EPREUVE_PRATIQUE_OK:
       message.content = EPREUVE_PRATIQUE_OK_MSG;
-      message.subject = '<ne pas répondre> Problème inscription Candilib';
+      message.subject = "<ne pas répondre> Problème inscription Candilib";
       return message;
     case INSCRIPTION_OK:
       message.content = INSCRIPTION_VALID_MSG;
-      message.subject = "<ne pas répondre> Confirmation d'inscription Candilib";
+      message.subject = "<ne pas répondre> Inscription Candilib non validée";
       return message;
     case EPREUVE_ETG_KO:
       message.content = EPREUVE_ETG_KO_MSG;
-      message.subject = '<ne pas répondre> Problème inscription Candilib';
+      message.subject = "<ne pas répondre> Problème inscription Candilib";
       return message;
     case AURIGE_OK:
       message.content = INSCRIPTION_OK_MSG;
-      message.subject =
-        '<ne pas répondre> Validation de votre inscription à Candilib';
+      message.subject = "<ne pas répondre> Validation de votre inscription à Candilib";
       return message;
     case MAIL_CONVOCATION:
       message.content = MAIL_CONVOCATION_MSG;
-      message.subject = '<ne pas répondre> Validation de votre inscription à Candilib';
+      message.subject = "<ne pas répondre> Validation de votre inscription à Candilib";
       return message;
     default:
       return '';
