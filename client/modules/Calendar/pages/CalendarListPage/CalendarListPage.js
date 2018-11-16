@@ -61,6 +61,7 @@ const styles = theme => ({
     top: 0,
     height: 750,
     padding: theme.spacing.unit,
+    minHeight: 'fit-content',
   },
   gridCandidat: {
     minHeight: 'fit-content',
@@ -75,17 +76,14 @@ const styles = theme => ({
     },
   },
   gridCalendar: {
-    // backgroundColor: 'green',
     height: '100%',
     [theme.breakpoints.up('sm')]: {
     },
     [theme.breakpoints.up('md')]: {
-      // backgroundColor: theme.palette.primary.main,
       height: '100%',
     },
   },
   card: {
-    // backgroundColor: 'yellow',
     width: '100%',
     [theme.breakpoints.down('sm')]: {
       width: '100%',
@@ -94,12 +92,7 @@ const styles = theme => ({
     },
   },
   cardResa: {
-    // backgroundColor: 'blue',
     marginTop: 10,
-    [theme.breakpoints.down('sm')]: {
-    },
-    [theme.breakpoints.up('md')]: {
-    },
   },
   cardHeader: {
     backgroundColor: theme.palette.primary.dark,
