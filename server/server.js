@@ -96,7 +96,7 @@ app.use('/api', candidats);
 app.use('/api/auth', verifyToken, authCandidats);
 app.use('/api/admin', verifyToken, isAdmin, authAdminCandidats);
 app.use('/api/auth', verifyToken, creneaux);
-app.use('/api/admin', verifyToken, adminCreneaux);
+app.use('/api/admin', verifyToken, isAdmin, adminCreneaux);
 
 // Render Initial HTML
 const renderFullPage = (html, initialState) => {
