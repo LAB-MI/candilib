@@ -18,4 +18,6 @@ server/models/__tests__
 env/*
 server/util/sendMail\.js\.cloud
 
-server/config\.js\.cloud
+server/inbox/updateCandidats\.json
+
+server/config\.home\.js
