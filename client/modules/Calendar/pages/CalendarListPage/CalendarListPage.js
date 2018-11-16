@@ -8,6 +8,7 @@ import {
   Avatar,
   CardContent,
   Snackbar,
+  Button,
 } from '@material-ui/core';
 import blue from '@material-ui/core/colors/blue';
 import PropTypes from 'prop-types';
@@ -79,7 +80,7 @@ const styles = theme => ({
     },
     [theme.breakpoints.up('md')]: {
       // backgroundColor: theme.palette.primary.main,
-      height:'100%',
+      height: '100%',
     },
   },
   card: {
@@ -94,7 +95,7 @@ const styles = theme => ({
   cardResa: {
     // backgroundColor: 'blue',
     marginTop: 10,
-    marginBottom:120,
+    marginBottom: 120,
     [theme.breakpoints.down('sm')]: {
       height: '50%',
     },
@@ -209,7 +210,11 @@ class CalendarListPage extends Component {
 
   handleClose = creneau => {
     this.setState({ open: false });
-    if (!creneau) return;
+    if (!creneau) {
+      this.state.candidat.creneau = this.state.lastReserved;
+      this.forceUpdate();
+      return;
+    }
 
     callApi('creneaux', 'get').then((res) => {
       const { creneaux } = res;
@@ -230,9 +235,11 @@ class CalendarListPage extends Component {
     });
 
     creneau.isSelected = true;
-    this.state.candidat.creneau = creneau;
 
     const candidat = { ...this.state.candidat };
+
+    candidat.creneau = creneau;
+
 
     callApi(`creneaux/${creneau.id}`, 'put',
       {
@@ -263,12 +270,15 @@ class CalendarListPage extends Component {
     const { creneauxCandidats, candidat, success, signUpError, openSnack, message, selectedCreneau, lastReserved } = this.state;
 
     let site = '';
+    let dateResa = '';
 
-    if (candidat && candidat.creneau && candidat.creneau.title) {
+
+    if (candidat && candidat.creneau && candidat.creneau.title && candidat.creneau.start) {
       site = candidat.creneau.title;
+      dateResa = moment(candidat.creneau.start).format('DD MMMM YYYY HH:mm');
+    } else {
+      dateResa = 'Veuillez cliquez sur une date pour réserver jour pour l\'épreuve pratique du permis de conduire en candidat libre.';
     }
-
-
     const siteAdresse = sites.find((item) => item.nom.toUpperCase() === site);
     console.log(siteAdresse);
 
@@ -320,27 +330,36 @@ class CalendarListPage extends Component {
                   </Typography>
 
                 }
-                {candidat.creneau && candidat.creneau.start &&
-                  <Typography component="p">
-                    Date de Convocation: {moment(candidat.creneau.start).format('DD MMMM YYYY HH:mm')}
-                  </Typography>
-                }
               </CardContent>
             </Card>
             <Card className={classes.cardResa}>
               <CardHeader className={classes.cardHeader} title={
-                <Typography component="h6">
-                  Votre date deréservation pour l'épreuve pratique du permis de conduire en candidat libre
-                </Typography>
+                <Typography component="h5">
+                  Ma réservation
+                  </Typography>
               }>
               </CardHeader>
               <CardContent>
-                {candidat.creneau && candidat.creneau.start &&
-                  <Typography component="h6" variant={"headline"}>
-                    {moment(candidat.creneau.start).format('DD MMMM YYYY HH:mm')}
+                <Typography component="h6" variant={"headline"}>
+                  {dateResa}
+                </Typography>
+                {siteAdresse &&
+                  <Typography variant="body1">
+                    {siteAdresse.nom}
+                  </Typography>
+                }
+                {siteAdresse &&
+
+                  <Typography variant="caption">
+                    {siteAdresse.adresse}
                   </Typography>
                 }
 
+              </CardContent>
+              <CardContent>
+                <Button>
+                  Annuler ma reservation
+                </Button>
               </CardContent>
             </Card>
           </Grid>
