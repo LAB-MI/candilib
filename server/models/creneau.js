@@ -18,6 +18,10 @@ const creneauDateSchema = new Schema({
     type: Boolean,
     required: false,
   },
+  candidat: {
+    type: String,
+    required: false,
+  },
 });
 
 export default mongoose.model('Creneau', creneauDateSchema);

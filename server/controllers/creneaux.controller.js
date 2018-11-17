@@ -70,7 +70,7 @@ export function updateCreneau(req, res, next) {
     if (err) {
       next(err);
     } else {
-      res.json(creneau);
+      res.json({ creneau });
     }
   });
 }
