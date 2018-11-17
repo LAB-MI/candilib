@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
   withStyles,
   Grid,
@@ -10,8 +11,6 @@ import {
   Snackbar,
   Button,
 } from '@material-ui/core';
-import blue from '@material-ui/core/colors/blue';
-import PropTypes from 'prop-types';
 import BigCalendar from 'react-big-calendar';
 import 'moment/locale/fr';
 import moment from 'moment';
@@ -125,15 +124,16 @@ class CalendarListPage extends Component {
     super(props);
     this.state = {
       creneauxCandidats: [],
+      candidat: {},
+      creneau: {},
       selectedCreneau: {},
       candidatUpdated: {},
-      candidat: {},
       open: false,
       openSnack: false,
       success: false,
       message: '',
       lastReserved: {},
-    }
+    };
     this.candidat = {};
     this.selectCreneau = this.selectCreneau.bind(this);
   }
@@ -178,6 +178,7 @@ class CalendarListPage extends Component {
   selectCreneau(ev) {
     const creneau = { ...ev };
 
+    // si deja sectionner annuler le click
     if (creneau.isSelected) return;
 
     this.setState({
@@ -186,15 +187,17 @@ class CalendarListPage extends Component {
 
     const { candidat } = this.state;
 
+    // Modification reservation
     if (candidat.creneau && candidat.creneau.start) {
       const lastReserved = Object.assign({}, candidat.creneau);
-      if (creneau) candidat.creneau = creneau;
+      //if (creneau) candidat.creneau = creneau;
 
       this.setState({
         open: true,
         lastReserved,
       });
 
+      // selection de creneau simple
     } else {
       this.setState({
         open: true,
@@ -239,14 +242,20 @@ class CalendarListPage extends Component {
     });
   }
 
-  updateCandidat() {
+  updateCandidat(candidat) {
     callApi(`candidats/${candidat._id}`, 'put',
       {
         candidat,
       }
-    ).then(() => {
+    ).then((candidat) => {
+      console.log('-----------------candidat-------------------------');
+
+      console.log(candidat);
+
       candidat.initialCandidat = `${candidat.nomNaissance.charAt(0).toUpperCase()}${candidat.prenom.charAt(0).toUpperCase()}`
       this.setState({ candidat, success: true, openSnack: true, message: 'Votre réservation à l\'examen a été prise en compte. Veuillez consulter votre boîte mail.' });
+    }).catch((er) => {
+      console.log(er);
     });
   }
 
@@ -256,24 +265,30 @@ class CalendarListPage extends Component {
   }
 
   handleClose = creneau => {
+    // on ferme la popup
     this.setState({ open: false });
+
+    // si pas de creneau renvoyer par la popup cas d'annulation
     if (!creneau) {
       this.state.candidat.creneau = this.state.lastReserved;
       this.forceUpdate();
       return;
     }
 
-    this.deselectCreneaux();
+    //this.deselectCreneaux();
 
+    // on recupere le candidat en cours
+    const candidat = { ...this.state.candidat };
     creneau.isSelected = true;
 
-    const candidat = { ...this.state.candidat };
+    creneau.candidat = candidat._id;
 
     candidat.creneau = creneau;
 
+
     this.updateCreneaux(creneau);
 
-    this.updateCandidat();
+    this.updateCandidat(candidat);
 
     this.refreshAndUpdate();
   };
@@ -318,13 +333,16 @@ class CalendarListPage extends Component {
 
     let site = '';
     let dateResa = '';
+    let isCreneau = false;
 
 
     if (candidat && candidat.creneau && candidat.creneau.title && candidat.creneau.start) {
       site = candidat.creneau.title;
       dateResa = moment(candidat.creneau.start).format('DD MMMM YYYY HH:mm');
+      isCreneau = true;
     } else {
-      dateResa = 'Veuillez cliquez sur une date pour réserver jour pour l\'épreuve pratique du permis de conduire en candidat libre.';
+      dateResa = 'Veuillez cliquez sur une date pour réserver un jours.';
+      isCreneau = false;
     }
     const siteAdresse = sites.find((item) => item.nom.toUpperCase() === site);
     console.log(siteAdresse);
@@ -375,28 +393,33 @@ class CalendarListPage extends Component {
                   <Typography component="p">
                     Date Echec Permis : {moment(candidat.dateDernierEchecPratique).format('DD MMMM YYYY')}
                   </Typography>
-
                 }
               </CardContent>
             </Card>
             <Card className={classes.cardResa}>
-              <CardHeader className={classes.cardHeader} title={
-                <Typography component="h5">
-                  Ma réservation
+              <CardHeader
+                className={classes.cardHeader} title={
+                  <Typography component="h5">
+                    Ma réservation
                   </Typography>
-              }>
-              </CardHeader>
+              } />
               <CardContent>
-                <Typography component="h6" variant={"headline"}>
-                  {dateResa}
-                </Typography>
+                {!isCreneau &&
+                  <Typography variant="body1">
+                    {dateResa}
+                  </Typography>
+                }
+                {isCreneau &&
+                  <Typography component="h6" variant={"headline"}>
+                    {dateResa}
+                  </Typography>
+                }
                 {siteAdresse &&
                   <Typography variant="body1">
                     {siteAdresse.nom}
                   </Typography>
                 }
                 {siteAdresse &&
-
                   <Typography variant="caption">
                     {siteAdresse.adresse}
                   </Typography>
@@ -404,9 +427,11 @@ class CalendarListPage extends Component {
 
               </CardContent>
               <CardContent>
-                <Button onClick={this.deleteReservation}>
-                  Annuler ma reservation
-                </Button>
+                {isCreneau &&
+                  <Button onClick={this.deleteReservation}>
+                    Annuler ma reservation
+                  </Button>
+                }
               </CardContent>
             </Card>
           </Grid>
