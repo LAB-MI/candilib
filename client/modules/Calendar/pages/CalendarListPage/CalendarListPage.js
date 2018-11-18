@@ -92,6 +92,7 @@ const styles = theme => ({
   },
   cardResa: {
     marginTop: 10,
+    textAlign: 'center',
   },
   cardHeader: {
     backgroundColor: theme.palette.primary.dark,
@@ -178,7 +179,7 @@ class CalendarListPage extends Component {
   selectCreneau(ev) {
     const creneau = { ...ev };
 
-    // si deja sectionner annuler le click
+    // si deja sectionner block le click
     if (creneau.isSelected) return;
 
     this.setState({
@@ -187,7 +188,7 @@ class CalendarListPage extends Component {
 
     const { candidat } = this.state;
 
-    // Modification reservation
+    // Recuperation et Modification reservation
     if (candidat.creneau && candidat.creneau.start) {
       const lastReserved = Object.assign({}, candidat.creneau);
       //if (creneau) candidat.creneau = creneau;
@@ -242,16 +243,24 @@ class CalendarListPage extends Component {
     });
   }
 
+  unselectCreneau(creneau) {
+    const cr = { ...creneau };
+    cr.isSelected = false;
+    callApi(`creneaux/${cr.id}`, 'put',
+      {
+        cr,
+      }
+    ).then((res) => {
+      console.log(res);
+    });
+  }
+
   updateCandidat(candidat) {
     callApi(`candidats/${candidat._id}`, 'put',
       {
         candidat,
       }
     ).then((candidat) => {
-      console.log('-----------------candidat-------------------------');
-
-      console.log(candidat);
-
       candidat.initialCandidat = `${candidat.nomNaissance.charAt(0).toUpperCase()}${candidat.prenom.charAt(0).toUpperCase()}`
       this.setState({ candidat, success: true, openSnack: true, message: 'Votre réservation à l\'examen a été prise en compte. Veuillez consulter votre boîte mail.' });
     }).catch((er) => {
@@ -270,17 +279,16 @@ class CalendarListPage extends Component {
 
     // si pas de creneau renvoyer par la popup cas d'annulation
     if (!creneau) {
-      this.state.candidat.creneau = this.state.lastReserved;
       this.forceUpdate();
       return;
     }
 
-    //this.deselectCreneaux();
+    this.deselectCreneaux();
 
     // on recupere le candidat en cours
     const candidat = { ...this.state.candidat };
-    creneau.isSelected = true;
 
+    creneau.isSelected = true;
     creneau.candidat = candidat._id;
 
     candidat.creneau = creneau;
@@ -334,18 +342,17 @@ class CalendarListPage extends Component {
     let site = '';
     let dateResa = '';
     let isCreneau = false;
-
+    let siteAdresse = {};
 
     if (candidat && candidat.creneau && candidat.creneau.title && candidat.creneau.start) {
-      site = candidat.creneau.title;
-      dateResa = moment(candidat.creneau.start).format('DD MMMM YYYY HH:mm');
       isCreneau = true;
+      site = candidat.creneau.title;
+      siteAdresse = sites.find((item) => item.nom.toUpperCase() === site);
+      dateResa = moment(candidat.creneau.start).format('DD MMMM YYYY HH:mm');
     } else {
-      dateResa = 'Veuillez cliquez sur une date pour réserver un jours.';
       isCreneau = false;
+      dateResa = 'Veuillez cliquez sur une date pour réserver un jours.';
     }
-    const siteAdresse = sites.find((item) => item.nom.toUpperCase() === site);
-    console.log(siteAdresse);
 
     return (
       <div>
@@ -402,7 +409,7 @@ class CalendarListPage extends Component {
                   <Typography component="h5">
                     Ma réservation
                   </Typography>
-              } />
+                } />
               <CardContent>
                 {!isCreneau &&
                   <Typography variant="body1">
