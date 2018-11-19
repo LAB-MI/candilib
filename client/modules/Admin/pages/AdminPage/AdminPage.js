@@ -29,6 +29,7 @@ const localizer = BigCalendar.momentLocalizer(moment);
 const styles = theme => ({
   gridRoot: {
     flexGrow: 1,
+    position: 'relative',
   },
   card: {
     height: '100%',

@@ -8,6 +8,7 @@ import {
   AURIGE_OK,
   MAIL_CONVOCATION,
 } from './constant';
+import sites from '../inbox/sites.json';
 import moment from 'moment';
 
 const mailMessage = (candidatAurige, flag) => {
@@ -16,7 +17,6 @@ const mailMessage = (candidatAurige, flag) => {
   const {
     codeNeph,
     nomNaissance,
-    adresse,
     creneau,
   } = candidatAurige;
 
@@ -28,6 +28,10 @@ const mailMessage = (candidatAurige, flag) => {
   const dateCreneau = creneau && creneau.start ? moment(creneau.start).format('DD MMMM YYYY') : '';
   const heureCreneau = creneau && creneau.start ? moment(creneau.start).add(1, 'hour').format('HH:mm') : '';
 
+  const siteAdresse = sites.find((item) => item.nom.toUpperCase() === creneau.title) || [];
+  console.log(siteAdresse);
+
+
   const MAIL_CONVOCATION_MSG = `
   <p>Le présent mail vaut convocation.</p>
   <p>Bonjour Mr/Mme ${nomMaj},</p>
@@ -35,7 +39,7 @@ const mailMessage = (candidatAurige, flag) => {
   <p>Nous avons bien pris en compte votre réservation à l'examen pratique 
   du permis de conduire à ${site} le ${dateCreneau} à ${heureCreneau} avec
    le numéro NEPH ${codeNeph}.!</p>
-  <p>${adresse} </p>
+  <p>${siteAdresse.adresse} </p>
   <br>
   <p>Nous vous rappelons les éléments à vérifier le jour de l'examen :</p>
   <div>

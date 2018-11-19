@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
   withStyles,
   Grid,
@@ -9,20 +10,43 @@ import {
   Avatar,
   CardContent,
   Snackbar,
+  Button,
 } from '@material-ui/core';
-import PropTypes from 'prop-types';
 import BigCalendar from 'react-big-calendar';
 import 'moment/locale/fr';
 import moment from 'moment';
 moment.locale('fr');
-// import CreneauEvent from '../../../../components/calendar/CreneauEvent';
+import CreneauEvent from '../../../../components/calendar/CreneauEvent';
 import messages from '../../../../components/calendar/messages';
 import callApi from '../../../../util/apiCaller';
 import { getFromStorage } from '../../../../util/storage';
 import CreneauDialog from '../../components/CreneauDialog';
 import SnackbarNotification from '../../../../components/Notifications/SnackbarNotificationWrapper';
+import sites from '../../../../../server/inbox/sites.json';
 
 const localizer = BigCalendar.momentLocalizer(moment);
+
+const eventStyleGetter = (event) => {
+  const isSelected = event.isSelected;
+  const newStyle = {
+    backgroundColor: 'lightblue',
+    color: 'black',
+    borderRadius: '0px',
+    border: 'light',
+    borderColor: 'white',
+    fontSize: 10,
+    margin: 0,
+    padding: 5,
+  };
+
+  if (isSelected) {
+    newStyle.backgroundColor = 'lightgreen';
+  }
+
+  return {
+    style: newStyle,
+  };
+};
 
 const styles = theme => ({
   '@global': {
@@ -33,24 +57,55 @@ const styles = theme => ({
   gridRoot: {
     flexGrow: 1,
     position: 'relative',
-    top: 70,
-    height: 1000,
+    top: 0,
+    height: 750,
+    padding: theme.spacing.unit,
+    minHeight: 'fit-content',
+  },
+  gridCandidat: {
+    minHeight: 'fit-content',
+    // backgroundColor: 'red',
+    [theme.breakpoints.up('sm')]: {
+    },
+    [theme.breakpoints.up('md')]: {
+      height: '50%',
+    },
+    [theme.breakpoints.up('lg')]: {
+      height: '100%',
+    },
+  },
+  gridCalendar: {
+    height: '100%',
+    minHeight: 'fit-content',
+    [theme.breakpoints.up('sm')]: {
+    },
+    [theme.breakpoints.up('md')]: {
+      height: '100%',
+    },
   },
   card: {
-    height: '93%',
+    width: '100%',
+    [theme.breakpoints.down('sm')]: {
+      width: '100%',
+    },
+    [theme.breakpoints.up('md')]: {
+    },
+  },
+  cardResa: {
+    marginTop: 10,
+    textAlign: 'center',
   },
   cardHeader: {
-    display: 'flex',
     backgroundColor: theme.palette.primary.dark,
     alignItems: 'center',
     justifyContent: 'center',
+    color: 'white',
   },
   paper: {
-    height: '93%',
+    position: 'relative',
+    padding: 10,
+    height: '100%',
     padding: `${theme.spacing.unit * 2}px`,
-  },
-  rbcCalendar: {
-    height: '90%',
   },
   media: {
     height: 140,
@@ -61,6 +116,9 @@ const styles = theme => ({
   snackbarContent: {
     width: theme.spacing.unit * 150,
   },
+  rbcEventsContainer: {
+    margin: 0,
+  }
 });
 
 class CalendarListPage extends Component {
@@ -68,20 +126,29 @@ class CalendarListPage extends Component {
     super(props);
     this.state = {
       creneauxCandidats: [],
-      selectedCreneauCandidat: {},
       candidat: {},
+      creneau: {},
+      selectedCreneau: {},
+      candidatUpdated: {},
       open: false,
       openSnack: false,
       success: false,
       message: '',
+      lastReserved: {},
     };
+    this.candidat = {};
     this.selectCreneau = this.selectCreneau.bind(this);
   }
 
   componentDidMount() {
-    const id = getFromStorage('candidatId');
 
-    callApi('auth/creneaux', 'get').then(res => {
+    this.getCreneauxCandidats();
+    this.getCandidats();
+
+  }
+
+  getCreneauxCandidats() {
+    callApi('creneaux', 'get').then((res) => {
       const creneauxCandidats = [];
       const { creneaux } = res;
 
@@ -89,32 +156,55 @@ class CalendarListPage extends Component {
         const crenauItem = {
           id: item._id,
           title: `${item.centre}`,
-          start: moment(
-            moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss'),
-          ).toDate(),
-          end: moment(moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss'))
-            .add(30, 'minutes')
-            .toDate(),
+          isSelected: item.isSelected,
+          start: moment(moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss')).toDate(),
+          end: moment(moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss')).add(30, 'minutes').toDate(),
         };
         creneauxCandidats.push(crenauItem);
       });
       this.setState({ creneauxCandidats, success: true });
     });
-
-    callApi(`auth/candidats/${id}`, 'post').then(res => {
-      res.candidat.initialCandidat = `${res.candidat.nomNaissance
-        .charAt(0)
-        .toUpperCase()}${res.candidat.prenom.charAt(0).toUpperCase()}`;
-      this.setState({ candidat: res.candidat, success: true });
-    });
   }
 
+  getCandidats() {
+    const id = getFromStorage('candidatId');
+
+    callApi(`candidats/${id}`, 'post')
+      .then((res) => {
+        res.candidat.initialCandidat = `${res.candidat.nomNaissance.charAt(0).toUpperCase()}${res.candidat.prenom.charAt(0).toUpperCase()}`
+        this.setState({ candidat: res.candidat, success: true });
+      });
+  }
+
+
   selectCreneau(ev) {
-    this.state.candidat.creneau = ev;
+    const creneau = { ...ev };
+
+    // si deja sectionner block le click
+    if (creneau.isSelected) return;
+
     this.setState({
-      open: true,
+      selectedCreneau: creneau,
     });
-    this.forceUpdate();
+
+    const { candidat } = this.state;
+
+    // Recuperation et Modification reservation
+    if (candidat.creneau && candidat.creneau.start) {
+      const lastReserved = Object.assign({}, candidat.creneau);
+      //if (creneau) candidat.creneau = creneau;
+
+      this.setState({
+        open: true,
+        lastReserved,
+      });
+
+      // selection de creneau simple
+    } else {
+      this.setState({
+        open: true,
+      });
+    }
   }
 
   handleClickOpen = () => {
@@ -123,54 +213,146 @@ class CalendarListPage extends Component {
     });
   };
 
-  handleClose = value => {
-    this.setState({ candidat: value, open: false });
+  deselectCreneaux() {
+    // on deselection tous les creneaux
+    callApi('creneaux', 'get').then((res) => {
+      const { creneaux } = res;
 
-    callApi(`auth/candidats/${value._id}`, 'put', {
-      value,
-    }).then(candidat => {
-      console.log(candidat);
+      const creneauxSelected = creneaux.filter((item) => item.isSelected === true);
 
-      candidat.initialCandidat = `${candidat.nomNaissance
-        .charAt(0)
-        .toUpperCase()}${candidat.prenom.charAt(0).toUpperCase()}`;
-      this.setState({
-        candidat,
-        success: true,
-        openSnack: true,
-        message:
-          "Votre réservation à l'examen a été prise en compte. Veuillez consulter votre boîte mail.",
+      creneauxSelected.map(creneauSelected => {
+        creneauSelected.isSelected = false;
+
+        callApi(`creneaux/${creneauSelected._id}`, 'put',
+          {
+            creneau: creneauSelected,
+          }
+        ).then((cr) => {
+          console.log(cr);
+          this.forceUpdate();
+        });
       });
+    });
+  }
+
+  updateCreneaux(creneau) {
+    callApi(`creneaux/${creneau.id}`, 'put',
+      {
+        creneau,
+      }
+    ).then((cr) => {
+      console.log(cr);
       this.forceUpdate();
     });
+  }
+
+  unselectCreneau(creneau) {
+    const cr = { ...creneau };
+    cr.isSelected = false;
+    callApi(`creneaux/${cr.id}`, 'put',
+      {
+        cr,
+      }
+    ).then((res) => {
+      console.log(res);
+      return res;
+      // this.forceUpdate();
+    });
+  }
+
+  updateCandidat(candidat) {
+    callApi(`candidats/${candidat._id}`, 'put',
+      {
+        candidat,
+      }
+    ).then((candidat) => {
+      candidat.initialCandidat = `${candidat.nomNaissance.charAt(0).toUpperCase()}${candidat.prenom.charAt(0).toUpperCase()}`
+      this.setState({ candidat, success: true, openSnack: true, message: 'Votre réservation à l\'examen a été prise en compte. Veuillez consulter votre boîte mail.' });
+    }).catch((er) => {
+      console.log(er);
+    });
+  }
+
+  refreshAndUpdate() {
+    this.forceUpdate();
+    window.location.reload();
+  }
+
+  handleClose = creneau => {
+    // on ferme la popup
+    this.setState({ open: false });
+
+    // si pas de creneau renvoyer par la popup cas d'annulation
+    if (!creneau) {
+      this.forceUpdate();
+      return;
+    }
+
+    this.deselectCreneaux();
+    const candidat = { ...this.state.candidat };
+    const lastReserved = { ...this.state.lastReserved };
+    this.unselectCreneau(lastReserved);
+
+    // on recupere le candidat en cours
+
+    creneau.isSelected = true;
+    creneau.candidat = candidat._id;
+
+    candidat.creneau = creneau;
+
+
+    this.updateCreneaux(creneau);
+
+    this.updateCandidat(candidat);
+
+    this.getCandidats();
+
+    this.refreshAndUpdate();
   };
 
   handleCloseSnack = () => {
     this.setState({ openSnack: false });
   };
 
+  deleteReservation = () => {
+    this.deselectCreneaux();
+    const candidat = { ...this.state.candidat };
+    candidat.creneau = {};
+    this.updateCandidat(candidat);
+    this.refreshAndUpdate();
+  }
+
   render() {
     const { classes } = this.props;
-    const {
-      creneauxCandidats,
-      candidat,
-      success,
-      signUpError,
-      openSnack,
-      message,
-    } = this.state;
+    const { creneauxCandidats, candidat, success, signUpError, openSnack, message, selectedCreneau, lastReserved } = this.state;
+
+    let site = '';
+    let dateResa = '';
+    let isCreneau = false;
+    let siteAdresse = {};
+
+    if (candidat && candidat.creneau && candidat.creneau.title && candidat.creneau.start) {
+      isCreneau = true;
+      site = candidat.creneau.title;
+      siteAdresse = sites.find((item) => item.nom.toUpperCase() === site);
+      dateResa = moment(candidat.creneau.start).format('DD MMMM YYYY HH:mm');
+    } else {
+      isCreneau = false;
+      dateResa = 'Veuillez cliquez sur une date pour réserver un jours.';
+    }
 
     return (
       <div>
         <div>
           <CreneauDialog
-            selectedValue={this.state.candidat}
+            selectedValue={selectedCreneau}
             open={this.state.open}
             onClose={this.handleClose}
+            lastReserved={lastReserved}
           />
         </div>
         <Grid container className={classes.gridRoot} spacing={16}>
-          <Grid item xs={3}>
+          <Grid item lg={3} sm={12} xs={12} className={classes.gridCandidat}>
             <Card className={classes.card}>
               <CardHeader
                 avatar={
@@ -207,23 +389,52 @@ class CalendarListPage extends Component {
                       'DD MMMM YYYY',
                     )}
                   </Typography>
-                )}
-                {candidat.creneau &&
-                  candidat.creneau.start && (
-                    <Typography component="p">
-                      Date de Convocation:{' '}
-                      {moment(candidat.creneau.start).format(
-                        'DD MMMM YYYY HH:mm',
-                      )}
-                    </Typography>
-                  )}
+                }
+              </CardContent>
+            </Card>
+            <Card className={classes.cardResa}>
+              <CardHeader
+                className={classes.cardHeader} title={
+                  <Typography component="h5">
+                    Ma réservation
+                  </Typography>
+                } />
+              <CardContent>
+                {!isCreneau &&
+                  <Typography variant="body1">
+                    {dateResa}
+                  </Typography>
+                }
+                {isCreneau &&
+                  <Typography component="h6" variant={"headline"}>
+                    {dateResa}
+                  </Typography>
+                }
+                {siteAdresse &&
+                  <Typography variant="body1">
+                    {siteAdresse.nom}
+                  </Typography>
+                }
+                {siteAdresse &&
+                  <Typography variant="caption">
+                    {siteAdresse.adresse}
+                  </Typography>
+                }
+
+              </CardContent>
+              <CardContent>
+                {isCreneau &&
+                  <Button onClick={this.deleteReservation}>
+                    Annuler ma reservation
+                  </Button>
+                }
               </CardContent>
             </Card>
           </Grid>
-          <Grid item xs={9}>
+          <Grid item lg={9} sm={12} xs={12} className={classes.gridCalendar}>
             <Paper className={classes.paper}>
               <BigCalendar
-                className={classes.rbcCalendar}
+                className={classes.rbcEventsContainer}
                 messages={messages}
                 selectable
                 events={creneauxCandidats}
@@ -232,6 +443,10 @@ class CalendarListPage extends Component {
                 step={30}
                 startAccessor="start"
                 endAccessor="end"
+                eventPropGetter={(eventStyleGetter)}
+                components={{
+                  event: CreneauEvent,
+                }}
                 onSelectEvent={this.selectCreneau}
               />
             </Paper>

@@ -7,19 +7,19 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
-import blue from '@material-ui/core/colors/blue';
 import 'moment/locale/fr';
 import moment from 'moment';
 moment.locale('fr');
 
 const styles = {
-  avatar: {
-    backgroundColor: blue[100],
-    color: blue[600],
-  },
+
 };
 
 class CreneauDialog extends Component {
+  onCancel = () => {
+    this.props.onClose();
+  };
+
   handleClose = () => {
     this.props.onClose(this.props.selectedValue);
   };
@@ -29,21 +29,38 @@ class CreneauDialog extends Component {
   };
 
   render() {
-    const { selectedValue, ...other } = this.props;
+    const { selectedValue, lastReserved, ...other } = this.props;
     let maDate = '';
     let monSite = '';
+    let ancDate = '';
+    let ancSite = '';
 
 
     if (selectedValue) {
-      const { creneau } = selectedValue;
-      if (creneau && creneau.start && creneau.title) {
-        maDate = moment(creneau.start).format('DD MMMM HH:mm');
-        monSite = creneau.title;
+      if (selectedValue && selectedValue.start && selectedValue.title) {
+        maDate = moment(selectedValue.start).format('DD MMMM HH:mm');
+        monSite = selectedValue.title;
+      }
+
+      if (lastReserved && lastReserved.start && lastReserved.title) {
+        ancDate = moment(lastReserved.start).format('DD MMMM HH:mm');
+        ancSite = lastReserved.title;
       }
     }
 
     return (
       <Dialog onClose={this.handleClose} aria-labelledby="simple-dialog-title" {...other}>
+        {lastReserved && lastReserved.start &&
+        <div>
+          <DialogTitle id="simple-dialog-title">Votre Ancienne réservation : </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-slide-description">
+              {ancDate} à {ancSite}
+            </DialogContentText>
+          </DialogContent>
+          </div>
+        }
+        
         <DialogTitle id="simple-dialog-title">Votre réservation : </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-slide-description">
@@ -51,7 +68,7 @@ class CreneauDialog extends Component {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.handleClose} color="primary">
+          <Button onClick={this.onCancel} color="primary">
             Annuler
             </Button>
           <Button onClick={this.handleClose} color="primary">
@@ -66,7 +83,9 @@ class CreneauDialog extends Component {
 CreneauDialog.propTypes = {
   classes: PropTypes.object.isRequired,
   onClose: PropTypes.func,
+  onCancel: PropTypes.func,
   selectedValue: PropTypes.object,
+  lastReserved: PropTypes.object,
 };
 
 export default withStyles(styles)(CreneauDialog);
