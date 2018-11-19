@@ -15,4 +15,6 @@ router.route('/candidats/:id').post(CandidatsController.getCandidat);
 // Get one Candidat by neph
 router.route('/candidats/neph/:neph').get(CandidatsController.getCandidatNeph);
 
+router.route('/candidats/:id').put(CandidatsController.updateCandidat);
+
 export default router;

@@ -148,7 +148,7 @@ class CalendarListPage extends Component {
   }
 
   getCreneauxCandidats() {
-    callApi('creneaux', 'get').then((res) => {
+    callApi('auth/creneaux/', 'get').then((res) => {
       const creneauxCandidats = [];
       const { creneaux } = res;
 
@@ -169,7 +169,7 @@ class CalendarListPage extends Component {
   getCandidats() {
     const id = getFromStorage('candidatId');
 
-    callApi(`candidats/${id}`, 'post')
+    callApi(`auth/candidats/${id}`, 'post')
       .then((res) => {
         res.candidat.initialCandidat = `${res.candidat.nomNaissance.charAt(0).toUpperCase()}${res.candidat.prenom.charAt(0).toUpperCase()}`
         this.setState({ candidat: res.candidat, success: true });
@@ -215,7 +215,7 @@ class CalendarListPage extends Component {
 
   deselectCreneaux() {
     // on deselection tous les creneaux
-    callApi('creneaux', 'get').then((res) => {
+    callApi('auth/creneaux', 'get').then((res) => {
       const { creneaux } = res;
 
       const creneauxSelected = creneaux.filter((item) => item.isSelected === true);
@@ -223,7 +223,7 @@ class CalendarListPage extends Component {
       creneauxSelected.map(creneauSelected => {
         creneauSelected.isSelected = false;
 
-        callApi(`creneaux/${creneauSelected._id}`, 'put',
+        callApi(`auth/creneaux/${creneauSelected._id}`, 'put',
           {
             creneau: creneauSelected,
           }
@@ -236,7 +236,7 @@ class CalendarListPage extends Component {
   }
 
   updateCreneaux(creneau) {
-    callApi(`creneaux/${creneau.id}`, 'put',
+    callApi(`auth/creneaux/${creneau.id}`, 'put',
       {
         creneau,
       }
@@ -249,7 +249,7 @@ class CalendarListPage extends Component {
   unselectCreneau(creneau) {
     const cr = { ...creneau };
     cr.isSelected = false;
-    callApi(`creneaux/${cr.id}`, 'put',
+    callApi(`auth/creneaux/${cr.id}`, 'put',
       {
         cr,
       }
@@ -261,12 +261,12 @@ class CalendarListPage extends Component {
   }
 
   updateCandidat(candidat) {
-    callApi(`candidats/${candidat._id}`, 'put',
+    callApi(`auth/candidats/${candidat._id}`, 'put',
       {
         candidat,
       }
-    ).then((candidat) => {
-      candidat.initialCandidat = `${candidat.nomNaissance.charAt(0).toUpperCase()}${candidat.prenom.charAt(0).toUpperCase()}`
+    ).then((cd) => {
+      cd.initialCandidat = `${candidat.nomNaissance.charAt(0).toUpperCase()}${candidat.prenom.charAt(0).toUpperCase()}`
       this.setState({ candidat, success: true, openSnack: true, message: 'Votre réservation à l\'examen a été prise en compte. Veuillez consulter votre boîte mail.' });
     }).catch((er) => {
       console.log(er);
@@ -378,18 +378,16 @@ class CalendarListPage extends Component {
                 </Typography>
                 {candidat.dateReussiteETG && (
                   <Typography component="p">
-                    Date Code :{' '}
-                    {moment(candidat.dateReussiteETG).format('DD MMMM YYYY')}
+                    Date Code : {moment(candidat.dateReussiteETG).format('DD MMMM YYYY')}
                   </Typography>
                 )}
                 {candidat.dateDernierEchecPratique && (
                   <Typography component="p">
-                    Date Echec Permis :{' '}
-                    {moment(candidat.dateDernierEchecPratique).format(
+                    Date Echec Permis : {moment(candidat.dateDernierEchecPratique).format(
                       'DD MMMM YYYY',
                     )}
                   </Typography>
-                }
+                )}
               </CardContent>
             </Card>
             <Card className={classes.cardResa}>
