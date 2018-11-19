@@ -76,6 +76,7 @@ const styles = theme => ({
   },
   gridCalendar: {
     height: '100%',
+    minHeight: 'fit-content',
     [theme.breakpoints.up('sm')]: {
     },
     [theme.breakpoints.up('md')]: {
@@ -228,6 +229,7 @@ class CalendarListPage extends Component {
           }
         ).then((cr) => {
           console.log(cr);
+          this.forceUpdate();
         });
       });
     });
@@ -240,6 +242,7 @@ class CalendarListPage extends Component {
       }
     ).then((cr) => {
       console.log(cr);
+      this.forceUpdate();
     });
   }
 
@@ -252,6 +255,8 @@ class CalendarListPage extends Component {
       }
     ).then((res) => {
       console.log(res);
+      return res;
+      // this.forceUpdate();
     });
   }
 
@@ -284,9 +289,11 @@ class CalendarListPage extends Component {
     }
 
     this.deselectCreneaux();
+    const candidat = { ...this.state.candidat };
+    const lastReserved = { ...this.state.lastReserved };
+    this.unselectCreneau(lastReserved);
 
     // on recupere le candidat en cours
-    const candidat = { ...this.state.candidat };
 
     creneau.isSelected = true;
     creneau.candidat = candidat._id;
@@ -298,6 +305,8 @@ class CalendarListPage extends Component {
 
     this.updateCandidat(candidat);
 
+    this.getCandidats();
+
     this.refreshAndUpdate();
   };
 
@@ -306,33 +315,11 @@ class CalendarListPage extends Component {
   };
 
   deleteReservation = () => {
-    console.log('deleteReservation');
-    //creneau.isSelected = true;
-
-    // on deselection tous les creneaux
-    callApi('creneaux', 'get').then((res) => {
-      const { creneaux } = res;
-
-      const creneauxSelected = creneaux.filter((item) => item.isSelected === true);
-
-      creneauxSelected.map(creneauSelected => {
-        creneauSelected.isSelected = false;
-
-        callApi(`creneaux/${creneauSelected._id}`, 'put',
-          {
-            creneau: creneauSelected,
-          }
-        ).then((cr) => {
-          console.log(cr);
-        });
-      });
-
-      const { candidat } = this.state;
-      candidat.creneau = {};
-
-      this.setState({ candidat });
-      this.forceUpdate();
-    });
+    this.deselectCreneaux();
+    const candidat = { ...this.state.candidat };
+    candidat.creneau = {};
+    this.updateCandidat(candidat);
+    this.refreshAndUpdate();
   }
 
   render() {

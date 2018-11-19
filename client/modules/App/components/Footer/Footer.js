@@ -8,9 +8,7 @@ const styles = theme => ({
   footer: {
     textAlign: 'center',
     padding: '56px 0',
-    position: 'relative',
     backgroundSize: 'cover',
-    top: 0,
   },
 });
 
