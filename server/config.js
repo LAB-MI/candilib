@@ -5,7 +5,7 @@ const config = {
   host: process.env.HOST || 'http://localhost',
   authentificationRoute: '/auth',
   secret: process.env.SECRET || 'secret',
-  fastAccessApi: process.env.FAST_ACCESS_API || false,
+  // fastAccessApi: process.env.FAST_ACCESS_API || false,
   smtpServer: process.env.SMTP_SERVER || '<server>',
   smtpService: process.env.SMTP_SERVICE || '<service>',
   smtpPort: process.env.SMTP_PORT || 25,
