@@ -7,14 +7,9 @@ const sendMailToAccount = (candidatAurige, flag) => {
   const message = mailMessage(candidatAurige, flag);
 
   const transporter = nodemailer.createTransport(smtpTransport({
-    service: mailConfig.smtpService,
     host: mailConfig.smtpServer,
     port: mailConfig.smtpPort,
     secure: false,
-    auth: {
-      user: mailConfig.mailUser,
-      pass: mailConfig.mailPassword,
-    },
     tls: {
       // do not failed with selfsign certificates
       rejectUnauthorized: false,
