@@ -190,7 +190,7 @@ app.use((req, res, next) => {
           renderProps !== undefined &&
           renderProps.location !== undefined &&
           child.type.name === 'PrivateRoute' &&
-          child.props.path === renderProps.location.pathname &&
+          child.props.path === renderProps.location.pathname.toLowerCase() &&
           renderProps.location.pathname !== '/auth'
         );
       });
