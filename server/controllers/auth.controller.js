@@ -4,6 +4,8 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import serverConfig from '../config';
 import { REDIRECTTOLEVEL } from '../util/redirect2Level';
+import { USER_STATUS2EXPIRESIN, USER_STATUS2LEVEL } from '../util/jwt.constant';
+
 export function register(req, res, next) {
   const hashPassowrd = bcrypt.hashSync(req.body.password, 8);
   const { email, name } = req.body;
@@ -44,7 +46,7 @@ export function register(req, res, next) {
               },
               serverConfig.secret,
               {
-                expiresIn: 86400,
+                expiresIn: USER_STATUS2EXPIRESIN['candidat'](),
               },
             );
             res.status(200).send({ auth: true, token });
@@ -74,15 +76,6 @@ export function verifyMe(req, res) {
     res.status(200).send(user);
   });
 }
-
-const USER_STATUS2EXPIRESIN = {
-  admin: '1d',
-  candidat: '86400',
-};
-
-const USER_STATUS2LEVEL = {
-  admin: 1,
-};
 
 export function login(req, res) {
   const { email, password } = req.body;
@@ -116,7 +109,10 @@ export function login(req, res) {
       },
       serverConfig.secret,
       {
-        expiresIn: USER_STATUS2EXPIRESIN[user.status],
+        expiresIn:
+          USER_STATUS2EXPIRESIN[user.status] === undefined
+            ? '0'
+            : USER_STATUS2EXPIRESIN[user.status](),
       },
     );
 

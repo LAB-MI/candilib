@@ -4,6 +4,9 @@ ARG npm_registry
 # ARG sass_registry
 ARG no_proxy
 
+ENV TZ=Europe/Paris
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 EXPOSE 8000
