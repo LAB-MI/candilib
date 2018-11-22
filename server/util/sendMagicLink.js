@@ -164,14 +164,17 @@ const sendMagicLink = (candidatAurige, token) => {
         </html>`,
   };
 
-  transporter.sendMail(mailOptions, (err, info) => {
-    if (err) {
-      console.log(err); // eslint-disable-line no-console
-    } else {
-      console.log('MagicLink sent: ' + info.response);
-      transporter.close();
-    }
-    transporter.close();
+  return new Promise((resolve, reject) => {
+    transporter.sendMail(mailOptions, (err, info) => {
+      if (err) {
+        transporter.close();
+        reject(err); // eslint-disable-line no-console
+      } else {
+        console.log('MagicLink sent: ' + info.response);
+        transporter.close();
+        resolve(info.response);
+      }
+    });
   });
 };
 
