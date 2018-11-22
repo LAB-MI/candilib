@@ -23,6 +23,7 @@ import CreneauEvent from '../../../../components/calendar/CreneauEvent';
 import messages from '../../../../components/calendar/messages';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { callApi } from '../../../../util/apiCaller.admin';
+import ListCandidats from '../../../Candidat/components/ListCandidats';
 
 const localizer = BigCalendar.momentLocalizer(moment);
 
@@ -239,6 +240,16 @@ class AdminPage extends Component {
                   event: CreneauEvent,
                 }}
               />
+            </Paper>
+          </Card>
+        </Grid>
+        <Grid item xs={12}>
+          <Card className={classes.card}>
+            <Paper className={classes.paper}>
+              <Typography variant="headline" component="h3">
+                Candidats
+              </Typography>
+              <ListCandidats />
             </Paper>
           </Card>
         </Grid>
