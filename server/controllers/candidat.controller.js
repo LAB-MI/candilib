@@ -17,6 +17,7 @@ import {
   CANDIDAT_NOK,
   CANDIDAT_NOK_NOM,
   MAIL_CONVOCATION,
+  ANNULATION_CONVOCATION,
 } from '../util/constant';
 
 import Creneau from '../models/creneau';
@@ -279,7 +280,11 @@ export function updateCandidat(req, res, next) {
     if (err) {
       next(err);
     } else {
-      sendMailToAccount(user, MAIL_CONVOCATION);
+      if (user.creneau && user.creneau.title) {
+        sendMailToAccount(user, MAIL_CONVOCATION);
+      } else {
+        sendMailToAccount(user, ANNULATION_CONVOCATION);
+      }
       res.json(user);
     }
   });

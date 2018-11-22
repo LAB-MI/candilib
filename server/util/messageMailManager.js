@@ -7,6 +7,7 @@ import {
   INSCRIPTION_VALID,
   AURIGE_OK,
   MAIL_CONVOCATION,
+  ANNULATION_CONVOCATION,
 } from './constant';
 import sites from '../inbox/sites.json';
 import moment from 'moment';
@@ -29,8 +30,6 @@ const mailMessage = (candidatAurige, flag) => {
   const heureCreneau = creneau && creneau.start ? moment(creneau.start).add(1, 'hour').format('HH:mm') : '';
 
   const siteAdresse = sites.find((item) => item.nom.toUpperCase() === creneau.title) || [];
-  console.log(siteAdresse);
-
 
   const MAIL_CONVOCATION_MSG = `
   <p>Le présent mail vaut convocation.</p>
@@ -121,7 +120,7 @@ const mailMessage = (candidatAurige, flag) => {
   <p><b>Conservez précieusement ce mail qui vous permettra de vous connecter sur le site Candilib</b></p>
   <p>Votre identifiant de connexion est l'adresse mail que vous nous avez fournie lors de votre inscription : ${
     candidatAurige.email
-  }</p>`;
+    }</p>`;
 
   const INSCRIPTION_KO_MSG = `<p>Bonjour Mr/Mme ${nomMaj},</p>
   <br>
@@ -157,6 +156,14 @@ const mailMessage = (candidatAurige, flag) => {
   <br>
   <p align="right">L'équipe Candilib</p>`;
 
+
+  const ANNULATION_CONVOCATION_MSG = `<p>Bonjour Mr/Mme ${nomMaj},</p>
+  <br>
+  <p>votre réservation à l'examen pratique du permis de conduire à ${site} le ${dateCreneau} à ${heureCreneau} avec
+  le numéro NEPH ${codeNeph} est bien annulée. </p>
+  <br>
+  <p align="right">L'équipe Candilib</p>`;
+
   switch (flag) {
     case CANDIDAT_NOK:
       message.content = INSCRIPTION_KO_MSG;
@@ -188,7 +195,11 @@ const mailMessage = (candidatAurige, flag) => {
       return message;
     case MAIL_CONVOCATION:
       message.content = MAIL_CONVOCATION_MSG;
-      message.subject = "<ne pas répondre> Validation de votre inscription à Candilib";
+      message.subject = "<ne pas répondre> Convocation à l'examen";
+      return message;
+    case ANNULATION_CONVOCATION:
+      message.content = ANNULATION_CONVOCATION_MSG;
+      message.subject = "<ne pas répondre> Annulation de Convocation à l'examen";
       return message;
     default:
       return '';

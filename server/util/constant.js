@@ -6,3 +6,5 @@ export const EPREUVE_ETG_KO = 'KO';
 export const INSCRIPTION_OK = 'SIGNUP_OK';
 export const AURIGE_OK = 'CHECK_OK';
 export const MAIL_CONVOCATION = 'MAIL_CONVOCATION';
+export const ANNULATION_CONVOCATION = 'ANNULATION_CONVOCATION';
+
