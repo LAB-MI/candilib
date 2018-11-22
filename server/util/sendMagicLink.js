@@ -1,7 +1,8 @@
 import nodemailer from 'nodemailer';
 import mailMessage from '../util/messageMailManager';
-import serverConfig from '../config';
+import serverConfig, { smtpOptions } from '../config';
 import smtpTransport from 'nodemailer-smtp-transport';
+
 
 const sendMagicLink = (candidatAurige, token) => {
   const flag = 'CHECK_OK';
@@ -11,15 +12,7 @@ const sendMagicLink = (candidatAurige, token) => {
   //   Voici votre identifiant: ${email}\n`;
 
   const transporter = nodemailer.createTransport(
-    smtpTransport({
-      host: serverConfig.smtpServer,
-      port: serverConfig.smtpPort,
-      secure: false,
-      tls: {
-        // do not failed with selfsign certificates
-        rejectUnauthorized: false,
-      },
-    }),
+    smtpTransport(smtpOptions),
   );
 
   const mailOptions = {
