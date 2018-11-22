@@ -25,6 +25,8 @@ import SnackbarNotification from '../../../../components/Notifications/SnackbarN
 import sites from '../../../../../server/inbox/sites.json';
 
 const localizer = BigCalendar.momentLocalizer(moment);
+const MESSAGES_RESA = 'Votre réservation à l\'examen a été prise en compte. Veuillez consulter votre boîte mail.';
+const MESSAGES_ANNULATION = 'Votre annulation a bien été prise en compte.';
 
 const eventStyleGetter = (event) => {
   const isSelected = event.isSelected;
@@ -127,24 +129,22 @@ class CalendarListPage extends Component {
     this.state = {
       creneauxCandidats: [],
       candidat: {},
-      creneau: {},
       selectedCreneau: {},
-      candidatUpdated: {},
       open: false,
       openSnack: false,
       success: false,
       message: '',
       lastReserved: {},
+      isModificationResa: false,
+      isDeleteResa: false,
     };
     this.candidat = {};
     this.selectCreneau = this.selectCreneau.bind(this);
   }
 
   componentDidMount() {
-
     this.getCreneauxCandidats();
-    this.getCandidats();
-
+    this.getCandidat();
   }
 
   getCreneauxCandidats() {
@@ -166,7 +166,7 @@ class CalendarListPage extends Component {
     });
   }
 
-  getCandidats() {
+  getCandidat() {
     const id = getFromStorage('candidatId');
 
     callApi(`auth/candidats/${id}`, 'post')
@@ -197,12 +197,14 @@ class CalendarListPage extends Component {
       this.setState({
         open: true,
         lastReserved,
+        isModificationResa: true,
       });
 
       // selection de creneau simple
     } else {
       this.setState({
         open: true,
+        isModificationResa: false,
       });
     }
   }
@@ -247,16 +249,13 @@ class CalendarListPage extends Component {
   }
 
   unselectCreneau(creneau) {
-    const cr = { ...creneau };
-    cr.isSelected = false;
-    callApi(`auth/creneaux/${cr.id}`, 'put',
+    creneau.isSelected = false;
+    callApi(`auth/creneaux/${creneau.id}`, 'put',
       {
-        cr,
+        creneau,
       }
     ).then((res) => {
       console.log(res);
-      return res;
-      // this.forceUpdate();
     });
   }
 
@@ -266,46 +265,60 @@ class CalendarListPage extends Component {
         candidat,
       }
     ).then((cd) => {
-      cd.initialCandidat = `${candidat.nomNaissance.charAt(0).toUpperCase()}${candidat.prenom.charAt(0).toUpperCase()}`
-      this.setState({ candidat, success: true, openSnack: true, message: 'Votre réservation à l\'examen a été prise en compte. Veuillez consulter votre boîte mail.' });
+      cd.initialCandidat = `${candidat.nomNaissance.charAt(0).toUpperCase()}${candidat.prenom.charAt(0).toUpperCase()}`;
+      if (!cd.creneau) {
+        this.setState({ candidat, success: true, openSnack: true, message: MESSAGES_ANNULATION });
+      } else {
+        this.setState({ candidat, success: true, openSnack: true, message: MESSAGES_RESA });
+      }
     }).catch((er) => {
       console.log(er);
     });
   }
 
   refreshAndUpdate() {
+    this.getCreneauxCandidats();
+    this.getCandidat();
+
+    this.setState({
+      isModificationResa: false,
+      isDeleteResa: false,
+    });
     this.forceUpdate();
-    window.location.reload();
   }
 
-  handleClose = creneau => {
+  handleCancel = () => {
+    // on ferme la popup
+    this.setState({ open: false });
+  }
+
+  handleClose = cr => {
+    let creneau = { ...cr };
+
     // on ferme la popup
     this.setState({ open: false });
 
-    // si pas de creneau renvoyer par la popup cas d'annulation
-    if (!creneau) {
-      this.forceUpdate();
-      return;
-    }
-
-    this.deselectCreneaux();
     const candidat = { ...this.state.candidat };
     const lastReserved = { ...this.state.lastReserved };
-    this.unselectCreneau(lastReserved);
+    const isDeleteResa = this.state.isDeleteResa ;
+    if (lastReserved && lastReserved !== 'null' && lastReserved !== 'undefined') {
+      this.unselectCreneau(lastReserved);
+    }
 
     // on recupere le candidat en cours
 
     creneau.isSelected = true;
     creneau.candidat = candidat._id;
 
+    if (isDeleteResa && isDeleteResa !== null) {
+      candidat.temp = creneau;
+      creneau = {};
+    }
     candidat.creneau = creneau;
-
 
     this.updateCreneaux(creneau);
 
     this.updateCandidat(candidat);
-
-    this.getCandidats();
 
     this.refreshAndUpdate();
   };
@@ -315,16 +328,37 @@ class CalendarListPage extends Component {
   };
 
   deleteReservation = () => {
-    this.deselectCreneaux();
-    const candidat = { ...this.state.candidat };
-    candidat.creneau = {};
-    this.updateCandidat(candidat);
-    this.refreshAndUpdate();
+
+    const lastReserved = { ...this.state.candidat.creneau };
+
+    if (lastReserved && lastReserved.start) {
+      this.setState({
+        lastReserved,
+        isDeleteResa: true,
+      });
+
+      // selection de creneau simple
+    }
+
+    this.setState({ open: true });
+
   }
 
   render() {
     const { classes } = this.props;
-    const { creneauxCandidats, candidat, success, signUpError, openSnack, message, selectedCreneau, lastReserved } = this.state;
+    const {
+      creneauxCandidats,
+      candidat,
+      success,
+      signUpError,
+      openSnack,
+      message,
+      selectedCreneau,
+      lastReserved,
+      open,
+      isModificationResa,
+      isDeleteResa,
+    } = this.state;
 
     let site = '';
     let dateResa = '';
@@ -335,7 +369,7 @@ class CalendarListPage extends Component {
       isCreneau = true;
       site = candidat.creneau.title;
       siteAdresse = sites.find((item) => item.nom.toUpperCase() === site);
-      dateResa = moment(candidat.creneau.start).format('DD MMMM YYYY HH:mm');
+      dateResa = moment(candidat.creneau.start).format('DD MMMM YYYY à HH:mm');
     } else {
       isCreneau = false;
       dateResa = 'Veuillez cliquez sur une date pour réserver un jours.';
@@ -346,111 +380,117 @@ class CalendarListPage extends Component {
         <div>
           <CreneauDialog
             selectedValue={selectedCreneau}
-            open={this.state.open}
+            open={open}
             onClose={this.handleClose}
             lastReserved={lastReserved}
+            onCancel={this.handleCancel}
+            isModificationResa={isModificationResa}
+            isDeleteResa={isDeleteResa}
           />
         </div>
-        <Grid container className={classes.gridRoot} spacing={16}>
-          <Grid item lg={3} sm={12} xs={12} className={classes.gridCandidat}>
-            <Card className={classes.card}>
-              <CardHeader
-                avatar={
-                  <Avatar aria-label="Candidat" className={classes.avatar}>
-                    {candidat.initialCandidat}
-                  </Avatar>
-                }
-                className={classes.cardHeader}
-              />
-              <CardContent>
-                <Typography component="p">
-                  Nom : {candidat.nomNaissance} {candidat.prenom}
-                </Typography>
-                <Typography component="p">
-                  Neph : {candidat.codeNeph}
-                </Typography>
-                <Typography component="p">Email : {candidat.email}</Typography>
-                <Typography component="p">
-                  Portable : {candidat.portable}
-                </Typography>
-                <Typography component="p">
-                  adresse : {candidat.adresse}
-                </Typography>
-                {candidat.dateReussiteETG && (
+        <div>
+          <Grid container className={classes.gridRoot} spacing={16}>
+            <Grid item lg={3} sm={12} xs={12} className={classes.gridCandidat}>
+              <Card className={classes.card}>
+                <CardHeader
+                  avatar={
+                    <Avatar aria-label="Candidat" className={classes.avatar}>
+                      {candidat.initialCandidat}
+                    </Avatar>
+                  }
+                  className={classes.cardHeader}
+                />
+                <CardContent>
                   <Typography component="p">
-                    Date Code : {moment(candidat.dateReussiteETG).format('DD MMMM YYYY')}
+                    Nom : {candidat.nomNaissance} {candidat.prenom}
                   </Typography>
-                )}
-                {candidat.dateDernierEchecPratique && (
                   <Typography component="p">
-                    Date Echec Permis : {moment(candidat.dateDernierEchecPratique).format(
-                      'DD MMMM YYYY',
-                    )}
+                    Neph : {candidat.codeNeph}
                   </Typography>
-                )}
-              </CardContent>
-            </Card>
-            <Card className={classes.cardResa}>
-              <CardHeader
-                className={classes.cardHeader} title={
-                  <Typography component="h5">
-                    Ma réservation
+                  <Typography component="p">Email : {candidat.email}</Typography>
+                  <Typography component="p">
+                    Portable : {candidat.portable}
                   </Typography>
-                } />
-              <CardContent>
-                {!isCreneau &&
-                  <Typography variant="body1">
-                    {dateResa}
+                  <Typography component="p">
+                    adresse : {candidat.adresse}
                   </Typography>
-                }
-                {isCreneau &&
-                  <Typography component="h6" variant={"headline"}>
-                    {dateResa}
+                  {candidat.dateReussiteETG && (
+                    <Typography component="p">
+                      Date d'expiration du Code : {moment(candidat.dateReussiteETG).format('DD MMMM YYYY')}
+                    </Typography>
+                  )}
+                  {candidat.dateDernierEchecPratique && (
+                    <Typography component="p">
+                      Date dernier échec pratique Permis B : {moment(candidat.dateDernierEchecPratique).format(
+                        'DD MMMM YYYY',
+                      )}
+                    </Typography>
+                  )}
+                </CardContent>
+              </Card>
+              <Card className={classes.cardResa}>
+                <CardHeader
+                  className={classes.cardHeader} title={
+                    <Typography component="h5">
+                      Ma réservation
                   </Typography>
-                }
-                {siteAdresse &&
-                  <Typography variant="body1">
-                    {siteAdresse.nom}
-                  </Typography>
-                }
-                {siteAdresse &&
-                  <Typography variant="caption">
-                    {siteAdresse.adresse}
-                  </Typography>
-                }
+                  } />
+                <CardContent>
+                  {!isCreneau &&
+                    <Typography variant="body1">
+                      {dateResa}
+                    </Typography>
+                  }
+                  {isCreneau &&
+                    <Typography component="h6" variant={"headline"}>
+                      {dateResa}
+                    </Typography>
+                  }
+                  {siteAdresse &&
+                    <Typography variant="body1">
+                      {siteAdresse.nom}
+                    </Typography>
+                  }
+                  {siteAdresse &&
+                    <Typography variant="caption">
+                      {siteAdresse.adresse}
+                    </Typography>
+                  }
 
-              </CardContent>
-              <CardContent>
-                {isCreneau &&
-                  <Button onClick={this.deleteReservation}>
-                    Annuler ma reservation
+                </CardContent>
+                <CardContent>
+                  {isCreneau &&
+                    <Button onClick={this.deleteReservation}>
+                      Annuler ma reservation
                   </Button>
-                }
-              </CardContent>
-            </Card>
+                  }
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item lg={9} sm={12} xs={12} className={classes.gridCalendar}>
+              <Paper className={classes.paper}>
+                <BigCalendar
+                  className={classes.rbcEventsContainer}
+                  messages={messages}
+                  selectable
+                  events={creneauxCandidats}
+                  localizer={localizer}
+                  views={{ month: true, week: true, day: true }}
+                  step={30}
+                  startAccessor="start"
+                  endAccessor="end"
+                  defaultView={BigCalendar.Views.WEEK}
+                  eventPropGetter={(eventStyleGetter)}
+                  components={{
+                    event: CreneauEvent,
+                  }}
+                  onSelectEvent={this.selectCreneau}
+                />
+              </Paper>
+            </Grid>
           </Grid>
-          <Grid item lg={9} sm={12} xs={12} className={classes.gridCalendar}>
-            <Paper className={classes.paper}>
-              <BigCalendar
-                className={classes.rbcEventsContainer}
-                messages={messages}
-                selectable
-                events={creneauxCandidats}
-                localizer={localizer}
-                views={{ month: true, week: true, day: true }}
-                step={30}
-                startAccessor="start"
-                endAccessor="end"
-                eventPropGetter={(eventStyleGetter)}
-                components={{
-                  event: CreneauEvent,
-                }}
-                onSelectEvent={this.selectCreneau}
-              />
-            </Paper>
-          </Grid>
-        </Grid>
-        {success && (
+        </div>
+        <div>{success && (
           <Snackbar
             open={openSnack}
             autoHideDuration={8000}
@@ -465,21 +505,22 @@ class CalendarListPage extends Component {
             />
           </Snackbar>
         )}
-        {!success && (
-          <Snackbar
-            open={openSnack}
-            autoHideDuration={8000}
-            onClose={this.handleCloseSnack}
-            className={classes.snackbar}
-          >
-            <SnackbarNotification
+          {!success && (
+            <Snackbar
+              open={openSnack}
+              autoHideDuration={8000}
               onClose={this.handleCloseSnack}
-              variant="error"
-              className={classes.snackbarContent}
-              message={signUpError}
-            />
-          </Snackbar>
-        )}
+              className={classes.snackbar}
+            >
+              <SnackbarNotification
+                onClose={this.handleCloseSnack}
+                variant="error"
+                className={classes.snackbarContent}
+                message={signUpError}
+              />
+            </Snackbar>
+          )}
+        </div>
       </div>
     );
   }

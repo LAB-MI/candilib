@@ -13,8 +13,6 @@ import sites from '../inbox/sites.json';
 import moment from 'moment';
 
 const mailMessage = (candidatAurige, flag) => {
-  console.log(candidatAurige);
-
   const {
     codeNeph,
     nomNaissance,
@@ -30,6 +28,14 @@ const mailMessage = (candidatAurige, flag) => {
   const heureCreneau = creneau && creneau.start ? moment(creneau.start).add(1, 'hour').format('HH:mm') : '';
 
   const siteAdresse = sites.find((item) => item.nom.toUpperCase() === creneau.title) || [];
+
+
+  const ANNULATION_CONVOCATION_MSG = `<p>Bonjour Mr/Mme ${nomMaj},</p>
+  <br>
+  <p>votre réservation à l'examen pratique du permis de conduire à ${site} le ${dateCreneau} à ${heureCreneau} avec
+  le numéro NEPH ${codeNeph} est bien annulée. </p>
+  <br>
+  <p align="right">L'équipe Candilib</p>`;
 
   const MAIL_CONVOCATION_MSG = `
   <p>Le présent mail vaut convocation.</p>
@@ -156,13 +162,6 @@ const mailMessage = (candidatAurige, flag) => {
   <br>
   <p align="right">L'équipe Candilib</p>`;
 
-
-  const ANNULATION_CONVOCATION_MSG = `<p>Bonjour Mr/Mme ${nomMaj},</p>
-  <br>
-  <p>votre réservation à l'examen pratique du permis de conduire à ${site} le ${dateCreneau} à ${heureCreneau} avec
-  le numéro NEPH ${codeNeph} est bien annulée. </p>
-  <br>
-  <p align="right">L'équipe Candilib</p>`;
 
   switch (flag) {
     case CANDIDAT_NOK:
