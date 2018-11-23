@@ -23,8 +23,32 @@ import CreneauEvent from '../../../../components/calendar/CreneauEvent';
 import messages from '../../../../components/calendar/messages';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { callApi } from '../../../../util/apiCaller.admin';
+import ListCandidats from '../../../Candidat/components/ListCandidats';
 
 const localizer = BigCalendar.momentLocalizer(moment);
+
+
+const eventStyleGetter = (event) => {
+  const isSelected = event.isSelected;
+  const newStyle = {
+    backgroundColor: 'lightblue',
+    color: 'black',
+    borderRadius: '0px',
+    border: 'light',
+    borderColor: 'white',
+    fontSize: 10,
+    margin: 0,
+    padding: 5,
+  };
+
+  if (isSelected) {
+    newStyle.backgroundColor = 'lightgreen';
+  }
+
+  return {
+    style: newStyle,
+  };
+};
 
 const styles = theme => ({
   gridRoot: {
@@ -78,6 +102,9 @@ class AdminPage extends Component {
           const crenauItem = {
             id: item._id,
             title: `${item.centre} - ${item.inspecteur}`,
+            isSelected: item.isSelected,
+            inspecteur: item.inspecteur,
+            centre: item.centre,
             start: moment(
               moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss'),
             ).toDate(),
@@ -232,6 +259,7 @@ class AdminPage extends Component {
                 step={30}
                 startAccessor="start"
                 endAccessor="end"
+                eventPropGetter={eventStyleGetter}
                 onSelectEvent={
                   event => alert(`${event.title} : ${event.start}`) // eslint-disable-line no-alert
                 }
@@ -239,6 +267,16 @@ class AdminPage extends Component {
                   event: CreneauEvent,
                 }}
               />
+            </Paper>
+          </Card>
+        </Grid>
+        <Grid item xs={12}>
+          <Card className={classes.card}>
+            <Paper className={classes.paper}>
+              <Typography variant="headline" component="h3">
+                Candidats
+              </Typography>
+              <ListCandidats />
             </Paper>
           </Card>
         </Grid>

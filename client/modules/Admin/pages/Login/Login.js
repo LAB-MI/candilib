@@ -18,6 +18,8 @@ import blue from '@material-ui/core/colors/blue';
 import SnackbarNotification from '../../../../components/Notifications/SnackbarNotificationWrapper';
 import { setInStorage } from '../../../../util/storage';
 import { KEYSTORAGETOKEN } from '../../../../util/app.constants';
+import { Circle } from 'better-react-spinkit';
+
 
 const styles = theme => ({
   layout: {
@@ -56,8 +58,8 @@ const styles = theme => ({
     margin: theme.spacing.unit * 2,
     color: blue[500],
     position: 'absolute',
-    top: '50%',
-    left: '50%',
+    top: '-30%',
+    left: '40%',
   },
   buttonLogin: {
     textTransform: 'none',
@@ -90,7 +92,7 @@ class Login extends Component {
     this.handleCreate = this.handleCreate.bind(this);
   }
 
-  componentDidMount() {}
+  componentDidMount() { }
 
   handleClose = () => {
     this.setState({ open: false });
@@ -198,8 +200,8 @@ class Login extends Component {
                     Connexion
                   </Button>
                   {isLoading && (
-                    <CircularProgress
-                      size={24}
+                    <Circle
+                      size={25}
                       className={classes.buttonProgress}
                     />
                   )}

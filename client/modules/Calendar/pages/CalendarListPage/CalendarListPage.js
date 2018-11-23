@@ -103,6 +103,12 @@ const styles = theme => ({
     justifyContent: 'center',
     color: 'white',
   },
+  cardHeaderResa: {
+    backgroundColor: 'lightgreen',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'white',
+  },
   paper: {
     position: 'relative',
     height: '100%',
@@ -156,6 +162,8 @@ class CalendarListPage extends Component {
           id: item._id,
           title: `${item.centre}`,
           isSelected: item.isSelected,
+          inspecteur: item.inspecteur,
+          centre: item.centre,
           start: moment(moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss')).toDate(),
           end: moment(moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss')).add(30, 'minutes').toDate(),
         };
@@ -192,7 +200,6 @@ class CalendarListPage extends Component {
     // Recuperation et Modification reservation
     if (candidat.creneau && candidat.creneau.start) {
       const lastReserved = Object.assign({}, candidat.creneau);
-      // if (creneau) candidat.creneau = creneau;
 
       this.setState({
         open: true,
@@ -230,7 +237,6 @@ class CalendarListPage extends Component {
             creneau: creneauSelected,
           }
         ).then((cr) => {
-          console.log(cr);
           this.forceUpdate();
         });
       });
@@ -243,7 +249,6 @@ class CalendarListPage extends Component {
         creneau,
       }
     ).then((cr) => {
-      console.log(cr);
       this.forceUpdate();
     });
   }
@@ -255,8 +260,7 @@ class CalendarListPage extends Component {
       {
         creneau,
       }
-    ).then((res) => {
-      console.log(res);
+    ).then(() => {
     });
   }
 
@@ -291,7 +295,11 @@ class CalendarListPage extends Component {
 
   handleCancel = () => {
     // on ferme la popup
-    this.setState({ open: false });
+    this.setState({
+      open: false,
+      isModificationResa: false,
+      isDeleteResa: false,
+    });
   }
 
   handleClose = cr => {
@@ -432,7 +440,7 @@ class CalendarListPage extends Component {
               </Card>
               <Card className={classes.cardResa}>
                 <CardHeader
-                  className={classes.cardHeader} title={
+                  className={classes.cardHeaderResa} title={
                     <Typography component="h5">
                       Ma réservation
                   </Typography>

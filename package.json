@@ -33,6 +33,9 @@
   "author": "Prashant Abhishek <prashant.abhishek7g@gmail.com>, Mayank Chandola <imayankchd@gmail.com>, Sandeep Panda <sandeep@hashnode.com>, Syed Fazle Rahman <fazle@hashnode.com>, Alkshendra Maurya <alkshendra@hashnode.com>",
   "license": "MIT",
   "dependencies": {
+    "@devexpress/dx-react-core": "^1.9.0",
+    "@devexpress/dx-react-grid": "^1.9.0",
+    "@devexpress/dx-react-grid-material-ui": "^1.9.0",
     "@material-ui/core": "^1.5.0",
     "@material-ui/icons": "^2.0.2",
     "babel-core": "^6.26.0",
