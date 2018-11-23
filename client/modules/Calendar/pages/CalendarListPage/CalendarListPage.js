@@ -200,7 +200,6 @@ class CalendarListPage extends Component {
     // Recuperation et Modification reservation
     if (candidat.creneau && candidat.creneau.start) {
       const lastReserved = Object.assign({}, candidat.creneau);
-      // if (creneau) candidat.creneau = creneau;
 
       this.setState({
         open: true,
@@ -238,7 +237,6 @@ class CalendarListPage extends Component {
             creneau: creneauSelected,
           }
         ).then((cr) => {
-          console.log(cr);
           this.forceUpdate();
         });
       });
@@ -251,7 +249,6 @@ class CalendarListPage extends Component {
         creneau,
       }
     ).then((cr) => {
-      console.log(cr);
       this.forceUpdate();
     });
   }
@@ -263,8 +260,7 @@ class CalendarListPage extends Component {
       {
         creneau,
       }
-    ).then((res) => {
-      console.log(res);
+    ).then(() => {
     });
   }
 
@@ -299,7 +295,11 @@ class CalendarListPage extends Component {
 
   handleCancel = () => {
     // on ferme la popup
-    this.setState({ open: false });
+    this.setState({
+      open: false,
+      isModificationResa: false,
+      isDeleteResa: false,
+    });
   }
 
   handleClose = cr => {
