@@ -5,7 +5,7 @@ import { Footer } from '../../components/Footer/Footer';
 
 test('renders the footer properly', t => {
   const wrapper = shallow(
-    <Footer />
+    <Footer classes={{ footer: 'footer' }} />
   );
   t.true(wrapper.hasClass('footer'));
   t.is(wrapper.find('p').length, 1);

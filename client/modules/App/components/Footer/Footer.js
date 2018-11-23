@@ -16,7 +16,7 @@ const styles = () => ({
 import bg from '../../header-bk.png';
 
 export function Footer(props) {
-  const { classes } = props;
+  const { classes = {} } = props;
 
   return (
     <div style={{ background: `#FFF url(${bg}) center` }} className={classes.footer}>

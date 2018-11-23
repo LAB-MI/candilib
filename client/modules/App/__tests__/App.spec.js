@@ -7,8 +7,6 @@ import { App } from '../App';
 import { intlShape } from 'react-intl';
 import { intl } from '../../../util/react-intl-test-helper';
 import { toggleAddPost } from '../AppActions';
-import Header from '../components/Header/Header';
-import { Footer } from '../components/Footer/Footer';
 
 const intlProp = { ...intl, enabledLanguages: ['en', 'fr'] };
 const children = <h1>Test</h1>;
@@ -17,6 +15,9 @@ const props = {
   children,
   dispatch,
   intl: intlProp,
+  classes: {
+    footer: 'footer',
+  },
 };
 
 test('renders properly', t => {
@@ -25,8 +26,7 @@ test('renders properly', t => {
   );
 
   // t.is(wrapper.find('Helmet').length, 1);
-  t.is(wrapper.find(Header).length, 1);
-  t.is(wrapper.find(Footer).length, 1);
+  t.is(wrapper.find('Header').length, 1);
 });
 
 test('calls componentDidMount', t => {
