@@ -169,14 +169,25 @@ export function login(req, res) {
       },
     );
 
-    sendMagicLink(user, token);
-
-    return res.status(200).send({
-      success: true,
-      token,
-      message:
-        'Veuillez consulter votre boîte mail pour vous connecter (pensez à vérifier dans vos courriers indésirables).',
-    });
+    sendMagicLink(user, token)
+      .then(response => {
+        res.status(200).send({
+          success: true,
+          token,
+          response,
+          message:
+            'Veuillez consulter votre boîte mail pour vous connecter (pensez à vérifier dans vos courriers indésirables).',
+        });
+      })
+      .catch(error => {
+        res.status(500).send({
+          success: false,
+          token,
+          error,
+          message:
+            'Un problème est survenu lors de l\'envoi du lien de connexion. Nous vous prions de réessayer plus tard.',
+        });
+      }); // eslint-disable-line no-console
   });
 }
 

@@ -15,4 +15,24 @@ const config = {
   appURL: process.env.APP_URL || 'http://localhost:8000',
 };
 
+export const smtpOptions = {
+  host: config.smtpServer,
+  port: config.smtpPort,
+  secure: false,
+  tls: {
+    // do not failed with selfsign certificates
+    rejectUnauthorized: false,
+  },
+};
+
+// In development, if mailUser is not falsy, use it
+// (see .env file at the root of the project to use an external SMTP like gmail)
+if (process.env.NODE_ENV === 'development' && config.mailUser) {
+  smtpOptions.auth = {
+    user: config.mailUser,
+    pass: config.mailPassword,
+  };
+  smtpOptions.service = config.service;
+}
+
 export default config;
