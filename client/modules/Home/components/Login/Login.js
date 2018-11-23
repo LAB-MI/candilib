@@ -365,7 +365,7 @@ class Login extends Component {
                       color="default"
                       onClick={() => this.setState({ isLogin: true })}
                     >
-                      <Typography variant="caption">Connexion</Typography>
+                      <Typography variant="caption">Déjà inscrit ?</Typography>
                     </Button>
                   </FormControl>
                 </form>
@@ -392,7 +392,7 @@ class Login extends Component {
                       variant="raised"
                       disabled={isLoading}
                     >
-                      Déjà inscrit ?
+                      Connexion
                     </Button>
                     {isLoading && (
                       <Circle
