@@ -87,17 +87,18 @@ export default (res.csv = function sendCsv(
   }
 
   // Convert the data to a CSV-like structure
-  for (let i = 0; i < data.length; i++) {
-    if (!(data[i] instanceof Array)) {
-      data[i] = headerRow.map(key => {
-        if (data[i].hasOwnProperty(key)) {
-          return data[i][key];
+  for (const line of data) {
+    let convertedLine = line;
+    if (!(line instanceof Array)) {
+      convertedLine = headerRow.map(key => {
+        if (line.hasOwnProperty(key)) {
+          return line[key];
         }
         return null;
       });
     }
 
-    body += `${data[i].map(escape).join(exports.separator)}\r\n`; // TODO remettre avec retour chariot sous linux \r\n
+    body += `${convertedLine.map(escape).join(exports.separator)}\r\n`; // TODO remettre avec retour chariot sous linux \r\n
   }
 
   if (this.charset !== 'utf-8') {

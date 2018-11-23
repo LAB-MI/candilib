@@ -33,7 +33,6 @@ class CreneauDialog extends Component {
     let maDate = '';
     let monSite = '';
     let ancDate = '';
-    let ancSite = '';
 
 
     if (selectedValue) {
@@ -44,7 +43,6 @@ class CreneauDialog extends Component {
 
       if (lastReserved && lastReserved.start && lastReserved.title) {
         ancDate = moment(lastReserved.start).format('DD MMMM à HH:mm');
-        ancSite = lastReserved.title;
       }
     }
 

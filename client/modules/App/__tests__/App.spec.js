@@ -15,6 +15,9 @@ const props = {
   children,
   dispatch,
   intl: intlProp,
+  classes: {
+    footer: 'footer',
+  },
 };
 
 test('renders properly', t => {
@@ -24,7 +27,6 @@ test('renders properly', t => {
 
   // t.is(wrapper.find('Helmet').length, 1);
   t.is(wrapper.find('Header').length, 1);
-  t.is(wrapper.find('Footer').length, 1);
 });
 
 test('calls componentDidMount', t => {

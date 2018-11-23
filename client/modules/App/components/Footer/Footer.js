@@ -4,7 +4,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 
-const styles = theme => ({
+const styles = () => ({
   footer: {
     textAlign: 'center',
     padding: '56px 0',
@@ -16,7 +16,7 @@ const styles = theme => ({
 import bg from '../../header-bk.png';
 
 export function Footer(props) {
-  const { classes } = props;
+  const { classes = {} } = props;
 
   return (
     <div style={{ background: `#FFF url(${bg}) center` }} className={classes.footer}>

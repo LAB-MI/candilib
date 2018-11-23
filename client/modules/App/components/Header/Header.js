@@ -7,7 +7,7 @@ import styles from './Header.css';
 function Header() {
   return (
     <div className={styles.header}>
-      <AppBar color="default" position='static'>
+      <AppBar color="default" position="static">
         <Toolbar>
           <Button>Accueil</Button>
           <Button>Informations</Button>

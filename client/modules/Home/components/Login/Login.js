@@ -102,7 +102,7 @@ class Login extends Component {
       const { error } = this.props.location.state;
       if (error !== undefined) {
         const message = errorsConstants[error];
-        const islogin = 'token_no_valid' === error;
+        const islogin = error === 'token_no_valid';
 
         if (message !== undefined) {
           this.setState({

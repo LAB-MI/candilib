@@ -54,8 +54,8 @@ const candidatSchema = new Schema({
   },
   creneau: {
     type: Object,
-    default: {}
-  }
+    default: {},
+  },
 });
 
 candidatSchema.methods.generateHash = (password) => {
