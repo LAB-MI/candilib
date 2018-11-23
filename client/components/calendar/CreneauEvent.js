@@ -9,7 +9,6 @@ const styleEvent = {
 
 
 const CreneauEvent = (props) => {
-
   return (
     < span style={styleEvent} >
       <p>{props.event.title}</p>

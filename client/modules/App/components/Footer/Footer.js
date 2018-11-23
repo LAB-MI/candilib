@@ -4,7 +4,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 
-const styles = theme => ({
+const styles = () => ({
   footer: {
     textAlign: 'center',
     padding: '56px 0',

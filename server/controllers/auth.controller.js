@@ -46,7 +46,7 @@ export function register(req, res, next) {
               },
               serverConfig.secret,
               {
-                expiresIn: USER_STATUS2EXPIRESIN['candidat'](),
+                expiresIn: USER_STATUS2EXPIRESIN.candidat(),
               },
             );
             res.status(200).send({ auth: true, token });

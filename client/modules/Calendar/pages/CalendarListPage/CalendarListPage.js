@@ -105,7 +105,6 @@ const styles = theme => ({
   },
   paper: {
     position: 'relative',
-    padding: 10,
     height: '100%',
     padding: `${theme.spacing.unit * 2}px`,
   },
@@ -120,7 +119,7 @@ const styles = theme => ({
   },
   rbcEventsContainer: {
     margin: 0,
-  }
+  },
 });
 
 class CalendarListPage extends Component {
@@ -171,7 +170,8 @@ class CalendarListPage extends Component {
 
     callApi(`auth/candidats/${id}`, 'post')
       .then((res) => {
-        res.candidat.initialCandidat = `${res.candidat.nomNaissance.charAt(0).toUpperCase()}${res.candidat.prenom.charAt(0).toUpperCase()}`
+        // eslint-disable-next-line no-param-reassign
+        res.candidat.initialCandidat = `${res.candidat.nomNaissance.charAt(0).toUpperCase()}${res.candidat.prenom.charAt(0).toUpperCase()}`;
         this.setState({ candidat: res.candidat, success: true });
       });
   }
@@ -192,7 +192,7 @@ class CalendarListPage extends Component {
     // Recuperation et Modification reservation
     if (candidat.creneau && candidat.creneau.start) {
       const lastReserved = Object.assign({}, candidat.creneau);
-      //if (creneau) candidat.creneau = creneau;
+      // if (creneau) candidat.creneau = creneau;
 
       this.setState({
         open: true,
@@ -223,7 +223,7 @@ class CalendarListPage extends Component {
       const creneauxSelected = creneaux.filter((item) => item.isSelected === true);
 
       creneauxSelected.map(creneauSelected => {
-        creneauSelected.isSelected = false;
+        creneauSelected.isSelected = false; // eslint-disable-line no-param-reassign
 
         callApi(`auth/creneaux/${creneauSelected._id}`, 'put',
           {
@@ -249,6 +249,7 @@ class CalendarListPage extends Component {
   }
 
   unselectCreneau(creneau) {
+    // eslint-disable-next-line no-param-reassign
     creneau.isSelected = false;
     callApi(`auth/creneaux/${creneau.id}`, 'put',
       {
@@ -265,6 +266,7 @@ class CalendarListPage extends Component {
         candidat,
       }
     ).then((cd) => {
+      // eslint-disable-next-line no-param-reassign
       cd.initialCandidat = `${candidat.nomNaissance.charAt(0).toUpperCase()}${candidat.prenom.charAt(0).toUpperCase()}`;
       if (!cd.creneau) {
         this.setState({ candidat, success: true, openSnack: true, message: MESSAGES_ANNULATION });
@@ -300,15 +302,15 @@ class CalendarListPage extends Component {
 
     const candidat = { ...this.state.candidat };
     const lastReserved = { ...this.state.lastReserved };
-    const isDeleteResa = this.state.isDeleteResa ;
+    const isDeleteResa = this.state.isDeleteResa;
     if (lastReserved && lastReserved !== 'null' && lastReserved !== 'undefined') {
       this.unselectCreneau(lastReserved);
     }
 
     // on recupere le candidat en cours
 
-    creneau.isSelected = true;
-    creneau.candidat = candidat._id;
+    creneau.isSelected = true; // eslint-disable-line no-param-reassign
+    creneau.candidat = candidat._id; // eslint-disable-line no-param-reassign
 
     if (isDeleteResa && isDeleteResa !== null) {
       candidat.temp = creneau;
@@ -328,7 +330,6 @@ class CalendarListPage extends Component {
   };
 
   deleteReservation = () => {
-
     const lastReserved = { ...this.state.candidat.creneau };
 
     if (lastReserved && lastReserved.start) {
@@ -341,7 +342,6 @@ class CalendarListPage extends Component {
     }
 
     this.setState({ open: true });
-
   }
 
   render() {
@@ -407,7 +407,9 @@ class CalendarListPage extends Component {
                   <Typography component="p">
                     Neph : {candidat.codeNeph}
                   </Typography>
-                  <Typography component="p">Email : {candidat.email}</Typography>
+                  <Typography component="p">
+                    Email : {candidat.email}
+                  </Typography>
                   <Typography component="p">
                     Portable : {candidat.portable}
                   </Typography>
@@ -434,7 +436,8 @@ class CalendarListPage extends Component {
                     <Typography component="h5">
                       Ma réservation
                   </Typography>
-                  } />
+                  }
+                />
                 <CardContent>
                   {!isCreneau &&
                     <Typography variant="body1">
