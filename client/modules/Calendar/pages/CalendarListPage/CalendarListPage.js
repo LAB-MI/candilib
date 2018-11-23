@@ -103,6 +103,12 @@ const styles = theme => ({
     justifyContent: 'center',
     color: 'white',
   },
+  cardHeaderResa: {
+    backgroundColor: 'lightgreen',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'white',
+  },
   paper: {
     position: 'relative',
     height: '100%',
@@ -156,6 +162,8 @@ class CalendarListPage extends Component {
           id: item._id,
           title: `${item.centre}`,
           isSelected: item.isSelected,
+          inspecteur: item.inspecteur,
+          centre: item.centre,
           start: moment(moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss')).toDate(),
           end: moment(moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss')).add(30, 'minutes').toDate(),
         };
@@ -432,7 +440,7 @@ class CalendarListPage extends Component {
               </Card>
               <Card className={classes.cardResa}>
                 <CardHeader
-                  className={classes.cardHeader} title={
+                  className={classes.cardHeaderResa} title={
                     <Typography component="h5">
                       Ma réservation
                   </Typography>
