@@ -392,7 +392,7 @@ class Login extends Component {
                       variant="raised"
                       disabled={isLoading}
                     >
-                      Connexion
+                      Déjà inscrit ?
                     </Button>
                     {isLoading && (
                       <Circle
