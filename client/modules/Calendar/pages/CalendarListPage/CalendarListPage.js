@@ -236,7 +236,7 @@ class CalendarListPage extends Component {
           {
             creneau: creneauSelected,
           }
-        ).then((cr) => {
+        ).then(() => {
           this.forceUpdate();
         });
       });
@@ -248,7 +248,7 @@ class CalendarListPage extends Component {
       {
         creneau,
       }
-    ).then((cr) => {
+    ).then(() => {
       this.forceUpdate();
     });
   }

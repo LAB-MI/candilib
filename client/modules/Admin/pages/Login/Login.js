@@ -11,7 +11,6 @@ import {
   withStyles,
   CssBaseline,
   Snackbar,
-  CircularProgress,
 } from '@material-ui/core';
 
 import blue from '@material-ui/core/colors/blue';

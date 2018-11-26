@@ -7,10 +7,10 @@ const config = {
   secret: process.env.SECRET || 'secret',
   // fastAccessApi: process.env.FAST_ACCESS_API || false,
   smtpServer: process.env.SMTP_SERVER || '<server>',
-  smtpService: process.env.SMTP_SERVICE || '<service>',
+  smtpService: process.env.SMTP_SERVICE || undefined,
   smtpPort: process.env.SMTP_PORT || 25,
-  mailUser: process.env.MAIL_USER || '<user>',
-  mailPassword: process.env.MAIL_PASSWORD || '<passwd>',
+  mailUser: process.env.MAIL_USER || undefined,
+  mailPassword: process.env.MAIL_PASSWORD || undefined,
   mailFrom: process.env.MAIL_FROM || '<mail_from>',
   appURL: process.env.APP_URL || 'http://localhost:8000',
 };
@@ -32,7 +32,7 @@ if (process.env.NODE_ENV === 'development' && config.mailUser) {
     user: config.mailUser,
     pass: config.mailPassword,
   };
-  smtpOptions.service = config.service;
+  smtpOptions.service = config.smtpService;
 }
 
 export default config;
