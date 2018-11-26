@@ -58,7 +58,7 @@ export function register(req, res, next) {
   );
 }
 
-export function register_admin(req, res, next) {
+export function registerAdmin(req, res, next) {
   const { email, password } = req.body;
 
   const hashPassowrd = bcrypt.hashSync(password, 8);
@@ -91,7 +91,7 @@ export function register_admin(req, res, next) {
         } else {
           res
             .status(200)
-            .send({ message: "l'utilisateur +" + user.email + ' est créé.' });
+            .send({ message: "l'utilisateur " + user.email + ' est créé.' });
           next();
         }
       },
