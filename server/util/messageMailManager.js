@@ -27,12 +27,16 @@ const mailMessage = (candidatAurige, flag) => {
   const dateCreneau = creneau && creneau.start ? moment(creneau.start).format('DD MMMM YYYY') : '';
   const heureCreneau = creneau && creneau.start ? moment(creneau.start).add(1, 'hour').format('HH:mm') : '';
 
-  const siteAdresse = sites.find((item) => item.nom.toUpperCase() === creneau.title) || [];
+  let siteAdresse = [];
+
+  if (creneau && creneau.title) {
+    siteAdresse = sites.find((item) => item.nom.toUpperCase() === creneau.title || []);
+  }
 
 
   const ANNULATION_CONVOCATION_MSG = `<p>Bonjour Mr/Mme ${nomMaj},</p>
   <br>
-  <p>votre réservation à l'examen pratique du permis de conduire à ${site} le ${dateCreneau} à ${heureCreneau} avec
+  <p>votre réservation à l'examen pratique du permis de conduire avec
   le numéro NEPH ${codeNeph} est bien annulée. </p>
   <br>
   <p align="right">L'équipe Candilib</p>`;
@@ -139,6 +143,9 @@ const mailMessage = (candidatAurige, flag) => {
   <p align="center">NEPH ${codeNeph} / NOM ${nomMaj}</p>
   <p>Merci de les vérifier avant de renouveler votre demande d’inscription.</p>
   <br>
+  <p>Veuillez consulter notre aide en ligne :<p>
+  <p>Url FAQ site</p>
+  <br>
   <p align="right">L'équipe Candilib</p>`;
 
   const EPREUVE_PRATIQUE_OK_MSG = `<p>Bonjour Mr/Mme ${nomMaj},</p>
@@ -175,7 +182,7 @@ const mailMessage = (candidatAurige, flag) => {
   switch (flag) {
     case CANDIDAT_NOK:
       message.content = INSCRIPTION_KO_MSG;
-      message.subject = '<ne pas répondre> Problème inscription Candilib';
+      message.subject = '<ne pas répondre> Inscription Candilib non validée';
       return message;
     case INSCRIPTION_VALID:
       message.content = INSCRIPTION_VALID_MSG;
@@ -183,7 +190,7 @@ const mailMessage = (candidatAurige, flag) => {
       return message;
     case CANDIDAT_NOK_NOM:
       message.content = INSCRIPTION_KO_MSG;
-      message.subject = '<ne pas répondre> Problème inscription Candilib';
+      message.subject = '<ne pas répondre> Inscription Candilib non validée';
       return message;
     case EPREUVE_PRATIQUE_OK:
       message.content = EPREUVE_PRATIQUE_OK_MSG;
@@ -191,7 +198,7 @@ const mailMessage = (candidatAurige, flag) => {
       return message;
     case INSCRIPTION_OK:
       message.content = INSCRIPTION_VALID_MSG;
-      message.subject = '<ne pas répondre> Inscription Candilib non validée';
+      message.subject = '<ne pas répondre> Inscription Candilib en attente de vérification';
       return message;
     case EPREUVE_ETG_KO:
       message.content = EPREUVE_ETG_KO_MSG;

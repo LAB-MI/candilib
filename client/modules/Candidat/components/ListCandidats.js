@@ -24,6 +24,7 @@ const styles = () => ({
 });
 
 const columns = [
+  { name: 'date', title: 'Date' },
   { name: 'nomNaissance', title: 'Nom' },
   { name: 'codeNeph', title: 'Neph' },
   { name: 'email', title: 'Email' },
@@ -54,13 +55,19 @@ class ListCandidats extends Component {
           return candidat && candidat.creneau && candidat.creneau.start;
         });
 
+        candidatsFiltrer.sort((a, b) => {
+          return moment(a.creneau.start).format('YYYY-MM-DD') > moment(b.creneau.start).format('YYYY-MM-DD') ? 1 : -1;
+        });
+
         candidatsFiltrer.map(candidat => {
           if (candidat &&
             candidat.creneau &&
             candidat.creneau.centre &&
             candidat.creneau.inspecteur) {
-            candidat.centre = candidat.creneau.centre;
-            candidat.inspecteur = candidat.creneau.inspecteur;
+            const candAdmin = candidat;
+            candAdmin.date = moment(candidat.creneau.start).format('YYYY-MM-DD');
+            candAdmin.centre = candidat.creneau.centre;
+            candAdmin.inspecteur = candidat.creneau.inspecteur;
           }
         });
         this.setState({ candidats: candidatsFiltrer });

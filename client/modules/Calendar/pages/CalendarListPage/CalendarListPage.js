@@ -380,7 +380,7 @@ class CalendarListPage extends Component {
       dateResa = moment(candidat.creneau.start).format('DD MMMM YYYY à HH:mm');
     } else {
       isCreneau = false;
-      dateResa = 'Veuillez cliquez sur une date pour réserver un jours.';
+      dateResa = 'Veuillez cliquez sur une place.';
     }
 
     return (
@@ -483,14 +483,16 @@ class CalendarListPage extends Component {
                 <BigCalendar
                   className={classes.rbcEventsContainer}
                   messages={messages}
+                  min={new Date(null, null, 0, 7, 0, 0)}
+                  max={new Date(null, null, 0, 18, 0, 0)}
                   selectable
                   events={creneauxCandidats}
                   localizer={localizer}
-                  views={{ month: true, week: true, day: true }}
+                  views={{ month: true, work_week: true, day: true }}
                   step={30}
                   startAccessor="start"
                   endAccessor="end"
-                  defaultView={BigCalendar.Views.WEEK}
+                  defaultView="work_week"
                   eventPropGetter={(eventStyleGetter)}
                   components={{
                     event: CreneauEvent,
