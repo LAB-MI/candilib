@@ -9,6 +9,10 @@ export const USER_STATUS2EXPIRESIN = {
       .minute(59)
       .second(59)
       .millisecond(0);
+
+    if (midnight.isBefore(now)) {
+      midnight.add(1, 'days');
+    }
     const duration = midnight.diff(now) / 1000;
 
     return duration + 's';
