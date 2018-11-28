@@ -315,6 +315,7 @@ class Login extends Component {
                   <FormControl margin="normal" required fullWidth>
                     <InputLabel htmlFor="email">Email (obligatoire)</InputLabel>
                     <Input
+                      type="email"
                       id="email"
                       error={emailError}
                       name="email"
@@ -354,10 +355,7 @@ class Login extends Component {
                       Inscription
                     </Button>
                     {isLoading && (
-                      <Circle
-                        size={25}
-                        className={classes.buttonProgress}
-                      />
+                      <Circle size={25} className={classes.buttonProgress} />
                     )}
                   </FormControl>
                   <FormControl margin="normal" className={classes.buttonLogin}>
@@ -375,6 +373,7 @@ class Login extends Component {
                   <FormControl margin="normal" required fullWidth>
                     <InputLabel htmlFor="email">Email</InputLabel>
                     <Input
+                      type="email"
                       id="email"
                       error={emailError}
                       name="email"
@@ -395,10 +394,7 @@ class Login extends Component {
                       Connexion
                     </Button>
                     {isLoading && (
-                      <Circle
-                        size={25}
-                        className={classes.buttonProgress}
-                      />
+                      <Circle size={25} className={classes.buttonProgress} />
                     )}
                   </FormControl>
                   <FormControl margin="normal" className={classes.buttonLogin}>
