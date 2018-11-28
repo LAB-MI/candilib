@@ -60,6 +60,9 @@ import serverConfig from './config';
 import verifyToken from './util/verifyToken';
 import isAdmin from './util/isAdmin';
 
+import { canToRegister } from './controllers/whitelist.controller';
+import whitelists from './routes/whitelist.routes';
+
 // Set native promises as mongoose promise
 mongoose.Promise = global.Promise;
 
@@ -94,11 +97,15 @@ app.use(fileUpload());
 app.use(Express.static(path.resolve(__dirname, '../dist/client')));
 app.use('/api', users);
 app.use('/api/admin', verifyToken, isAdmin, adminUsers);
-app.use('/api', candidats);
+
+app.use('/api', canToRegister, candidats);
+
 app.use('/api/auth', verifyToken, authCandidats);
 app.use('/api/admin', verifyToken, isAdmin, authAdminCandidats);
 app.use('/api/auth', verifyToken, creneaux);
 app.use('/api/admin', verifyToken, isAdmin, adminCreneaux);
+
+app.use('/api/admin', verifyToken, isAdmin, whitelists);
 
 // Render Initial HTML
 const renderFullPage = (html, initialState) => {
