@@ -4,9 +4,11 @@ import * as WhitelistController from '../controllers/whitelist.controller';
 const router = new Router();
 
 router
-  .route('/whiteliste/candidats')
+  .route('/whitelist/candidats')
   .get(WhitelistController.getWhitelistCandidats);
-router.route('/whiteliste/add').get(WhitelistController.addWhitelist);
-router.route('/whiteliste/remove').get(WhitelistController.deleteCandidat);
+router.route('/whitelist/candidats').post(WhitelistController.addWhitelist);
+router
+  .route('/whitelist/candidats/:id')
+  .delete(WhitelistController.deleteCandidat);
 
 export default router;
