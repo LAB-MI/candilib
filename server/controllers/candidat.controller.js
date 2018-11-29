@@ -598,9 +598,9 @@ const synchroAurige = pathname => {
               { email: candidatAurige.email },
               {
                 $set: {
-                  dateReussiteETG: moment(candidatAurige.dateReussiteETG, 'DD-MM-YYYY').format('YYYY-MM-DD'),
-                  dateDernierEchecPratique: moment(candidatAurige.dateDernierEchecPratique, 'DD-MM-YYYY').format('YYYY-MM-DD'),
-                  reussitePratique: moment(candidatAurige.reussitePratique, 'DD-MM-YYYY').format('YYYY-MM-DD'),
+                  dateReussiteETG: moment(candidatAurige.dateReussiteETG, 'YYYY-MM-DD').format('YYYY-MM-DD'),
+                  dateDernierEchecPratique: moment(candidatAurige.dateDernierEchecPratique, 'YYYY-MM-DD').format('YYYY-MM-DD'),
+                  reussitePratique: moment(candidatAurige.reussitePratique, 'YYYY-MM-DD').format('YYYY-MM-DD'),
                 },
               },
               () => {

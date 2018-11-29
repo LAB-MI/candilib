@@ -54,6 +54,7 @@ import authCandidats from './routes/auth.candidats.routes';
 import creneaux from './routes/creneaux.routes';
 import adminCreneaux from './routes/admin.creneaux.routes';
 import users from './routes/users.routes';
+import adminUsers from './routes/admin.users.routes';
 
 import serverConfig from './config';
 import verifyToken from './util/verifyToken';
@@ -92,6 +93,7 @@ app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
 app.use(fileUpload());
 app.use(Express.static(path.resolve(__dirname, '../dist/client')));
 app.use('/api', users);
+app.use('/api/admin', verifyToken, isAdmin, adminUsers);
 app.use('/api', candidats);
 app.use('/api/auth', verifyToken, authCandidats);
 app.use('/api/admin', verifyToken, isAdmin, authAdminCandidats);

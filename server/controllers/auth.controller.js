@@ -92,8 +92,9 @@ export function login(req, res) {
     }
 
     let passwordIsValid = false;
+
     if (password !== undefined) {
-      passwordIsValid = password === user.password;
+      passwordIsValid = bcrypt.compareSync(password, user.password);
     }
     const usernameIsValid = email === user.email;
 

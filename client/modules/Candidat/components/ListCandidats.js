@@ -24,6 +24,7 @@ const styles = () => ({
 });
 
 const columns = [
+  { name: 'date', title: 'Date' },
   { name: 'nomNaissance', title: 'Nom' },
   { name: 'codeNeph', title: 'Neph' },
   { name: 'email', title: 'Email' },
@@ -50,20 +51,19 @@ class ListCandidats extends Component {
       .get()
       .then(response => response.json())
       .then(candidats => {
-        const candidatsFiltrer = candidats.filter((candidat) => {
-          return candidat && candidat.creneau && candidat.creneau.start;
+        const candidatsFiltredSorted = candidats.filter((candidat) => {
+          return candidat && candidat.creneau && candidat.creneau.centre && candidat.creneau.inspecteur;
+        }).sort((a, b) => {
+          return moment(a.creneau.start).format('YYYY-MM-DD-HH-mm') > moment(b.creneau.start).format('YYYY-MM-DD-HH-mm') ? 1 : -1;
         });
 
-        candidatsFiltrer.map(candidat => {
-          if (candidat &&
-            candidat.creneau &&
-            candidat.creneau.centre &&
-            candidat.creneau.inspecteur) {
-            candidat.centre = candidat.creneau.centre;
-            candidat.inspecteur = candidat.creneau.inspecteur;
-          }
+        candidatsFiltredSorted.map(candidat => {
+          const candAdmin = candidat;
+          candAdmin.date = moment(candidat.creneau.start).format('YYYY-MM-DD');
+          candAdmin.centre = candidat.creneau.centre;
+          candAdmin.inspecteur = candidat.creneau.inspecteur;
         });
-        this.setState({ candidats: candidatsFiltrer });
+        this.setState({ candidats: candidatsFiltredSorted });
       });
   }
 
