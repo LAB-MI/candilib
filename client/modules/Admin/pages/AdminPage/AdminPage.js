@@ -24,11 +24,11 @@ import messages from '../../../../components/calendar/messages';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { callApi } from '../../../../util/apiCaller.admin';
 import ListCandidats from '../../../Candidat/components/ListCandidats';
+import ListWhitelist from '../WhiteList/ListWhitelist';
 
 const localizer = BigCalendar.momentLocalizer(moment);
 
-
-const eventStyleGetter = (event) => {
+const eventStyleGetter = event => {
   const isSelected = event.isSelected;
   const newStyle = {
     backgroundColor: 'lightblue',
@@ -280,6 +280,17 @@ class AdminPage extends Component {
             </Paper>
           </Card>
         </Grid>
+        <Grid item xs={12}>
+          <Card className={classes.card}>
+            <Paper className={classes.paper}>
+              <Typography variant="headline" component="h3">
+                WhiteList
+              </Typography>
+              <ListWhitelist />
+            </Paper>
+          </Card>
+        </Grid>
+
         {success && (
           <Snackbar
             open={open}

@@ -43,6 +43,7 @@ export class ApiCaller {
   }
 
   get() {
+    this._method = 'get';
     return this._fetch();
   }
 
@@ -80,6 +81,11 @@ export class ApiCaller {
       this.body = body;
     }
     return this._fetch();
+  }
+  delete(id) {
+    this._method = 'delete';
+    const endpoint = this._endpoint + '/' + id;
+    return this._fetch(endpoint);
   }
 
   then(callback) {

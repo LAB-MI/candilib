@@ -8,43 +8,49 @@ export function canToRegister(req, res, next) {
   const { email } = body;
 
   //  const { emails } = whitelist.map(candidat => candidat.email);
-  const emails = whitelist;
   console.log(whitelist);
-  console.log(emails);
   console.log(body);
-  const isEmailOk = emails === undefined ? false : emails.indexOf(email) > 0;
 
-  let isEmailOkDB = false;
-  WhitelistCandidat.findOne({ email: email }).exec((err, candidat) => {
-    if (err) {
-      isEmailOkDB = false;
-    } else {
-      isEmailOkDB = true;
+  if (whitelist !== undefined && whitelist.length > 0) {
+    const emails = whitelist;
+    console.log(emails);
+    const isEmailOk = emails === undefined ? false : emails.indexOf(email) > 0;
+
+    if (isEmailOk) {
+      return next();
     }
-  });
-
-  if (isEmailOk || isEmailOkDB) {
-    return next();
+    return res.status(401).send({
+      auth: false,
+      message: messages.NO_AUTH_WHITELIST,
+      codemessage: 'NO_AUTH_WHITELIST',
+    });
   }
-  return res.status(401).send({
-    auth: false,
-    message: messages['NO_AUTH_WHITELIST'],
-    codemessage: 'NO_AUTH_WHITELIST',
+
+  WhitelistCandidat.findOne({ email }).exec((err, candidat) => {
+    if (err) {
+      return res.status(500).send({
+        success: false,
+        message: error.message,
+      });
+    }
+    console.log(candidat);
+    if (candidat === null) {
+      return res.status(401).send({
+        auth: false,
+        message: messages.NO_AUTH_WHITELIST,
+        codemessage: 'NO_AUTH_WHITELIST',
+      });
+    }
+    return next();
   });
 }
 
 export function addWhitelist(req, res) {
-  const { nom, prenom, neph, adresse, email } = req.body;
+  const { email } = req.body;
 
   const newCandidat = new WhitelistCandidat();
 
   // Let's sanitize inputs
-  newCandidat.nomNaissance = sanitizeHtml(nom);
-  newCandidat.prenom = sanitizeHtml(
-    prenom.normalize('NFD').replace(/[\u0300-\u036f]/g, ''),
-  );
-  newCandidat.codeNeph = neph;
-  newCandidat.adresse = sanitizeHtml(adresse);
   newCandidat.email = sanitizeHtml(email);
 
   newCandidat.save((error, candidat) => {
@@ -54,7 +60,7 @@ export function addWhitelist(req, res) {
         message: error.message,
       });
     }
-    res.status(200).end('whitelist candidat saved');
+    res.status(200).json(candidat);
   });
 }
 
@@ -76,7 +82,7 @@ export function deleteCandidat(req, res) {
     }
 
     candidat.remove(() => {
-      res.status(200).end('candidat deleted');
+      res.status(200).json(candidat);
     });
   });
 }
