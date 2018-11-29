@@ -25,6 +25,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { callApi } from '../../../../util/apiCaller.admin';
 import ListCandidats from '../../../Candidat/components/ListCandidats';
 import ListWhitelist from '../WhiteList/ListWhitelist';
+import { ETIME } from 'constants';
 
 const localizer = BigCalendar.momentLocalizer(moment);
 
@@ -85,6 +86,7 @@ class AdminPage extends Component {
     this.handleUploadCSV = this.handleUploadCSV.bind(this);
     this.handleUploadJSON = this.handleUploadJSON.bind(this);
     this.handleDownLoadCSV = this.handleDownLoadCSV.bind(this);
+    this.handleMessage = this.handleMessage.bind(this);
   }
 
   componentDidMount() {
@@ -165,6 +167,14 @@ class AdminPage extends Component {
     ev.preventDefault();
 
     callApi('admin/candidats/export').download();
+  }
+
+  handleMessage(ev) {
+    this.setState({
+      success: ev.success,
+      snackBarMessage: ev.message,
+      open: true,
+    });
   }
 
   render() {
@@ -286,7 +296,7 @@ class AdminPage extends Component {
               <Typography variant="headline" component="h3">
                 WhiteList
               </Typography>
-              <ListWhitelist />
+              <ListWhitelist onMessage={this.handleMessage} />
             </Paper>
           </Card>
         </Grid>

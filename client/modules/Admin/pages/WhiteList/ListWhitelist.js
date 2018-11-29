@@ -33,19 +33,19 @@ const AddButton = ({ onExecute }) => (
 );
 
 const DeleteButton = ({ onExecute }) => (
-  <IconButton onClick={onExecute} title="Delete row">
+  <IconButton onClick={onExecute} title="Supprimer un adresse mail">
     <DeleteIcon />
   </IconButton>
 );
 
 const CommitButton = ({ onExecute }) => (
-  <IconButton onClick={onExecute} title="Save changes">
+  <IconButton onClick={onExecute} title="Enregistrer">
     <SaveIcon />
   </IconButton>
 );
 
 const CancelButton = ({ onExecute }) => (
-  <IconButton color="secondary" onClick={onExecute} title="Cancel changes">
+  <IconButton color="secondary" onClick={onExecute} title="Annuler">
     <CancelIcon />
   </IconButton>
 );
@@ -65,6 +65,7 @@ const Command = ({ id, onExecute }) => {
 const columns = [{ name: 'email', title: 'Email' }];
 
 const getRowId = row => row._id;
+
 class ListWhitelists extends Component {
   constructor(props) {
     super(props);
@@ -99,6 +100,13 @@ class ListWhitelists extends Component {
         .then(candidat => {
           candidats = [...candidats, candidat];
           this.setState({ candidats });
+        })
+        .catch(err => {
+          console.log(err);
+          return err;
+        })
+        .then(err => {
+          this.props.onMessage(err);
         });
     });
   }
@@ -111,6 +119,10 @@ class ListWhitelists extends Component {
       .then(candidat => {
         candidats = candidats.filter(row => row._id !== candidat._id);
         this.setState({ candidats });
+      })
+      .catch(err => {
+        console.log(err);
+        this.props.onMessage(err);
       });
   }
   commitChanges({ added, changed, deleted }) {
@@ -128,7 +140,6 @@ class ListWhitelists extends Component {
     return (
       <div className={classes.tableWrapper}>
         <Grid rows={candidats} columns={columns} getRowId={getRowId}>
-          <RowDetailState defaultExpandedRowIds={[2, 5]} />
           <EditingState onCommitChanges={this.commitChanges} />
           <Table />
           <TableHeaderRow />

@@ -69,7 +69,10 @@ export function getWhitelistCandidats(req, res) {
     .sort('-dateAdded')
     .exec((err, Candidats) => {
       if (err) {
-        res.status(500).send(err);
+        return res.status(500).send({
+          success: false,
+          message: error.message,
+        });
       }
       res.status(200).json(Candidats);
     });
@@ -78,7 +81,10 @@ export function getWhitelistCandidats(req, res) {
 export function deleteCandidat(req, res) {
   WhitelistCandidat.findOne({ _id: req.params.id }).exec((err, candidat) => {
     if (err) {
-      res.status(500).send(err);
+      return res.status(500).send({
+        success: false,
+        message: error.message,
+      });
     }
 
     candidat.remove(() => {
