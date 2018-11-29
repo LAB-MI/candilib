@@ -644,6 +644,8 @@ export function purgePermisOk(req, res) {
   );
 }
 
+const assert = require('assert').strict;
+
 export const uploadAurigeCSV = (req, res) => {
   const csvFile = req.files.file;
   const csvFilePath = path.resolve(__dirname, '../../temp/csv/', csvFile.name);
@@ -658,11 +660,12 @@ export const uploadAurigeCSV = (req, res) => {
       .fromStream(stream, { headers: false, ignoreEmpty: true })
       .on('data', data => {
         const creneau = new Creneau();
+        if (data[0] === 'Date') return;
 
         const myDate = `${data[0]} ${data[1]}`;
-        const formatDate = moment(myDate, 'DD-MM-YYYY HH:mm:ss').format(
+        const formatDate = moment(moment(myDate, 'DD-MM-YYYY HH:mm:ss').format(
           'YYYY-MM-DD HH:mm:ss',
-        );
+        )).add(60, 'minutes');
         creneau.date = formatDate;
         creneau.inspecteur = data[2];
         creneau.centre = data[3];
@@ -684,7 +687,7 @@ export const uploadAurigeCSV = (req, res) => {
             } else {
               creneau.save(errSave => {
                 if (errSave) {
-                  console.warn(errSave);
+                  assert.ifError(errSave);
                 }
                 res.end('Done');
               });
