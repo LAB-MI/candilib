@@ -98,7 +98,7 @@ app.use(Express.static(path.resolve(__dirname, '../dist/client')));
 app.use('/api', users);
 app.use('/api/admin', verifyToken, isAdmin, adminUsers);
 
-app.use('/api', canToRegister, candidats);
+app.use('/api', candidats);
 
 app.use('/api/auth', verifyToken, authCandidats);
 app.use('/api/admin', verifyToken, isAdmin, authAdminCandidats);
