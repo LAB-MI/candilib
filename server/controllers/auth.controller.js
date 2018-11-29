@@ -58,47 +58,6 @@ export function register(req, res, next) {
   );
 }
 
-export function registerAdmin(req, res, next) {
-  const { email, password } = req.body;
-
-  const hashPassowrd = bcrypt.hashSync(password, 8);
-
-  // verify user don't exist
-
-  User.find({ email }, (err, previousUsers) => {
-    if (err) {
-      return res.status(500).send({
-        success: false,
-        message: err.errmsg,
-      });
-    } else if (previousUsers.length > 0) {
-      return res.status(409).send({
-        success: false,
-        message: 'Error: Account already exist.',
-      });
-    }
-
-    User.create(
-      {
-        email: sanitizeHtml(email),
-        password: hashPassowrd,
-        status: 'admin',
-      },
-      (error, user) => {
-        if (error) {
-          res.status(500).send('Il y a un problème avec votre demande!');
-          next(error);
-        } else {
-          res
-            .status(200)
-            .send({ message: "l'utilisateur " + user.email + ' est créé.' });
-          next();
-        }
-      },
-    );
-  });
-}
-
 export function verifyMe(req, res) {
   User.findById(req.userId, { password: 0 }, (err, user) => {
     if (err) {
