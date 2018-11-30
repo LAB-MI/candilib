@@ -24,4 +24,4 @@ const creneauDateSchema = new Schema({
   },
 });
 
-export default mongoose.model('Creneau', creneauDateSchema);
+export default mongoose.model('Creneau', creneauDateSchema, 'creneaux');

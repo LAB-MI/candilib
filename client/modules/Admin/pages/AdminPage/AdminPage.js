@@ -24,11 +24,11 @@ import messages from '../../../../components/calendar/messages';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { callApi } from '../../../../util/apiCaller.admin';
 import ListCandidats from '../../../Candidat/components/ListCandidats';
+import ListWhitelist from '../WhiteList/ListWhitelist';
 
 const localizer = BigCalendar.momentLocalizer(moment);
 
-
-const eventStyleGetter = (event) => {
+const eventStyleGetter = event => {
   const isSelected = event.isSelected;
   const newStyle = {
     backgroundColor: 'lightblue',
@@ -85,6 +85,7 @@ class AdminPage extends Component {
     this.handleUploadCSV = this.handleUploadCSV.bind(this);
     this.handleUploadJSON = this.handleUploadJSON.bind(this);
     this.handleDownLoadCSV = this.handleDownLoadCSV.bind(this);
+    this.handleMessage = this.handleMessage.bind(this);
   }
 
   componentDidMount() {
@@ -167,6 +168,14 @@ class AdminPage extends Component {
     callApi('admin/candidats/export').download();
   }
 
+  handleMessage(ev) {
+    this.setState({
+      success: ev.success,
+      snackBarMessage: ev.message,
+      open: true,
+    });
+  }
+
   render() {
     const { classes } = this.props;
     const {
@@ -176,6 +185,11 @@ class AdminPage extends Component {
       fileName,
       eventsCreneaux,
     } = this.state;
+
+    const minHour = new Date();
+    minHour.setHours(7, 0, 0);
+    const maxHour = new Date();
+    maxHour.setHours(17, 59, 59);
 
     return (
       <Grid container className={classes.gridRoot} spacing={16}>
@@ -252,13 +266,16 @@ class AdminPage extends Component {
               <BigCalendar
                 className={classes.rbcCalendar}
                 messages={messages}
+                min={minHour}
+                max={maxHour}
                 selectable
                 events={eventsCreneaux}
                 localizer={localizer}
-                views={{ month: true, week: true, day: true }}
+                views={{ month: true, work_week: true, day: true }}
                 step={30}
                 startAccessor="start"
                 endAccessor="end"
+                defaultView="work_week"
                 eventPropGetter={eventStyleGetter}
                 onSelectEvent={
                   event => alert(`${event.title} : ${event.start}`) // eslint-disable-line no-alert
@@ -280,6 +297,17 @@ class AdminPage extends Component {
             </Paper>
           </Card>
         </Grid>
+        <Grid item xs={12}>
+          <Card className={classes.card}>
+            <Paper className={classes.paper}>
+              <Typography variant="headline" component="h3">
+                WhiteList
+              </Typography>
+              <ListWhitelist onMessage={this.handleMessage} />
+            </Paper>
+          </Card>
+        </Grid>
+
         {success && (
           <Snackbar
             open={open}

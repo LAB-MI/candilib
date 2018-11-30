@@ -41,7 +41,6 @@ class ListCandidats extends Component {
     };
   }
 
-
   componentDidMount() {
     this.getCandidats();
   }
@@ -72,24 +71,16 @@ class ListCandidats extends Component {
     const { candidats } = this.state;
     return (
       <div className={classes.tableWrapper}>
-        <Grid
-          rows={candidats}
-          columns={columns}
-        >
-          <RowDetailState
-            defaultExpandedRowIds={[2, 5]}
-          />
+        <Grid rows={candidats} columns={columns}>
+          <RowDetailState defaultExpandedRowIds={[2, 5]} />
           <Table />
           <TableHeaderRow />
-          <TableRowDetail
-            contentComponent={RowDetail}
-          />
+          <TableRowDetail contentComponent={RowDetail} />
         </Grid>
       </div>
     );
   }
 }
-
 
 ListCandidats.propTypes = {
   classes: PropTypes.object.isRequired,

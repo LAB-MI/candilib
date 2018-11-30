@@ -372,6 +372,10 @@ class CalendarListPage extends Component {
     let dateResa = '';
     let isCreneau = false;
     let siteAdresse = {};
+    const minHour = new Date();
+    minHour.setHours(7, 0, 0);
+    const maxHour = new Date();
+    maxHour.setHours(17, 59, 59);
 
     if (candidat && candidat.creneau && candidat.creneau.title && candidat.creneau.start) {
       isCreneau = true;
@@ -483,8 +487,8 @@ class CalendarListPage extends Component {
                 <BigCalendar
                   className={classes.rbcEventsContainer}
                   messages={messages}
-                  min={new Date(null, null, 0, 7, 0, 0)}
-                  max={new Date(null, null, 0, 18, 0, 0)}
+                  min={minHour}
+                  max={maxHour}
                   selectable
                   events={creneauxCandidats}
                   localizer={localizer}
