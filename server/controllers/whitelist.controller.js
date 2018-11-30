@@ -1,4 +1,3 @@
-import whitelist from '../inbox/whitelist.json';
 import messages from '../util/messages.constant.json';
 import WhitelistCandidat from '../models/whitelistCandidat.js';
 import sanitizeHtml from 'sanitize-html';
@@ -7,25 +6,6 @@ export function canToRegister(req, res, next) {
   const { body } = req;
   const { email } = body;
 
-  //  const { emails } = whitelist.map(candidat => candidat.email);
-  console.log(whitelist);
-  console.log(body);
-
-  if (whitelist !== undefined && whitelist.length > 0) {
-    const emails = whitelist;
-    console.log(emails);
-    const isEmailOk = emails === undefined ? false : emails.indexOf(email) > 0;
-
-    if (isEmailOk) {
-      return next();
-    }
-    return res.status(401).send({
-      auth: false,
-      message: messages.NO_AUTH_WHITELIST,
-      codemessage: 'NO_AUTH_WHITELIST',
-    });
-  }
-
   WhitelistCandidat.findOne({ email }).exec((err, candidat) => {
     if (err) {
       return res.status(500).send({
@@ -33,7 +13,7 @@ export function canToRegister(req, res, next) {
         message: error.message,
       });
     }
-    console.log(candidat);
+
     if (candidat === null) {
       return res.status(401).send({
         auth: false,
