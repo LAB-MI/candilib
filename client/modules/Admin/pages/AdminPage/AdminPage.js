@@ -186,6 +186,11 @@ class AdminPage extends Component {
       eventsCreneaux,
     } = this.state;
 
+    const minHour = new Date();
+    minHour.setHours(7, 0, 0);
+    const maxHour = new Date();
+    maxHour.setHours(17, 59, 59);
+
     return (
       <Grid container className={classes.gridRoot} spacing={16}>
         <Grid item xs={12}>
@@ -261,13 +266,16 @@ class AdminPage extends Component {
               <BigCalendar
                 className={classes.rbcCalendar}
                 messages={messages}
+                min={minHour}
+                max={maxHour}
                 selectable
                 events={eventsCreneaux}
                 localizer={localizer}
-                views={{ month: true, week: true, day: true }}
+                views={{ month: true, work_week: true, day: true }}
                 step={30}
                 startAccessor="start"
                 endAccessor="end"
+                defaultView="work_week"
                 eventPropGetter={eventStyleGetter}
                 onSelectEvent={
                   event => alert(`${event.title} : ${event.start}`) // eslint-disable-line no-alert

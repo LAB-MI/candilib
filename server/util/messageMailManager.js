@@ -25,7 +25,7 @@ const mailMessage = (candidatAurige, flag) => {
 
   const site = creneau && creneau.title ? creneau.title : '';
   const dateCreneau = creneau && creneau.start ? moment(creneau.start).format('DD MMMM YYYY') : '';
-  const heureCreneau = creneau && creneau.start ? moment(creneau.start).add(1, 'hour').format('HH:mm') : '';
+  const heureCreneau = creneau && creneau.start ? moment(creneau.start).format('HH:mm') : '';
 
   let siteAdresse = [];
 

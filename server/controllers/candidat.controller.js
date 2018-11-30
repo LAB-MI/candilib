@@ -644,8 +644,6 @@ export function purgePermisOk(req, res) {
   );
 }
 
-const assert = require('assert').strict;
-
 export const uploadAurigeCSV = (req, res) => {
   const csvFile = req.files.file;
   const csvFilePath = path.resolve(__dirname, '../../temp/csv/', csvFile.name);
@@ -687,7 +685,7 @@ export const uploadAurigeCSV = (req, res) => {
             } else {
               creneau.save(errSave => {
                 if (errSave) {
-                  assert.ifError(errSave);
+                  console.warn(errSave); // eslint-disable-line no-console
                 }
                 res.end('Done');
               });
