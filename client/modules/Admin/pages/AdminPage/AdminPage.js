@@ -24,11 +24,11 @@ import messages from '../../../../components/calendar/messages';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { callApi } from '../../../../util/apiCaller.admin';
 import ListCandidats from '../../../Candidat/components/ListCandidats';
+import ListWhitelist from '../WhiteList/ListWhitelist';
 
 const localizer = BigCalendar.momentLocalizer(moment);
 
-
-const eventStyleGetter = (event) => {
+const eventStyleGetter = event => {
   const isSelected = event.isSelected;
   const newStyle = {
     backgroundColor: 'lightblue',
@@ -85,6 +85,7 @@ class AdminPage extends Component {
     this.handleUploadCSV = this.handleUploadCSV.bind(this);
     this.handleUploadJSON = this.handleUploadJSON.bind(this);
     this.handleDownLoadCSV = this.handleDownLoadCSV.bind(this);
+    this.handleMessage = this.handleMessage.bind(this);
   }
 
   componentDidMount() {
@@ -165,6 +166,14 @@ class AdminPage extends Component {
     ev.preventDefault();
 
     callApi('admin/candidats/export').download();
+  }
+
+  handleMessage(ev) {
+    this.setState({
+      success: ev.success,
+      snackBarMessage: ev.message,
+      open: true,
+    });
   }
 
   render() {
@@ -280,6 +289,17 @@ class AdminPage extends Component {
             </Paper>
           </Card>
         </Grid>
+        <Grid item xs={12}>
+          <Card className={classes.card}>
+            <Paper className={classes.paper}>
+              <Typography variant="headline" component="h3">
+                WhiteList
+              </Typography>
+              <ListWhitelist onMessage={this.handleMessage} />
+            </Paper>
+          </Card>
+        </Grid>
+
         {success && (
           <Snackbar
             open={open}
