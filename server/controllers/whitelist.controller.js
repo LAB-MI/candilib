@@ -10,7 +10,7 @@ export function canToRegister(req, res, next) {
     if (err) {
       return res.status(500).send({
         success: false,
-        message: error.message,
+        message: err.message,
       });
     }
 
@@ -51,7 +51,7 @@ export function getWhitelistCandidats(req, res) {
       if (err) {
         return res.status(500).send({
           success: false,
-          message: error.message,
+          message: err.message,
         });
       }
       res.status(200).json(Candidats);
@@ -63,7 +63,7 @@ export function deleteCandidat(req, res) {
     if (err) {
       return res.status(500).send({
         success: false,
-        message: error.message,
+        message: err.message,
       });
     }
 

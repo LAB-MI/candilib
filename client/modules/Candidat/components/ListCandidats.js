@@ -40,7 +40,6 @@ class ListCandidats extends Component {
     };
   }
 
-
   componentDidMount() {
     this.getCandidats();
   }
@@ -50,15 +49,17 @@ class ListCandidats extends Component {
       .get()
       .then(response => response.json())
       .then(candidats => {
-        const candidatsFiltrer = candidats.filter((candidat) => {
+        const candidatsFiltrer = candidats.filter(candidat => {
           return candidat && candidat.creneau && candidat.creneau.start;
         });
 
         candidatsFiltrer.map(candidat => {
-          if (candidat &&
+          if (
+            candidat &&
             candidat.creneau &&
             candidat.creneau.centre &&
-            candidat.creneau.inspecteur) {
+            candidat.creneau.inspecteur
+          ) {
             candidat.centre = candidat.creneau.centre;
             candidat.inspecteur = candidat.creneau.inspecteur;
           }
@@ -72,24 +73,16 @@ class ListCandidats extends Component {
     const { candidats } = this.state;
     return (
       <div className={classes.tableWrapper}>
-        <Grid
-          rows={candidats}
-          columns={columns}
-        >
-          <RowDetailState
-            defaultExpandedRowIds={[2, 5]}
-          />
+        <Grid rows={candidats} columns={columns}>
+          <RowDetailState defaultExpandedRowIds={[2, 5]} />
           <Table />
           <TableHeaderRow />
-          <TableRowDetail
-            contentComponent={RowDetail}
-          />
+          <TableRowDetail contentComponent={RowDetail} />
         </Grid>
       </div>
     );
   }
 }
-
 
 ListCandidats.propTypes = {
   classes: PropTypes.object.isRequired,

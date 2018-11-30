@@ -25,7 +25,6 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { callApi } from '../../../../util/apiCaller.admin';
 import ListCandidats from '../../../Candidat/components/ListCandidats';
 import ListWhitelist from '../WhiteList/ListWhitelist';
-import { ETIME } from 'constants';
 
 const localizer = BigCalendar.momentLocalizer(moment);
 

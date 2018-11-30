@@ -4,12 +4,11 @@ import { withStyles, Button, IconButton } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import SaveIcon from '@material-ui/icons/Save';
 import CancelIcon from '@material-ui/icons/Cancel';
-import { RowDetailState, EditingState } from '@devexpress/dx-react-grid';
+import { EditingState } from '@devexpress/dx-react-grid';
 import {
   Grid,
   Table,
   TableHeaderRow,
-  TableRowDetail,
   TableEditColumn,
   TableEditRow,
 } from '@devexpress/dx-react-grid-material-ui';
@@ -31,24 +30,35 @@ const AddButton = ({ onExecute }) => (
     </Button>
   </div>
 );
+AddButton.propTypes = {
+  onExecute: PropTypes.func.isRequired,
+};
 
 const DeleteButton = ({ onExecute }) => (
   <IconButton onClick={onExecute} title="Supprimer un adresse mail">
     <DeleteIcon />
   </IconButton>
 );
+DeleteButton.propTypes = {
+  onExecute: PropTypes.func.isRequired,
+};
 
 const CommitButton = ({ onExecute }) => (
   <IconButton onClick={onExecute} title="Enregistrer">
     <SaveIcon />
   </IconButton>
 );
-
+CommitButton.propTypes = {
+  onExecute: PropTypes.func.isRequired,
+};
 const CancelButton = ({ onExecute }) => (
   <IconButton color="secondary" onClick={onExecute} title="Annuler">
     <CancelIcon />
   </IconButton>
 );
+CancelButton.propTypes = {
+  onExecute: PropTypes.func.isRequired,
+};
 
 const commandComponents = {
   add: AddButton,
@@ -60,6 +70,10 @@ const commandComponents = {
 const Command = ({ id, onExecute }) => {
   const CommandButton = commandComponents[id];
   return <CommandButton onExecute={onExecute} />;
+};
+Command.propTypes = {
+  onExecute: PropTypes.func.isRequired,
+  id: PropTypes.string.isRequired,
 };
 
 const columns = [{ name: 'email', title: 'Email' }];
@@ -125,7 +139,7 @@ class ListWhitelists extends Component {
         this.props.onMessage(err);
       });
   }
-  commitChanges({ added, changed, deleted }) {
+  commitChanges({ added, deleted }) {
     if (added) {
       this.addWhitelist(added);
     }
@@ -158,6 +172,7 @@ class ListWhitelists extends Component {
 
 ListWhitelists.propTypes = {
   classes: PropTypes.object.isRequired,
+  onMessage: PropTypes.func.isRequired,
 };
 
 export default withStyles(styles)(ListWhitelists);

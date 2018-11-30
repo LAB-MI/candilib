@@ -59,8 +59,6 @@ import adminUsers from './routes/admin.users.routes';
 import serverConfig from './config';
 import verifyToken from './util/verifyToken';
 import isAdmin from './util/isAdmin';
-
-import { canToRegister } from './controllers/whitelist.controller';
 import whitelists from './routes/whitelist.routes';
 
 // Set native promises as mongoose promise
