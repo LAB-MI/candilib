@@ -6,7 +6,6 @@ import PrivateRoute from './util/PrivateRoute';
 import AdminPage from './modules/Admin/pages/AdminPage/AdminPage';
 import Auth from './modules/Auth/Auth';
 import LoginAdmin from './modules/Admin/pages/Login/Login';
-import { Informations } from './modules/Informations/Informations';
 
 // require.ensure polyfill for node
 if (typeof require.ensure !== 'function') {
