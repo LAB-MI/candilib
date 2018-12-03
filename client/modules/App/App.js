@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import pckgJson from '../../../package.json';
 
 // Import Style
 import styles from './App.css';
@@ -36,6 +37,9 @@ export class App extends Component {
   };
 
   render() {
+    console.log(pckgJson.version);
+    const version = pckgJson.version;
+    
     return (
       <React.Fragment>
         <CssBaseline />
@@ -62,7 +66,7 @@ export class App extends Component {
               toggleAddPost={this.toggleAddPostSection}
             />
             <div className={styles.container}>{this.props.children}</div>
-            <Footer />
+            <Footer version={version} />
           </div>
         </div>
       </React.Fragment>
