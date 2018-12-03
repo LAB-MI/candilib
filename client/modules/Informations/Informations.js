@@ -68,7 +68,7 @@ const Informations = () => (
                 permis).
               </li>
 
-              <li>5. Confirmez la réservation.</li>
+              <li>Confirmez la réservation.</li>
             </ol>
           </p>
           <h2>Est-ce que je peux modifier/ annuler mon rendez-vous ?</h2>
@@ -110,8 +110,9 @@ const Informations = () => (
             <li>
               Vous présenterez un titre d’identité en cours de validité : carte
               nationale d’identité, passeport ou titre de séjour (liste complète
-              <a>
-                href="https://legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000033736411&categorieLien=id">https://legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000033736411&categorieLien=id
+              :
+              <a href="https://legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000033736411&categorieLien=id">
+                https://legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000033736411&categorieLien=id
               </a>
               ).
             </li>
