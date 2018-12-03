@@ -33,7 +33,7 @@ class AutoCompleteAddresses extends React.Component {
           <div>
             <FetchAddresses search={inputValue}>
               {({ adresses }) => (
-                <FormControl margin="normal" fullWidth>
+                <FormControl margin="normal" required fullWidth>
                   <InputLabel htmlFor={inputName} {...getLabelProps()}>
                     Adresse
                   </InputLabel>
