@@ -6,6 +6,7 @@ import PrivateRoute from './util/PrivateRoute';
 import AdminPage from './modules/Admin/pages/AdminPage/AdminPage';
 import Auth from './modules/Auth/Auth';
 import LoginAdmin from './modules/Admin/pages/Login/Login';
+import { Informations } from './modules/Informations/Informations';
 
 // require.ensure polyfill for node
 if (typeof require.ensure !== 'function') {
@@ -24,6 +25,7 @@ if (process.env.NODE_ENV !== 'production') {
   require('./modules/Sites/pages/SiteListPage/SiteListPage');
   require('./modules/Calendar/pages/CalendarListPage/CalendarListPage');
   require('./modules/Admin/pages/AdminPage/AdminPage');
+  require('./modules/Informations/Informations');
 }
 
 // react-router setup with code-splitting
@@ -64,5 +66,14 @@ export default (
       }}
     />
     <Route path="/admin/login" component={LoginAdmin} />
+
+    <Route
+      path="/informations"
+      getComponent={(nextState, cb) => {
+        require.ensure([], require => {
+          cb(null, require('./modules/Informations/Informations').default);
+        });
+      }}
+    />
   </Route>
 );
