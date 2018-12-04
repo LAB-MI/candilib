@@ -161,8 +161,8 @@ const Informations = () => (
           </p>
           <p>
             Vous pouvez nous contacter par mail :
-            <a href="mailto:candilib93@developpement-durable.gouv.fr">
-              candilib93@developpement-durable.gouv.fr
+            <a href="mailto:candilib@interieur.gouv.fr">
+              candilib@interieur.gouv.fr
             </a>
           </p>
         </div>
