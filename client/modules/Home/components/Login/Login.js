@@ -190,7 +190,7 @@ class Login extends Component {
             } else {
               if (json.message.indexOf('email') > -1) {
                 this.setState({
-                  signUpError: 'Un compte existe déjà avec cette adresse email. Veuillez utiliser une autre adresse email.',
+                  signUpError: 'Vous avez déjà un compte sur Candilib, veuillez cliquer sur le lien "Déjà inscrit',
                   portableError: false,
                   emailError: !json.success,
                   isLoading: false,
