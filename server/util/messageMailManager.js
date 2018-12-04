@@ -13,26 +13,25 @@ import sites from '../inbox/sites.json';
 import moment from 'moment';
 
 const mailMessage = (candidatAurige, flag) => {
-  const {
-    codeNeph,
-    nomNaissance,
-    creneau,
-  } = candidatAurige;
+  const { codeNeph, nomNaissance, creneau } = candidatAurige;
 
   const message = {};
 
   const nomMaj = nomNaissance ? nomNaissance.toUpperCase() : '';
 
   const site = creneau && creneau.title ? creneau.title : '';
-  const dateCreneau = creneau && creneau.start ? moment(creneau.start).format('DD MMMM YYYY') : '';
-  const heureCreneau = creneau && creneau.start ? moment(creneau.start).format('HH:mm') : '';
+  const dateCreneau =
+    creneau && creneau.start
+      ? moment(creneau.start).format('DD MMMM YYYY')
+      : '';
+  const heureCreneau =
+    creneau && creneau.start ? moment(creneau.start).format('HH:mm') : '';
 
   let siteAdresse = [];
 
   if (creneau && creneau.title) {
-    siteAdresse = sites.find((item) => item.nom.toUpperCase() === creneau.title || []);
+    siteAdresse = sites.find(item => item.nom.toUpperCase() === creneau.title);
   }
-
 
   const ANNULATION_CONVOCATION_MSG = `<p>Bonjour Mr/Mme ${nomMaj},</p>
   <br>
@@ -132,7 +131,7 @@ const mailMessage = (candidatAurige, flag) => {
   <p><b>Conservez précieusement ce mail qui vous permettra de vous connecter sur le site Candilib</b></p>
   <p>Votre identifiant de connexion est l'adresse mail que vous nous avez fournie lors de votre inscription : ${
     candidatAurige.email
-    }</p>`;
+  }</p>`;
 
   const INSCRIPTION_KO_MSG = `<p>Bonjour Mr/Mme ${nomMaj},</p>
   <br>
@@ -178,7 +177,6 @@ const mailMessage = (candidatAurige, flag) => {
   <br>
   <p align="right">L'équipe Candilib</p>`;
 
-
   switch (flag) {
     case CANDIDAT_NOK:
       message.content = INSCRIPTION_KO_MSG;
@@ -186,7 +184,7 @@ const mailMessage = (candidatAurige, flag) => {
       return message;
     case INSCRIPTION_VALID:
       message.content = INSCRIPTION_VALID_MSG;
-      message.subject = '<ne pas répondre> Confirmation d\'inscription Candilib';
+      message.subject = "<ne pas répondre> Confirmation d'inscription Candilib";
       return message;
     case CANDIDAT_NOK_NOM:
       message.content = INSCRIPTION_KO_MSG;
@@ -198,7 +196,8 @@ const mailMessage = (candidatAurige, flag) => {
       return message;
     case INSCRIPTION_OK:
       message.content = INSCRIPTION_VALID_MSG;
-      message.subject = '<ne pas répondre> Inscription Candilib en attente de vérification';
+      message.subject =
+        '<ne pas répondre> Inscription Candilib en attente de vérification';
       return message;
     case EPREUVE_ETG_KO:
       message.content = EPREUVE_ETG_KO_MSG;
@@ -206,7 +205,8 @@ const mailMessage = (candidatAurige, flag) => {
       return message;
     case AURIGE_OK:
       message.content = INSCRIPTION_OK_MSG;
-      message.subject = '<ne pas répondre> Validation de votre inscription à Candilib';
+      message.subject =
+        '<ne pas répondre> Validation de votre inscription à Candilib';
       return message;
     case MAIL_CONVOCATION:
       message.content = MAIL_CONVOCATION_MSG;
@@ -214,7 +214,8 @@ const mailMessage = (candidatAurige, flag) => {
       return message;
     case ANNULATION_CONVOCATION:
       message.content = ANNULATION_CONVOCATION_MSG;
-      message.subject = "<ne pas répondre> Annulation de Convocation à l'examen";
+      message.subject =
+        "<ne pas répondre> Annulation de Convocation à l'examen";
       return message;
     default:
       return '';
