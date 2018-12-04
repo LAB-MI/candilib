@@ -187,7 +187,7 @@ class Login extends Component {
             } else {
               if (json.message.indexOf('email') > -1) {
                 this.setState({
-                  signUpError: 'Vérifier votre email.',
+                  signUpError: 'Un compte existe déjà avec cette adresse email. Veuillez utiliser une autre adresse email.',
                   portableError: false,
                   emailError: !json.success,
                   isLoading: false,
@@ -282,7 +282,7 @@ class Login extends Component {
                     <Input
                       id="neph"
                       name="neph"
-                      placeholder="numéro d'inscription"
+                      placeholder="012345678901"
                       type="number"
                       autoComplete="neph"
                       value={neph}
@@ -295,6 +295,7 @@ class Login extends Component {
                     <Input
                       id="nom"
                       name="nom"
+                      placeholder="DUPONT"
                       autoComplete="nom"
                       value={nom}
                       autoFocus
@@ -306,6 +307,7 @@ class Login extends Component {
                     <Input
                       id="prenom"
                       name="prenom"
+                      placeholder="Jean"
                       autoComplete="prenom"
                       value={prenom}
                       autoFocus
@@ -317,6 +319,7 @@ class Login extends Component {
                     <Input
                       type="email"
                       id="email"
+                      placeholder="jdup@email.com"
                       error={emailError}
                       name="email"
                       autoComplete="email"
@@ -333,7 +336,7 @@ class Login extends Component {
                       id="portable"
                       error={portableError}
                       name="portable"
-                      placeholder="06 12 34 56 78 ou +33 6 12 34 56 78"
+                      placeholder="06xxxxxxxx"
                       type="text"
                       autoComplete="portable"
                       value={portable}
