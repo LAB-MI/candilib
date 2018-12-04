@@ -21,6 +21,8 @@ import { setInStorage } from '../../../../util/storage';
 import { Circle } from 'better-react-spinkit';
 import debounce from 'debounce-fn';
 
+let count = 0;
+
 
 const styles = theme => ({
   layout: {
@@ -119,6 +121,19 @@ class Login extends Component {
     }
   }
 
+  validateField = debounce((fieldName, value) => {
+    // const fieldValidationErrors = this.state.formErrors;
+    let emailValid = this.state.emailValid;
+    switch (fieldName) {
+      case 'email':
+        emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
+        this.setState({ emailValid, open: true, signUpError: 'Veuillez vérifier votre adresse email.' });
+        break;
+      default:
+        break;
+    }
+  }, { wait: 1000 })
+
   handleClose = () => {
     this.setState({ open: false });
   };
@@ -126,7 +141,7 @@ class Login extends Component {
   handleChange = ({ target: { name, value } }) => {
     this.setState({
       [name]: value,
-    }, debounce(() => this.validateField(name, value), { wait: 1000 }));
+    }, () => this.validateField(name, value));
   };
 
   handleCreate(e) {
@@ -255,19 +270,6 @@ class Login extends Component {
     }
   }
 
-
-  validateField(fieldName, value) {
-    // const fieldValidationErrors = this.state.formErrors;
-    let emailValid = this.state.emailValid;
-    switch (fieldName) {
-      case 'email':
-        emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
-        this.setState({ emailValid, open: true, signUpError: 'Veuillez vérifier votre adresse email.' });
-        break;
-      default:
-        break;
-    }
-  }
 
   render() {
     const { classes } = this.props;
