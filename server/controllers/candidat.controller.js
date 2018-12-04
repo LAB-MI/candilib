@@ -59,7 +59,7 @@ export function signUp(req, res) {
       } else if (previousUsers.length > 0) {
         return res.status(422).send({
           success: false,
-          message: 'Error: Candidat déjà existant',
+          message: 'Un compte existe déjà avec cette adresse email. Veuillez utiliser une autre adresse email.',
         });
       }
 
