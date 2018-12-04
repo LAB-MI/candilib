@@ -296,9 +296,10 @@ class Login extends Component {
                   <FormControl margin="normal" required fullWidth>
                     <InputLabel htmlFor="neph">Neph (obligatoire)</InputLabel>
                     <Input
+                      type="number"
                       id="neph"
                       name="neph"
-                      placeholder="012345678901"
+                      placeholder="0123456978912"
                       type="number"
                       autoComplete="neph"
                       value={neph}
@@ -325,6 +326,7 @@ class Login extends Component {
                       name="prenom"
                       placeholder="Jean"
                       autoComplete="prenom"
+                      placeholder="Jean"
                       value={prenom}
                       autoFocus
                       onChange={this.handleChange}
@@ -343,6 +345,7 @@ class Login extends Component {
                       autoFocus
                       error={!emailValid}
                       onChange={this.handleChange}
+                      placeholder="jean.dupont@gmail.com"
                     />
                   </FormControl>
                   <FormControl margin="normal" required fullWidth>
@@ -354,7 +357,6 @@ class Login extends Component {
                       error={portableError}
                       name="portable"
                       placeholder="06xxxxxxxx"
-                      type="text"
                       autoComplete="portable"
                       value={portable}
                       autoFocus
@@ -364,6 +366,7 @@ class Login extends Component {
                   <AutoCompleteAddresses
                     inputName={'adresse'}
                     handleChange={this.handleChange}
+                    placeholder="10 Rue Lecourbe 75015 Paris"
                   />
                   <FormControl margin="normal" required fullWidth>
                     <Button
