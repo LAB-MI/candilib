@@ -19,6 +19,8 @@ import AutoCompleteAddresses from '../../../../components/AutoCompleteAddresses/
 import { errorsConstants } from '../errors.constants';
 import { setInStorage } from '../../../../util/storage';
 import { Circle } from 'better-react-spinkit';
+import debounce from 'debounce-fn';
+
 
 const styles = theme => ({
   layout: {
@@ -91,6 +93,7 @@ class Login extends Component {
       email: '',
       open: false,
       serverMessage: '',
+      emailValid: true,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -123,7 +126,7 @@ class Login extends Component {
   handleChange = ({ target: { name, value } }) => {
     this.setState({
       [name]: value,
-    });
+    }, debounce(() => this.validateField(name, value), { wait: 1000 }));
   };
 
   handleCreate(e) {
@@ -252,6 +255,20 @@ class Login extends Component {
     }
   }
 
+
+  validateField(fieldName, value) {
+    // const fieldValidationErrors = this.state.formErrors;
+    let emailValid = this.state.emailValid;
+    switch (fieldName) {
+      case 'email':
+        emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
+        this.setState({ emailValid, open: true, signUpError: 'Veuillez vérifier votre adresse email.' });
+        break;
+      default:
+        break;
+    }
+  }
+
   render() {
     const { classes } = this.props;
     const {
@@ -267,6 +284,7 @@ class Login extends Component {
       prenom,
       portable,
       success,
+      emailValid,
     } = this.state;
 
     return (
@@ -325,6 +343,7 @@ class Login extends Component {
                       autoComplete="email"
                       value={email}
                       autoFocus
+                      error={!emailValid}
                       onChange={this.handleChange}
                     />
                   </FormControl>
