@@ -12,14 +12,15 @@ import {
   CssBaseline,
   Snackbar,
 } from '@material-ui/core';
+import { Circle } from 'better-react-spinkit';
+import debounce from 'debounce-fn';
 
 import blue from '@material-ui/core/colors/blue';
 import SnackbarNotification from '../../../../components/Notifications/SnackbarNotificationWrapper';
 import AutoCompleteAddresses from '../../../../components/AutoCompleteAddresses/AutoCompleteAddresses';
 import { errorsConstants } from '../errors.constants';
 import { setInStorage } from '../../../../util/storage';
-import { Circle } from 'better-react-spinkit';
-import debounce from 'debounce-fn';
+import { email as emailRegex } from '../../../../util/regex';
 
 const styles = theme => ({
   layout: {
@@ -90,6 +91,7 @@ class Login extends Component {
       portable: '',
       adresse: '',
       email: '',
+      emailConfirmation: '',
       open: false,
       serverMessage: '',
       emailValid: true,
@@ -118,26 +120,47 @@ class Login extends Component {
     }
   }
 
-  validateField = debounce((fieldName, value) => {
-    let emailValid = this.state.emailValid;
+  debouncedValidateField = debounce((fieldName) => {
     switch (fieldName) {
       case 'email':
-        emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
-        this.setState({ emailValid, open: true, signUpError: 'Veuillez vérifier votre adresse email.' });
+        this.checkEmailValidity();
+        break;
+      case 'emailConfirmation':
+        this.checkEmailConfirmation();
         break;
       default:
         break;
     }
-  }, { wait: 1000 })
+  }, { wait: 300 })
 
   handleClose = () => {
     this.setState({ open: false });
   };
 
+  isIdenticalEmail = () => {
+    const { email, emailConfirmation } = this.state;
+    return email === emailConfirmation;
+  }
+
+  checkEmailValidity = () => {
+    const isEmailValid = emailRegex.test(this.state.email);
+    console.log(this.state.email, isEmailValid);
+    this.setState({
+      emailError: !isEmailValid,
+    });
+  }
+
+  checkEmailConfirmation = () => {
+    const isIdenticalEmail = this.isIdenticalEmail();
+    this.setState({
+      emailConfirmationError: !isIdenticalEmail,
+    });
+  }
+
   handleChange = ({ target: { name, value } }) => {
     this.setState({
       [name]: value,
-    }, () => this.validateField(name, value));
+    }, () => this.debouncedValidateField(name));
   };
 
   handleCreate(e) {
@@ -149,6 +172,7 @@ class Login extends Component {
       nom,
       nomUsage,
       email,
+      emailConfirmation,
       prenom,
       portable,
       adresse,
@@ -157,7 +181,7 @@ class Login extends Component {
     this.setState({
       isLoading: true,
     });
-    if (email) {
+    if (email && emailRegex.test(email)) {
       // Post request to backend
 
       if (!isLogin) {
@@ -172,6 +196,7 @@ class Login extends Component {
             nomUsage,
             prenom,
             email,
+            emailConfirmation,
             portable,
             adresse,
           }),
@@ -193,13 +218,15 @@ class Login extends Component {
                 nom: '',
                 nomUsage: '',
                 email: '',
+                emailConfirmation: '',
+                emailConfirmationError: false,
                 prenom: '',
                 portable: '',
                 adresse: '',
                 success: true,
               });
             } else {
-              if (json.message.indexOf('email') > -1) {
+              if (json.message.includes('email')) {
                 this.setState({
                   signUpError: 'Vous avez déjà un compte sur Candilib, veuillez cliquer sur le lien "Déjà inscrit',
                   portableError: false,
@@ -208,7 +235,7 @@ class Login extends Component {
                   open: true,
                   success: false,
                 });
-              } else if (json.message.indexOf('portable') > -1) {
+              } else if (json.message.includes('portable')) {
                 this.setState({
                   signUpError: 'Vérifier votre numéro de téléphone.',
                   portableError: !json.success,
@@ -246,16 +273,17 @@ class Login extends Component {
                 signUpError: json.message,
                 isLoading: false,
                 open: true,
-                emailError: !json.success,
-                portableError: !json.success,
+                emailError: false,
+                portableError: false,
+                emailConfirmationError: false,
                 email: '',
                 success: true,
               });
             } else {
               this.setState({
                 signUpError: json.message,
-                emailError: !json.success,
-                portableError: !json.success,
+                emailError: true,
+                portableError: true,
                 isLoading: false,
                 open: true,
                 success: false,
@@ -273,16 +301,17 @@ class Login extends Component {
       isLogin,
       isLoading,
       open,
-      signUpError,
       emailError,
+      emailConfirmationError,
+      signUpError,
       portableError,
       neph,
       nom,
       email,
+      emailConfirmation,
       prenom,
       portable,
       success,
-      emailValid,
     } = this.state;
 
     return (
@@ -341,11 +370,26 @@ class Login extends Component {
                       error={emailError}
                       name="email"
                       autoComplete="email"
+                      placeholder="jean.dupont@gmail.com"
                       value={email}
                       autoFocus
-                      error={!emailValid}
                       onChange={this.handleChange}
+                      onBlur={this.checkEmailValidity}
+                    />
+                  </FormControl>
+                  <FormControl margin="normal" required fullWidth>
+                    <InputLabel htmlFor="emailConfirmation">Confirmation email (obligatoire)</InputLabel>
+                    <Input
+                      type="email"
+                      id="emailConfirmation"
+                      error={emailConfirmationError}
+                      name="emailConfirmation"
                       placeholder="jean.dupont@gmail.com"
+                      autoComplete="emailConfirmation"
+                      value={emailConfirmation}
+                      autoFocus
+                      onChange={this.handleChange}
+                      onBlur={this.checkEmailConfirmation}
                     />
                   </FormControl>
                   <FormControl margin="normal" required fullWidth>
@@ -361,6 +405,7 @@ class Login extends Component {
                       value={portable}
                       autoFocus
                       onChange={this.handleChange}
+                      onBlur={this.handleBlur}
                     />
                   </FormControl>
                   <AutoCompleteAddresses
