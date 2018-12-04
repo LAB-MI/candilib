@@ -21,9 +21,6 @@ import { setInStorage } from '../../../../util/storage';
 import { Circle } from 'better-react-spinkit';
 import debounce from 'debounce-fn';
 
-let count = 0;
-
-
 const styles = theme => ({
   layout: {
     width: 'auto',
@@ -122,7 +119,6 @@ class Login extends Component {
   }
 
   validateField = debounce((fieldName, value) => {
-    // const fieldValidationErrors = this.state.formErrors;
     let emailValid = this.state.emailValid;
     switch (fieldName) {
       case 'email':
