@@ -40,6 +40,7 @@ class AutoCompleteAddresses extends React.Component {
                   <Input
                     id={inputName}
                     name={inputName}
+                    placeholder="10 rue des examens 93000 Bobigny"
                     autoFocus
                     {...getInputProps()}
                   />
