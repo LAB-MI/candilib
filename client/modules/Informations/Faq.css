@@ -1,0 +1,17 @@
+.informations h1 {
+  text-align: center;
+}
+.informations h1 + p {
+  text-align: center;
+}
+
+.informations h2 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+.informations ol li {
+  margin-left: 20px;
+}
+.informations ul li {
+  margin-left: 20px;
+}
