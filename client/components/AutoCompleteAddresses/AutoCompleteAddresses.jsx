@@ -44,31 +44,35 @@ class AutoCompleteAddresses extends React.Component {
                     autoFocus
                     {...getInputProps()}
                   />
-                  <div
-                    {...getMenuProps()}
-                    className={classes.downshiftDropdown}
-                  >
-                    {isOpen && adresses
-                      ? adresses.map((item, index) => (
-                          <div
-                            className={classes.dropdownItem}
-                            {...getItemProps({
-                              key: index,
-                              index,
-                              item,
-                              style: {
-                                backgroundColor:
-                                  highlightedIndex === index
-                                    ? 'lightgray'
-                                    : 'white',
-                              },
-                            })}
-                          >
-                            {item.properties.label}
-                          </div>
-                        ))
-                      : null}
+                  {isOpen &&
+                  <div className={classes.dropdownWrapper}>
+                    <div
+                      {...getMenuProps()}
+                      className={classes.downshiftDropdown}
+                    >
+                      {adresses
+                        ? adresses.map((item, index) => (
+                            <div
+                              className={classes.dropdownItem}
+                              {...getItemProps({
+                                key: index,
+                                index,
+                                item,
+                                style: {
+                                  backgroundColor:
+                                    highlightedIndex === index
+                                      ? 'lightgray'
+                                      : 'white',
+                                },
+                              })}
+                            >
+                              {item.properties.label}
+                            </div>
+                          ))
+                        : null}
+                    </div>
                   </div>
+                  }
                 </FormControl>
               )}
             </FetchAddresses>
