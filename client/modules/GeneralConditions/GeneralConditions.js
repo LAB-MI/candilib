@@ -23,10 +23,22 @@ const GeneralCondiions = () => (
       <CardContent>
         <div className={styles.general_conditions}>
           <h1>Mentions Légales</h1>
+          <p className={styles.date_modified}>2018-12-05</p>
+          <h2>Informations éditeurs</h2>
           <p>
-            Les informations que vous communiquez sur ce formulaire sont
-            nécessaires à la Délégation à la Sécurité routière qui est
-            responsable de leur traitement.
+            Ce site est géré par la Délégation à la sécurité routière (DSR)
+            Place Beauvau - 75800 PARIS CEDEX 08 Tél. : 01 49 27 49 27
+          </p>
+
+          <h2>Directeur de la publication</h2>
+          <p>
+            Emmanuel Barbe, délégué interministériel à la Sécurité routière{' '}
+          </p>
+          <h2>Gestion des données personnelles</h2>
+          <p>
+            Les informations que vous communiquez sur ce site sont nécessaires à
+            la Délégation à la Sécurité routière qui est responsable de leur
+            traitement.
           </p>
 
           <p>
