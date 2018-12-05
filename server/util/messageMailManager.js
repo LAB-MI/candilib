@@ -5,6 +5,7 @@ import {
   EPREUVE_ETG_KO,
   INSCRIPTION_OK,
   INSCRIPTION_VALID,
+  INSCRIPTION_UPDATE,
   AURIGE_OK,
   MAIL_CONVOCATION,
   ANNULATION_CONVOCATION,
@@ -216,6 +217,11 @@ const mailMessage = (candidatAurige, flag) => {
       message.content = ANNULATION_CONVOCATION_MSG;
       message.subject =
         "<ne pas répondre> Annulation de Convocation à l'examen";
+      return message;
+    case INSCRIPTION_UPDATE:
+      message.content = INSCRIPTION_VALID_MSG;
+      message.subject =
+        '<ne pas répondre> Inscription Candilib en attente de vérification';
       return message;
     default:
       return '';
