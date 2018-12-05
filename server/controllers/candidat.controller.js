@@ -59,7 +59,7 @@ export function signUp(req, res) {
       } else if (previousUsers.length > 0) {
         return res.status(422).send({
           success: false,
-          message: 'Error: Candidat déjà existant',
+          message: 'Vous avez déjà un compte sur Candilib, veuillez cliquer sur le lien "Déjà inscrit',
         });
       }
 

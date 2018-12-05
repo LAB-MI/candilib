@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router';
 import { Toolbar, AppBar, Button } from '@material-ui/core';
 
 // Import Style
@@ -9,8 +10,12 @@ function Header() {
     <div className={styles.header}>
       <AppBar color="default" position="static">
         <Toolbar>
-          <Button>Accueil</Button>
-          <Button>Informations</Button>
+          <Button component={Link} to="/">
+            Accueil
+          </Button>
+          <Button component={Link} to="/informations">
+            Informations
+          </Button>
           <Button>Avis</Button>
           <Button>Ma Réservation</Button>
         </Toolbar>

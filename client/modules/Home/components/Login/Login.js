@@ -19,6 +19,7 @@ import AutoCompleteAddresses from '../../../../components/AutoCompleteAddresses/
 import { errorsConstants } from '../errors.constants';
 import { setInStorage } from '../../../../util/storage';
 import { Circle } from 'better-react-spinkit';
+import debounce from 'debounce-fn';
 
 const styles = theme => ({
   layout: {
@@ -91,6 +92,7 @@ class Login extends Component {
       email: '',
       open: false,
       serverMessage: '',
+      emailValid: true,
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -116,6 +118,18 @@ class Login extends Component {
     }
   }
 
+  validateField = debounce((fieldName, value) => {
+    let emailValid = this.state.emailValid;
+    switch (fieldName) {
+      case 'email':
+        emailValid = value.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/i);
+        this.setState({ emailValid, open: true, signUpError: 'Veuillez vérifier votre adresse email.' });
+        break;
+      default:
+        break;
+    }
+  }, { wait: 1000 })
+
   handleClose = () => {
     this.setState({ open: false });
   };
@@ -123,7 +137,7 @@ class Login extends Component {
   handleChange = ({ target: { name, value } }) => {
     this.setState({
       [name]: value,
-    });
+    }, () => this.validateField(name, value));
   };
 
   handleCreate(e) {
@@ -187,7 +201,7 @@ class Login extends Component {
             } else {
               if (json.message.indexOf('email') > -1) {
                 this.setState({
-                  signUpError: 'Vérifier votre email.',
+                  signUpError: 'Vous avez déjà un compte sur Candilib, veuillez cliquer sur le lien "Déjà inscrit',
                   portableError: false,
                   emailError: !json.success,
                   isLoading: false,
@@ -252,6 +266,7 @@ class Login extends Component {
     }
   }
 
+
   render() {
     const { classes } = this.props;
     const {
@@ -267,6 +282,7 @@ class Login extends Component {
       prenom,
       portable,
       success,
+      emailValid,
     } = this.state;
 
     return (
@@ -282,7 +298,7 @@ class Login extends Component {
                     <Input
                       id="neph"
                       name="neph"
-                      placeholder="numéro d'inscription"
+                      placeholder="012345678901"
                       type="number"
                       autoComplete="neph"
                       value={neph}
@@ -295,6 +311,7 @@ class Login extends Component {
                     <Input
                       id="nom"
                       name="nom"
+                      placeholder="DUPONT"
                       autoComplete="nom"
                       value={nom}
                       autoFocus
@@ -306,6 +323,7 @@ class Login extends Component {
                     <Input
                       id="prenom"
                       name="prenom"
+                      placeholder="Jean"
                       autoComplete="prenom"
                       value={prenom}
                       autoFocus
@@ -317,11 +335,13 @@ class Login extends Component {
                     <Input
                       type="email"
                       id="email"
+                      placeholder="jdup@email.com"
                       error={emailError}
                       name="email"
                       autoComplete="email"
                       value={email}
                       autoFocus
+                      error={!emailValid}
                       onChange={this.handleChange}
                     />
                   </FormControl>
@@ -333,7 +353,7 @@ class Login extends Component {
                       id="portable"
                       error={portableError}
                       name="portable"
-                      placeholder="06 12 34 56 78 ou +33 6 12 34 56 78"
+                      placeholder="06xxxxxxxx"
                       type="text"
                       autoComplete="portable"
                       value={portable}
