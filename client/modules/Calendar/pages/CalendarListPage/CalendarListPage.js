@@ -148,8 +148,8 @@ class CalendarListPage extends Component {
   }
 
   componentDidMount() {
-    this.getCreneauxCandidats();
     this.getCandidat();
+    this.getCreneauxCandidats();
   }
 
   getCreneauxCandidats() {
@@ -157,18 +157,23 @@ class CalendarListPage extends Component {
       const creneauxCandidats = [];
       const { creneaux } = res;
 
-      creneaux.map(item => {
-        const crenauItem = {
-          id: item._id,
-          title: `${item.centre}`,
-          isSelected: item.isSelected,
-          inspecteur: item.inspecteur,
-          centre: item.centre,
-          start: moment(moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss')).toDate(),
-          end: moment(moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss')).add(30, 'minutes').toDate(),
-        };
-        creneauxCandidats.push(crenauItem);
-      });
+      if (creneaux) {
+        creneaux.map(item => {
+          if (item.isSelected && this.state.candidat._id !== item.candidat) {
+            return;
+          }
+          const crenauItem = {
+            id: item._id,
+            title: `${item.centre}`,
+            isSelected: item.isSelected,
+            inspecteur: item.inspecteur,
+            centre: item.centre,
+            start: moment(moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss')).toDate(),
+            end: moment(moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss')).add(30, 'minutes').toDate(),
+          };
+          creneauxCandidats.push(crenauItem);
+        });
+      }
       this.setState({ creneauxCandidats, success: true });
     });
   }
