@@ -1,8 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router';
 import PropTypes from 'prop-types';
-import {
-  withStyles,
-} from '@material-ui/core';
+import { withStyles } from '@material-ui/core';
 
 const styles = () => ({
   footer: {
@@ -19,8 +18,13 @@ export function Footer(props) {
   const { classes = {} } = props;
 
   return (
-    <div style={{ background: `#FFF url(${bg}) center` }} className={classes.footer}>
-      <p>© 2018 · Candilib.</p>
+    <div
+      style={{ background: `#FFF url(${bg}) center` }}
+      className={classes.footer}
+    >
+      <p>
+        © 2018 · Candilib. - <Link to="/mentionslegales">Mentions legales</Link>
+      </p>
     </div>
   );
 }

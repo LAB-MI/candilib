@@ -25,7 +25,7 @@ if (process.env.NODE_ENV !== 'production') {
   require('./modules/Calendar/pages/CalendarListPage/CalendarListPage');
   require('./modules/Admin/pages/AdminPage/AdminPage');
   require('./modules/Informations/Informations');
-  require('./modules/Terms/Terms');
+  require('./modules/GeneralConditions/GeneralConditions');
 }
 
 // react-router setup with code-splitting
@@ -76,10 +76,13 @@ export default (
       }}
     />
     <Route
-      path="/terms"
+      path="/mentionslegales"
       getComponent={(nextState, cb) => {
         require.ensure([], require => {
-          cb(null, require('./modules/Terms/Terms').default);
+          cb(
+            null,
+            require('./modules/GeneralConditions/GeneralConditions').default,
+          );
         });
       }}
     />
