@@ -8,7 +8,14 @@ const router = new Router();
 // Sign In a new candidat
 router
   .route('/candidats/signup')
-  .post(canToRegister, CandidatsController.signUp);
+  .post(
+    canToRegister,
+    CandidatsController.CheckCandidatIsSignedBefore,
+    CandidatsController.checkMailIsUsed,
+    CandidatsController.preUpdateInfoCandidat,
+    CandidatsController.updateInfoCandidat,
+    CandidatsController.signUp,
+  );
 
 // login with email
 router.route('/candidats/login').post(canToRegister, CandidatsController.login);
