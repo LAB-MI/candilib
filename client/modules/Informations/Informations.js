@@ -22,7 +22,7 @@ const Informations = () => (
       <CardContent>
         <div className={styles.informations}>
           <h1>Foire Aux Questions</h1>
-          <p>2018-06-20</p>
+          <p className={styles.informationsDate}>2018-06-20</p>
           <h2>Qu'est-ce que CandiLib 93</h2>
           <p>
             CandilLib 93 est le nouveau service de réservation en ligne des
@@ -38,6 +38,7 @@ const Informations = () => (
           </p>
           <p>
             Source réglementaire
+            {' '}
             <a href="https://www.legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000029701643&dateTexte=20180625">
               ici
             </a>
@@ -71,21 +72,23 @@ const Informations = () => (
               <li>Confirmez la réservation.</li>
             </ol>
           </p>
-          <h2>Est-ce que je peux modifier/ annuler mon rendez-vous ?</h2>
+          <h2>Est-ce que je peux modifier ou annuler mon rendez-vous ?</h2>
           <p>Vous pouvez annuler librement 7 jours avant la date prévue.</p>
           <p>
-            Pour modifier un rendez-vous avant 7 jours, annuler le rendez-vous,
+            Pour modifier un rendez-vous avant 7 jours, annulez le rendez-vous,
             vous pourrez choisir un autre créneau disponible immédiatement.
           </p>
-          Si vous devez annuler moins de 7 jours avant la date, vous serez placé
-          en liste d'attente non prioritaire.
+          <p>
+            Si vous devez annuler moins de 7 jours avant la date, vous serez placé
+            en liste d'attente non prioritaire.
+          </p>
           <p>
             Merci de nous prévenir en cas d'empêchement afin de libérer le
             créneau pour un autre candidat.
           </p>
-          <h2>Quels sont les pré-requis le jour de l'examen ?</h2>
+          <h2>Quels sont les pré-requis le jour de l'examen ?</h2>
           <p>
-            Nous vous rappelons les éléments à vérifier le jour de l'examen :
+            Nous vous rappelons les éléments à vérifier le jour de l'examen :
           </p>
           <ul>
             <li>
@@ -93,24 +96,29 @@ const Informations = () => (
               commande de frein et d’embrayage, de 2 rétroviseurs intérieurs et
               de 2 rétroviseurs latéraux.
             </li>
-            <li> Votre accompagnateur sera :</li>
             <li>
-              soit un enseignant de la conduite en possession de son
-              autorisation d'enseigner pour la présenter à l'inspecteur,
-            </li>
-            <li>
-              soit une personne dont le permis B est en cours de validité. Cette
-              dernière devra remplir et signer la « charte de l’accompagnateur »
-              (
-              <a href="https://www.legifrance.gouv.fr/jo_pdf.do?id=JORFTEXT000036251681">
-                https://www.legifrance.gouv.fr/jo_pdf.do?id=JORFTEXT000036251681
-              </a>
-              ) pour la remettre à l’inspecteur avant le début de l’examen.
+                Votre accompagnateur sera :
+                <ul>
+
+                  <li>
+                    soit un enseignant de la conduite en possession de son
+                    autorisation d'enseigner pour la présenter à l'inspecteur,
+                  </li>
+                  <li>
+                    soit une personne dont le permis B est en cours de validité. Cette
+                    dernière devra remplir et signer la « charte de l’accompagnateur »
+                    (
+                    <a href="https://www.legifrance.gouv.fr/jo_pdf.do?id=JORFTEXT000036251681">
+                      https://www.legifrance.gouv.fr/jo_pdf.do?id=JORFTEXT000036251681
+                    </a>
+                    ) pour la remettre à l’inspecteur avant le début de l’examen.
+                  </li>
+                </ul>
             </li>
             <li>
               Vous présenterez un titre d’identité en cours de validité : carte
-              nationale d’identité, passeport ou titre de séjour (liste complète
-              :
+              nationale d’identité, passeport ou titre de séjour (liste complète :
+              {' '}
               <a href="https://legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000033736411&categorieLien=id">
                 https://legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000033736411&categorieLien=id
               </a>
@@ -125,11 +133,12 @@ const Informations = () => (
               L'attestation d'assurance du véhicule, en cours de validité, à
               votre nom.
             </li>
-            <li> Une enveloppe affranchie à 20 g.</li>
+            <li> Une enveloppe affranchie à 20g.</li>
             <li>
               Lorsque vous avez fait l'objet d'une annulation du permis, le
-              récépissé de la « fiche retour au permis de conduire » que vous
-              aurez imprimé sur le site de l’ ANTS :
+              récépissé de la « fiche retour au permis de conduire » que vous
+              aurez imprimé sur le site de l’ANTS :
+              {' '}
               <a href="https://permisdeconduire.ants.gouv.fr/">
                 https://permisdeconduire.ants.gouv.fr/
               </a>
@@ -160,7 +169,8 @@ const Informations = () => (
             de Seine-Saint-Denis.
           </p>
           <p>
-            Vous pouvez nous contacter par mail :
+            Vous pouvez nous contacter par mail :
+            {' '}
             <a href="mailto:candilib@interieur.gouv.fr">
               candilib@interieur.gouv.fr
             </a>
