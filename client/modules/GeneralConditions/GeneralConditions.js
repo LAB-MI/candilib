@@ -50,8 +50,10 @@ const GeneralCondiions = () => (
               CEDEX 08
             </strong>{' '}
             ou par mail :{' '}
-            <a href="candilib@interieur.gouv.fr">candilib@interieur.gouv.fr</a>,
-            en joignant un titre d’identité afin de pouvoir traiter votre
+            <a href="mailto:candilib@interieur.gouv.fr">
+              candilib@interieur.gouv.fr
+            </a>
+            , en joignant un titre d’identité afin de pouvoir traiter votre
             demande.
           </p>
           <p>
