@@ -142,19 +142,28 @@ class Login extends Component {
     return email === emailConfirmation;
   }
 
-  checkEmailValidity = () => {
+  checkEmailValidity = (openSnackbar) => {
     const isEmailValid = emailRegex.test(this.state.email);
-    console.log(this.state.email, isEmailValid);
-    this.setState({
+    const newState = {
       emailError: !isEmailValid,
-    });
+      signUpError: '',
+    };
+    if (!isEmailValid && openSnackbar) {
+      newState.signUpError = 'Veuillez vérifier votre adresse email.';
+    }
+    this.setState(newState);
   }
 
-  checkEmailConfirmation = () => {
+  checkEmailConfirmation = (openSnackbar) => {
     const isIdenticalEmail = this.isIdenticalEmail();
-    this.setState({
+    const newState = {
       emailConfirmationError: !isIdenticalEmail,
-    });
+      signUpError: '',
+    };
+    if (!isIdenticalEmail && openSnackbar) {
+      newState.signUpError = 'Veuillez vérifier votre confirmation d\'adresse email.';
+    }
+    this.setState(newState);
   }
 
   handleChange = ({ target: { name, value } }) => {
@@ -374,7 +383,7 @@ class Login extends Component {
                       value={email}
                       autoFocus
                       onChange={this.handleChange}
-                      onBlur={this.checkEmailValidity}
+                      onBlur={() => this.checkEmailValidity(true)}
                     />
                   </FormControl>
                   <FormControl margin="normal" required fullWidth>
@@ -389,7 +398,7 @@ class Login extends Component {
                       value={emailConfirmation}
                       autoFocus
                       onChange={this.handleChange}
-                      onBlur={this.checkEmailConfirmation}
+                      onBlur={() => this.checkEmailConfirmation(true)}
                     />
                   </FormControl>
                   <FormControl margin="normal" required fullWidth>
@@ -495,7 +504,7 @@ class Login extends Component {
         )}
         {!success && (
           <Snackbar
-            open={open}
+            open={!!signUpError}
             autoHideDuration={8000}
             onClose={this.handleClose}
             className={classes.snackbar}
