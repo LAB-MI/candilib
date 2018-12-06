@@ -11,7 +11,7 @@ import autoCompleteAddressesStyle from './autoCompleteAddressesStyle.js';
 
 class AutoCompleteAddresses extends React.Component {
   render() {
-    const { handleChange, classes, inputName } = this.props;
+    const { handleChange, classes, inputName, placeholder } = this.props;
     return (
       <Downshift
         onChange={selection =>
@@ -43,32 +43,37 @@ class AutoCompleteAddresses extends React.Component {
                     placeholder="10 rue des examens 93000 Bobigny"
                     autoFocus
                     {...getInputProps()}
+                    placeholder={placeholder}
                   />
-                  <div
-                    {...getMenuProps()}
-                    className={classes.downshiftDropdown}
-                  >
-                    {isOpen && adresses
-                      ? adresses.map((item, index) => (
-                          <div
-                            className={classes.dropdownItem}
-                            {...getItemProps({
-                              key: index,
-                              index,
-                              item,
-                              style: {
-                                backgroundColor:
-                                  highlightedIndex === index
-                                    ? 'lightgray'
-                                    : 'white',
-                              },
-                            })}
-                          >
-                            {item.properties.label}
-                          </div>
-                        ))
-                      : null}
+                  {isOpen &&
+                  <div className={classes.dropdownWrapper}>
+                    <div
+                      {...getMenuProps()}
+                      className={classes.downshiftDropdown}
+                    >
+                      {adresses
+                        ? adresses.map((item, index) => (
+                            <div
+                              className={classes.dropdownItem}
+                              {...getItemProps({
+                                key: index,
+                                index,
+                                item,
+                                style: {
+                                  backgroundColor:
+                                    highlightedIndex === index
+                                      ? 'lightgray'
+                                      : 'white',
+                                },
+                              })}
+                            >
+                              {item.properties.label}
+                            </div>
+                          ))
+                        : null}
+                    </div>
                   </div>
+                  }
                 </FormControl>
               )}
             </FetchAddresses>

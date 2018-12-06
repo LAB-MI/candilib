@@ -33,7 +33,7 @@ const mountApp = document.getElementById('root');
 render(
   <MuiThemeProvider theme={theme}>
     <AppContainer>
-      <App store={store}/>
+      <App store={store} />
     </AppContainer>
   </MuiThemeProvider>,
   mountApp,

@@ -1,8 +1,16 @@
 .informations h1 {
   text-align: center;
 }
-.informations h1 + p {
+.informationsDate {
   text-align: center;
+}
+
+.informations p {
+  margin: 0.8em 0;
+}
+
+.informations li {
+  margin: 0.3em 0;
 }
 
 .informations h2 {

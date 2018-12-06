@@ -89,6 +89,10 @@ class AdminPage extends Component {
   }
 
   componentDidMount() {
+    this.getCreneauxCandidats();
+  }
+
+  getCreneauxCandidats() {
     callApi('auth/creneaux')
       .then(response => {
         return response.json();
@@ -124,17 +128,20 @@ class AdminPage extends Component {
     ev.preventDefault();
 
     const data = new FormData();
-    data.append('file', this.uploadInputCVS.files[0]);
+    const fileObject = this.uploadInputCVS.files[0];
+    data.append('file', fileObject);
 
     callApi('admin/candidats/upload/csv')
       .post(data)
-      .then(body => {
+      .then(() => {
         this.setState({
           success: true,
           open: true,
-          snackBarMessage: `${body.name} a été télécharger.`,
+          snackBarMessage: `${fileObject.name} a été télécharger.`,
         });
-        window.location.reload();
+        this.getCreneauxCandidats();
+
+        this.forceUpdate();
       });
   }
 
@@ -264,6 +271,7 @@ class AdminPage extends Component {
                 calendar
               </Typography>
               <BigCalendar
+                defaultDate={new Date(moment().startOf('day'))}
                 className={classes.rbcCalendar}
                 messages={messages}
                 min={minHour}

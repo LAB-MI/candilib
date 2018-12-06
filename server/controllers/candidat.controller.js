@@ -644,7 +644,7 @@ export function purgePermisOk(req, res) {
   );
 }
 
-export const uploadAurigeCSV = (req, res) => {
+export const uploadAurigeCSV = (req, res, next) => {
   const csvFile = req.files.file;
   const csvFilePath = path.resolve(__dirname, '../../temp/csv/', csvFile.name);
 
@@ -695,6 +695,7 @@ export const uploadAurigeCSV = (req, res) => {
       })
       .on('end', () => {
         console.log('done'); // eslint-disable-line no-console
+        next();
       });
   });
 
