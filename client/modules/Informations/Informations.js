@@ -43,7 +43,9 @@ const Informations = () => (
           <p>
             Source réglementaire :{' '}
             <a href="https://www.legifrance.gouv.fr/affichTexteArticle.do?idArticle=LEGIARTI000032966489&cidTexte=LEGITEXT000029705598&dateTexte=20181205">
-              https://www.legifrance.gouv.fr/affichTexteArticle.do?idArticle=LEGIARTI000032966489&cidTexte=LEGITEXT000029705598&dateTexte=20181205
+              Arrêté du 22 octobre 2014 fixant la méthode nationale
+              d'attribution des places d'examen du permis de conduire - Article
+              5
             </a>
           </p>
 
@@ -121,12 +123,11 @@ const Informations = () => (
                 </li>
                 <li>
                   soit une personne dont le permis B est en cours de validité.
-                  Cette dernière devra remplir et signer la « charte de
-                  l’accompagnateur » (
+                  Cette dernière devra remplir et signer la «
                   <a href="https://www.legifrance.gouv.fr/jo_pdf.do?id=JORFTEXT000036251681">
-                    https://www.legifrance.gouv.fr/jo_pdf.do?id=JORFTEXT000036251681
+                    charte de l’accompagnateur
                   </a>
-                  ) pour la remettre à l’inspecteur avant le début de l’examen.
+                  » pour la remettre à l’inspecteur avant le début de l’examen.
                 </li>
               </ul>
             </li>
@@ -135,7 +136,9 @@ const Informations = () => (
               nationale d’identité, passeport ou titre de séjour (liste complète
               :{' '}
               <a href="https://legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000033736411&categorieLien=id">
-                https://legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000033736411&categorieLien=id
+                arrêté du 23 décembre 2016 relatif à la justification de
+                l'identité, du domicile, de la résidence normale et de la
+                régularité du séjour pour l'obtention du permis de conduire
               </a>
               ).
             </li>
@@ -152,11 +155,8 @@ const Informations = () => (
             <li>
               Lorsque vous avez fait l'objet d'une annulation du permis, le
               récépissé de la « fiche retour au permis de conduire » que vous
-              aurez imprimé sur le site de l’ ANTS :{' '}
-              <a href="https://permisdeconduire.ants.gouv.fr/">
-                https://permisdeconduire.ants.gouv.fr/
-              </a>
-              .
+              aurez imprimé sur le site de l’
+              <a href="https://permisdeconduire.ants.gouv.fr/">ANTS</a>.
             </li>
           </ul>
           <p>
