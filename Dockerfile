@@ -17,7 +17,6 @@ RUN if [ ! -z "$proxy" ] ; then \
     npm install
 COPY .babelrc index.js nodemon.json webpack.config.babel.js webpack.config.dev.js webpack.config.prod.js webpack.config.server.js ./
 COPY client ./client
-COPY Intl ./Intl
 COPY server ./server
 CMD ["npm", "start"]
 
