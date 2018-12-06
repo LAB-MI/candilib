@@ -153,9 +153,8 @@ class CalendarListPage extends Component {
   }
 
   getCreneauxCandidats() {
-    callApi('auth/creneaux/', 'get').then((res) => {
+    callApi('auth/creneaux/', 'get').then(({ creneaux }) => {
       const creneauxCandidats = [];
-      const { creneaux } = res;
 
       if (creneaux) {
         creneaux.map(item => {

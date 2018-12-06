@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 export function registerAdmin(req, res, next) {
   const { email, password } = req.body;
 
-  const hashPassowrd = bcrypt.hashSync(password, 8);
+  const hashPassword = bcrypt.hashSync(password, 8);
 
   // verify user don't exist
 
@@ -25,7 +25,7 @@ export function registerAdmin(req, res, next) {
     User.create(
       {
         email: sanitizeHtml(email),
-        password: hashPassowrd,
+        password: hashPassword,
         status: 'admin',
       },
       (error, user) => {
