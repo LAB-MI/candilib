@@ -9,6 +9,7 @@ const router = new Router();
 router
   .route('/candidats/signup')
   .post(
+    CandidatsController.ValidationParamRegister,
     canToRegister,
     CandidatsController.CheckCandidatIsSignedBefore,
     CandidatsController.checkMailIsUsed,

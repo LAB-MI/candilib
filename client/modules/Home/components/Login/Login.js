@@ -122,29 +122,35 @@ class Login extends Component {
     }
   }
 
-  debouncedValidateField = debounce((fieldName) => {
-    switch (fieldName) {
-      case 'email':
-        this.checkEmailValidity();
-        break;
-      case 'emailConfirmation':
-        this.checkEmailConfirmation();
-        break;
-      default:
-        break;
-    }
-  }, { wait: 300 })
+  debouncedValidateField = debounce(
+    fieldName => {
+      switch (fieldName) {
+        case 'email':
+          this.checkEmailValidity();
+          break;
+        case 'emailConfirmation':
+          this.checkEmailConfirmation();
+          break;
+        default:
+          break;
+      }
+    },
+    { wait: 300 },
+  );
 
-  handleClose = () => {
-    this.setState({ open: false });
+  handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    this.setState({ open: false, signUpError: '' });
   };
 
   isIdenticalEmail = () => {
     const { email, emailConfirmation } = this.state;
     return email === emailConfirmation;
-  }
+  };
 
-  checkEmailValidity = (openSnackbar) => {
+  checkEmailValidity = openSnackbar => {
     const isEmailValid = emailRegex.test(this.state.email);
     const newState = {
       emailError: !isEmailValid,
@@ -154,24 +160,28 @@ class Login extends Component {
       newState.signUpError = 'Veuillez vérifier votre adresse email.';
     }
     this.setState(newState);
-  }
+  };
 
-  checkEmailConfirmation = (openSnackbar) => {
+  checkEmailConfirmation = openSnackbar => {
     const isIdenticalEmail = this.isIdenticalEmail();
     const newState = {
       emailConfirmationError: !isIdenticalEmail,
       signUpError: '',
     };
     if (!isIdenticalEmail && openSnackbar) {
-      newState.signUpError = 'Veuillez vérifier votre confirmation d\'adresse email.';
+      newState.signUpError =
+        "Veuillez vérifier votre confirmation d'adresse email.";
     }
     this.setState(newState);
-  }
+  };
 
   handleChange = ({ target: { name, value } }) => {
-    this.setState({
-      [name]: value,
-    }, () => this.debouncedValidateField(name));
+    this.setState(
+      {
+        [name]: value,
+      },
+      () => this.debouncedValidateField(name),
+    );
   };
 
   handleCreate(e) {
@@ -239,7 +249,8 @@ class Login extends Component {
             } else {
               if (json.message.includes('email')) {
                 this.setState({
-                  signUpError: 'Vous avez déjà un compte sur Candilib, veuillez cliquer sur le lien "Déjà inscrit',
+                  signUpError:
+                    'Vous avez déjà un compte sur Candilib, veuillez cliquer sur le lien "Déjà inscrit',
                   portableError: false,
                   emailError: !json.success,
                   isLoading: false,
@@ -304,7 +315,6 @@ class Login extends Component {
       }
     }
   }
-
 
   render() {
     const { classes } = this.props;
@@ -389,7 +399,9 @@ class Login extends Component {
                     />
                   </FormControl>
                   <FormControl margin="normal" required fullWidth>
-                    <InputLabel htmlFor="emailConfirmation">Confirmation email (obligatoire)</InputLabel>
+                    <InputLabel htmlFor="emailConfirmation">
+                      Confirmation email (obligatoire)
+                    </InputLabel>
                     <Input
                       type="email"
                       id="emailConfirmation"
