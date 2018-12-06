@@ -168,12 +168,11 @@ const Informations = () => (
           </p>
           <h2>Je ne trouve pas de place disponible</h2>
           <p>De nouveaux créneaux sont ajoutés chaque mois.</p>
-          <h2>Je n'habite pas dans le 93</h2>
+          <h2>Je n’ai pas été invité à participer à l’expérimentation</h2>
           <p>
             Ce service est restreint aux candidats domiciliés en
             Seine-Saint-Denis qui ont reçu un mail d'invitation à participer à
-            cette expérimentation. Si vous n'habitez dans le 93, rapprochez-vous
-            du Bureau de l'éducation routière du département de votre domicile.
+            cette expérimentation.
           </p>
         </div>
       </CardContent>
