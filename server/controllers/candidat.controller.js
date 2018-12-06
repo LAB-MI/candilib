@@ -26,6 +26,35 @@ import messagesConstant from '../util/messages.constant.json';
 
 const DATE_CODE_VALID = 5;
 
+export function ValidationParamRegister(req, res, next) {
+  const { nom, neph, email, portable, adresse } = req.body;
+  let isOk = false;
+
+  if (!email) {
+    return res.status(403).send({
+      success: false,
+      message: 'Error: Email ne doit pas être vide.',
+    });
+  }
+
+  isOk =
+    nom &&
+    nom.trim().length > 0 &&
+    neph &&
+    neph.trim().length > 0 &&
+    portable &&
+    portable.trim().length > 0 &&
+    adresse &&
+    adresse.trim().length > 0;
+  if (!isOk) {
+    return res.status(403).send({
+      success: false,
+      message: messagesConstant.ERROR_FIELDS_EMPTY,
+      codemessage: 'ERROR_FIELDS_EMPTY',
+    });
+  }
+  return next();
+}
 /**
  *
  * @param {*} req
