@@ -5,6 +5,7 @@ var ChunkManifestPlugin = require('chunk-manifest-webpack-plugin');
 var cssnext = require('postcss-cssnext');
 var postcssFocus = require('postcss-focus');
 var postcssReporter = require('postcss-reporter');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 var cssnano = require('cssnano');
 
 module.exports = {
@@ -116,6 +117,6 @@ module.exports = {
       filename: "chunk-manifest.json",
       manifestVariable: "webpackManifest",
     }),
-    new webpack.optimize.UglifyJsPlugin(),
+    new UglifyJsPlugin(),
   ],
 };

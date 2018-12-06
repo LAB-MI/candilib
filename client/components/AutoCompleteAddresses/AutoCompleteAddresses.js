@@ -5,7 +5,7 @@ import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import withStyles from '@material-ui/core/styles/withStyles';
 import PropTypes from 'prop-types';
-import FetchAddresses from './FetchAddresses.jsx';
+import FetchAddresses from './FetchAddresses.js';
 
 import autoCompleteAddressesStyle from './autoCompleteAddressesStyle.js';
 

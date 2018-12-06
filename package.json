@@ -3,7 +3,7 @@
   "version": "2.4.0",
   "description": "Candilib Isomorphic apps using React and Redux",
   "scripts": {
-    "test": "cross-env NODE_ENV=test MONGO_URL=mongodb://localhost:27017/candilib node_modules/.bin/nyc node node_modules/ava/cli.js",
+    "test": "cross-env NODE_ENV=test MONGO_URL=mongodb://localhost:27017/candilib node_modules/.bin/nyc node node_modules/ava/cli.js --no-color",
     "watch:test": "npm run test -- --watch",
     "cover": "nyc npm run test",
     "check-coverage": "nyc check-coverage --statements 100 --branches 100 --functions 100 --lines 100",
@@ -39,7 +39,7 @@
     "@material-ui/core": "^1.5.0",
     "@material-ui/icons": "^2.0.2",
     "babel-core": "^6.26.0",
-    "bcrypt": "^3.0.0",
+    "bcrypt": "^3.0.2",
     "better-react-spinkit": "^2.0.4",
     "body-parser": "^1.15.1",
     "classnames": "^2.2.6",
@@ -82,7 +82,8 @@
     "redux": "^3.5.2",
     "redux-thunk": "^2.1.0",
     "sanitize-html": "^1.11.4",
-    "typeface-roboto": "0.0.54"
+    "typeface-roboto": "0.0.54",
+    "uglifyjs-webpack-plugin": "^1.0.0"
   },
   "devDependencies": {
     "ava": "^0.25.0",

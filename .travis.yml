@@ -1,11 +1,46 @@
-language: node_js
-node_js:
-  - '6'
-  - '8'
-  - '10'
+dist: trusty
+sudo: required
+
+language: minimal
+
+services:
+  - docker
+
+env:
+  - DOCKER_COMPOSE_VERSION=1.19.0
+
+addons:
+  apt:
+    packages:
+      - docker-ce
+
 before_install:
-  - 'npm install -g npm@6'
+  - sudo rm -rf /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin/
+  - sudo apt-get -q update
+  - sudo apt-get install -qy make apt-transport-https ca-certificates curl software-properties-common gawk jq parallel curl
+
 before_script:
-  - sleep 15
-after_success:
-  - './node_modules/.bin/nyc report --reporter=text-lcov | ./node_modules/.bin/coveralls'
+  - uname -a
+  - type -a docker-compose && docker-compose version
+  - docker version
+
+script:
+  - git fetch --unshallow && git tag -l
+# prepare env
+  - touch .env
+#  - echo "# build & run developement"
+#  - docker-compose build && docker-compose up -d
+#  - docker images && docker ps
+#  - timeout=120; test_result=1; until [ "$timeout" -le 0 -o "$test_result" -eq "0" ] ; do curl --retry-max-time 120 --retry-delay 1  --retry 1  http://localhost:8000 ; test_result=$? ; echo "Wait stack up ($timeout)" ; (( timeout-- )) ; sleep 1 ; done
+#  - docker-compose down -v --rmi all
+  - echo "# build & run production"
+  - docker-compose -f docker-compose-production.yml build && docker-compose -f docker-compose-production.yml up -d
+  - docker images && docker ps
+  - timeout=120; test_result=1; until [ "$timeout" -le 0 -o "$test_result" -eq "0" ] ; do curl --retry-max-time 120 --retry-delay 1  --retry 1  http://localhost:80 ; test_result=$? ; echo "Wait stack up ($timeout)" ; (( timeout-- )) ; sleep 1 ; done
+  - docker-compose -f docker-compose-production.yml down -v --rmi all
+#
+after_script:
+  - echo "END"
