@@ -7,7 +7,6 @@
   "verbose": true,
   "watch": [
     "server",
-    "Intl"
   ],
   "legacyWatch": true,
   "env": {
