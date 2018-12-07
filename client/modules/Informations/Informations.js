@@ -31,7 +31,7 @@ const Informations = () => (
             conduire pour des candidats libres domiciliés en Seine-Saint-Denis.
           </p>
 
-          <h2>Qu'est-ce qu'un candidat libre ?</h2>
+          <h2>Qu'est-ce qu'un candidat libre ?</h2>
 
           <p>
             Est défini réglementairement comme "candidat libre" tout candidat
@@ -41,7 +41,7 @@ const Informations = () => (
           </p>
 
           <p>
-            Source réglementaire :{' '}
+            Source réglementaire :{' '}
             <a href="https://www.legifrance.gouv.fr/affichTexteArticle.do?idArticle=LEGIARTI000032966489&cidTexte=LEGITEXT000029705598&dateTexte=20181205">
               Arrêté du 22 octobre 2014 fixant la méthode nationale
               d'attribution des places d'examen du permis de conduire - Article
@@ -49,7 +49,7 @@ const Informations = () => (
             </a>
           </p>
 
-          <h2>Qui peut utiliser le service ?</h2>
+          <h2>Qui peut utiliser le service ?</h2>
 
           <p>
             Les "candidats libres" résidant dans le 93 qui ont reçu un mail
@@ -67,7 +67,7 @@ const Informations = () => (
           <ul>
             <li>Rendez vous sur la page d'accueil du service</li>
             <li>
-              Déposez une demande d'inscription à Candilib en saisissant vos n°
+              Déposez une demande d'inscription à Candilib en saisissant vos
               NEPH (le numéro que vous avez reçu pour l'inscription au permis),
               Nom, prénom, mail, téléphone et adresse postale.
             </li>
@@ -104,7 +104,7 @@ const Informations = () => (
             Merci de nous prévenir en cas d'empêchement afin de libérer le
             créneau pour un autre candidat.
           </p>
-          <h2>Quels sont les pré-requis le jour de l'examen ?</h2>
+          <h2>Quels sont les pré-requis le jour de l'examen ?</h2>
           <p>
             Nous vous rappelons les éléments à vérifier le jour de l'examen :
           </p>
@@ -133,8 +133,7 @@ const Informations = () => (
             </li>
             <li>
               Vous présenterez un titre d’identité en cours de validité : carte
-              nationale d’identité, passeport ou titre de séjour (liste complète
-              :{' '}
+              nationale d’identité, passeport ou titre de séjour (liste complète :{' '}
               <a href="https://legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000033736411&categorieLien=id">
                 arrêté du 23 décembre 2016 relatif à la justification de
                 l'identité, du domicile, de la résidence normale et de la
@@ -151,12 +150,12 @@ const Informations = () => (
               L'attestation d'assurance du véhicule, en cours de validité, à
               votre nom.
             </li>
-            <li>Une enveloppe affranchie à 20 g.</li>
+            <li>Une enveloppe affranchie à 20g.</li>
             <li>
               Lorsque vous avez fait l'objet d'une annulation du permis, le
               récépissé de la « fiche retour au permis de conduire » que vous
-              aurez imprimé sur le site de l’
-              <a href="https://permisdeconduire.ants.gouv.fr/">ANTS</a>.
+              aurez imprimé sur le site de
+              l’<a href="https://permisdeconduire.ants.gouv.fr/">ANTS</a>.
             </li>
           </ul>
           <p>
