@@ -1,0 +1,27 @@
+.general_conditions h1 {
+  text-align: center;
+}
+.general_conditions .date_modified {
+  text-align: center;
+  margin-bottom: 30px;
+}
+.general_conditions h2 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+.general_conditions h3 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.general_conditions p {
+  margin: 0.8em 0;
+}
+
+.general_conditions li {
+  margin: 0.3em 0;
+}
+
+.general_conditions ul {
+  margin-left: 2.3em;
+}
