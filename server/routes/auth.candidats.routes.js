@@ -17,4 +17,11 @@ router.route('/candidats/neph/:neph').get(CandidatsController.getCandidatNeph);
 
 router.route('/candidats/:id').put(CandidatsController.updateCandidat);
 
+router
+  .route('/candidats/contactus')
+  .post(
+    CandidatsController.findCandidatById,
+    CandidatsController.mailToContactUs,
+  );
+
 export default router;

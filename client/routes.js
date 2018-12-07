@@ -26,6 +26,7 @@ if (process.env.NODE_ENV !== 'production') {
   require('./modules/Admin/pages/AdminPage/AdminPage');
   require('./modules/Informations/Informations');
   require('./modules/GeneralConditions/GeneralConditions');
+  require('./modules/ContactUs/ContactUsPage');
 }
 
 // react-router setup with code-splitting
@@ -83,6 +84,14 @@ export default (
             null,
             require('./modules/GeneralConditions/GeneralConditions').default,
           );
+        });
+      }}
+    />
+    <PrivateRoute
+      path="/contactus"
+      getComponent={(nextState, cb) => {
+        require.ensure([], require => {
+          cb(null, require('./modules/ContactUs/ContactUsPage').default);
         });
       }}
     />
