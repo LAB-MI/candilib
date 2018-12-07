@@ -96,6 +96,7 @@ class Login extends Component {
       emailConfirmationError: false,
       open: false,
       serverMessage: '',
+      signUpError: '',
       emailValid: true,
     };
 

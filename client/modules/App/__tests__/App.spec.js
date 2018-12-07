@@ -2,19 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import test from 'ava';
 import sinon from 'sinon';
-import { shallow, mount } from 'enzyme';
+import { shallow } from 'enzyme';
 import { App } from '../App';
-import { intlShape } from 'react-intl';
-import { intl } from '../../../util/react-intl-test-helper';
 import { toggleAddPost } from '../AppActions';
+import { CssBaseline } from '@material-ui/core';
 
-const intlProp = { ...intl, enabledLanguages: ['en', 'fr'] };
 const children = <h1>Test</h1>;
 const dispatch = sinon.spy();
 const props = {
   children,
   dispatch,
-  intl: intlProp,
   classes: {
     footer: 'footer',
   },
@@ -30,8 +27,7 @@ test('renders properly', t => {
 });
 
 test('calls componentDidMount', t => {
-  sinon.spy(App.prototype, 'componentDidMount');
-  mount(
+  const wrapper = shallow(
     <App {...props} />,
     {
       context: {
@@ -45,25 +41,12 @@ test('calls componentDidMount', t => {
           setRouteLeaveHook: sinon.stub(),
           createHref: sinon.stub(),
         },
-        intl,
       },
       childContextTypes: {
         router: PropTypes.object,
-        intl: intlShape,
       },
     },
   );
 
-  t.truthy(App.prototype.componentDidMount.calledOnce);
-  App.prototype.componentDidMount.restore();
-});
-
-test('calling toggleAddPostSection dispatches toggleAddPost', t => {
-  const wrapper = shallow(
-    <App {...props} />
-  );
-
-  wrapper.instance().toggleAddPostSection();
-  t.truthy(dispatch.calledOnce);
-  t.truthy(dispatch.calledWith(toggleAddPost()));
+  t.truthy(wrapper.find(CssBaseline).length, 1);
 });

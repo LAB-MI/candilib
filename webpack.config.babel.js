@@ -1,4 +1,4 @@
-var cssnext = require('postcss-cssnext');
+var postcssPresetEnv = require('postcss-preset-env');
 var postcssFocus = require('postcss-focus');
 var postcssReporter = require('postcss-reporter');
 
@@ -41,7 +41,7 @@ module.exports = {
             options: {
               plugins: () => [
                 postcssFocus(),
-                cssnext({
+                postcssPresetEnv({
                   browsers: ['last 2 versions', 'IE > 10'],
                 }),
                 postcssReporter({
