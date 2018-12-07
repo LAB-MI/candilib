@@ -467,8 +467,7 @@ class CalendarListPage extends Component {
                   </Typography>
                   {candidat.dateReussiteETG && (
                     <Typography component="p">
-                      Date d'expiration du Code :{' '}
-                      {moment(candidat.dateReussiteETG).format('DD MMMM YYYY')}
+                      Date d'obtention du code : {moment(candidat.dateReussiteETG).format('DD MMMM YYYY')}
                     </Typography>
                   )}
                   {candidat.dateDernierEchecPratique && (
