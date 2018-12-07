@@ -16,9 +16,6 @@ function Header() {
           <Button component={Link} to="/informations">
             Informations
           </Button>
-          <Button href="mailto: candilib93@developpement-durable.gouv.fr">
-            Nous contacter
-          </Button>
           <Button component={Link} to="/calendar">
             Ma Réservation
           </Button>

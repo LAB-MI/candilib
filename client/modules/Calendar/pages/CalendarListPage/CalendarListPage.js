@@ -25,10 +25,11 @@ import SnackbarNotification from '../../../../components/Notifications/SnackbarN
 import sites from '../../../../../server/inbox/sites.json';
 
 const localizer = BigCalendar.momentLocalizer(moment);
-const MESSAGES_RESA = 'Votre réservation à l\'examen a été prise en compte. Veuillez consulter votre boîte mail.';
+const MESSAGES_RESA =
+  "Votre réservation à l'examen a été prise en compte. Veuillez consulter votre boîte mail.";
 const MESSAGES_ANNULATION = 'Votre annulation a bien été prise en compte.';
 
-const eventStyleGetter = (event) => {
+const eventStyleGetter = event => {
   const isSelected = event.isSelected;
   const newStyle = {
     backgroundColor: 'lightblue',
@@ -67,8 +68,7 @@ const styles = theme => ({
   gridCandidat: {
     minHeight: 'fit-content',
     // backgroundColor: 'red',
-    [theme.breakpoints.up('sm')]: {
-    },
+    [theme.breakpoints.up('sm')]: {},
     [theme.breakpoints.up('md')]: {
       height: '50%',
     },
@@ -79,8 +79,7 @@ const styles = theme => ({
   gridCalendar: {
     height: '100%',
     minHeight: 'fit-content',
-    [theme.breakpoints.up('sm')]: {
-    },
+    [theme.breakpoints.up('sm')]: {},
     [theme.breakpoints.up('md')]: {
       height: '100%',
     },
@@ -90,10 +89,13 @@ const styles = theme => ({
     [theme.breakpoints.down('sm')]: {
       width: '100%',
     },
-    [theme.breakpoints.up('md')]: {
-    },
+    [theme.breakpoints.up('md')]: {},
   },
   cardResa: {
+    marginTop: 10,
+    textAlign: 'center',
+  },
+  cardContactUs: {
     marginTop: 10,
     textAlign: 'center',
   },
@@ -108,6 +110,16 @@ const styles = theme => ({
     alignItems: 'center',
     justifyContent: 'center',
     color: 'white',
+  },
+  cardHeaderContactUs: {
+    backgroundColor: 'lightgray',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'white',
+  },
+  buttonContactUs: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   paper: {
     position: 'relative',
@@ -153,7 +165,7 @@ class CalendarListPage extends Component {
   }
 
   getCreneauxCandidats() {
-    callApi('auth/creneaux/', 'get').then((res) => {
+    callApi('auth/creneaux/', 'get').then(res => {
       const creneauxCandidats = [];
       const { creneaux } = res;
 
@@ -168,8 +180,12 @@ class CalendarListPage extends Component {
             isSelected: item.isSelected,
             inspecteur: item.inspecteur,
             centre: item.centre,
-            start: moment(moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss')).toDate(),
-            end: moment(moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss')).add(30, 'minutes').toDate(),
+            start: moment(
+              moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss'),
+            ).toDate(),
+            end: moment(moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss'))
+              .add(30, 'minutes')
+              .toDate(),
           };
           creneauxCandidats.push(crenauItem);
         });
@@ -181,14 +197,14 @@ class CalendarListPage extends Component {
   getCandidat() {
     const id = getFromStorage('candidatId');
 
-    callApi(`auth/candidats/${id}`, 'post')
-      .then((res) => {
-        // eslint-disable-next-line no-param-reassign
-        res.candidat.initialCandidat = `${res.candidat.nomNaissance.charAt(0).toUpperCase()}${res.candidat.prenom.charAt(0).toUpperCase()}`;
-        this.setState({ candidat: res.candidat, success: true });
-      });
+    callApi(`auth/candidats/${id}`, 'post').then(res => {
+      // eslint-disable-next-line no-param-reassign
+      res.candidat.initialCandidat = `${res.candidat.nomNaissance
+        .charAt(0)
+        .toUpperCase()}${res.candidat.prenom.charAt(0).toUpperCase()}`;
+      this.setState({ candidat: res.candidat, success: true });
+    });
   }
-
 
   selectCreneau(ev) {
     const creneau = { ...ev };
@@ -229,19 +245,19 @@ class CalendarListPage extends Component {
 
   deselectCreneaux() {
     // on deselection tous les creneaux
-    callApi('auth/creneaux', 'get').then((res) => {
+    callApi('auth/creneaux', 'get').then(res => {
       const { creneaux } = res;
 
-      const creneauxSelected = creneaux.filter((item) => item.isSelected === true);
+      const creneauxSelected = creneaux.filter(
+        item => item.isSelected === true,
+      );
 
       creneauxSelected.map(creneauSelected => {
         creneauSelected.isSelected = false; // eslint-disable-line no-param-reassign
 
-        callApi(`auth/creneaux/${creneauSelected._id}`, 'put',
-          {
-            creneau: creneauSelected,
-          }
-        ).then(() => {
+        callApi(`auth/creneaux/${creneauSelected._id}`, 'put', {
+          creneau: creneauSelected,
+        }).then(() => {
           this.forceUpdate();
         });
       });
@@ -249,11 +265,9 @@ class CalendarListPage extends Component {
   }
 
   updateCreneaux(creneau) {
-    callApi(`auth/creneaux/${creneau.id}`, 'put',
-      {
-        creneau,
-      }
-    ).then(() => {
+    callApi(`auth/creneaux/${creneau.id}`, 'put', {
+      creneau,
+    }).then(() => {
       this.forceUpdate();
     });
   }
@@ -261,30 +275,39 @@ class CalendarListPage extends Component {
   unselectCreneau(creneau) {
     // eslint-disable-next-line no-param-reassign
     creneau.isSelected = false;
-    callApi(`auth/creneaux/${creneau.id}`, 'put',
-      {
-        creneau,
-      }
-    ).then(() => {
-    });
+    callApi(`auth/creneaux/${creneau.id}`, 'put', {
+      creneau,
+    }).then(() => {});
   }
 
   updateCandidat(candidat) {
-    callApi(`auth/candidats/${candidat._id}`, 'put',
-      {
-        candidat,
-      }
-    ).then((cd) => {
-      // eslint-disable-next-line no-param-reassign
-      cd.initialCandidat = `${candidat.nomNaissance.charAt(0).toUpperCase()}${candidat.prenom.charAt(0).toUpperCase()}`;
-      if (!cd.creneau) {
-        this.setState({ candidat, success: true, openSnack: true, message: MESSAGES_ANNULATION });
-      } else {
-        this.setState({ candidat, success: true, openSnack: true, message: MESSAGES_RESA });
-      }
-    }).catch((er) => {
-      console.log(er);
-    });
+    callApi(`auth/candidats/${candidat._id}`, 'put', {
+      candidat,
+    })
+      .then(cd => {
+        // eslint-disable-next-line no-param-reassign
+        cd.initialCandidat = `${candidat.nomNaissance
+          .charAt(0)
+          .toUpperCase()}${candidat.prenom.charAt(0).toUpperCase()}`;
+        if (!cd.creneau) {
+          this.setState({
+            candidat,
+            success: true,
+            openSnack: true,
+            message: MESSAGES_ANNULATION,
+          });
+        } else {
+          this.setState({
+            candidat,
+            success: true,
+            openSnack: true,
+            message: MESSAGES_RESA,
+          });
+        }
+      })
+      .catch(er => {
+        console.log(er);
+      });
   }
 
   refreshAndUpdate() {
@@ -305,7 +328,7 @@ class CalendarListPage extends Component {
       isModificationResa: false,
       isDeleteResa: false,
     });
-  }
+  };
 
   handleClose = cr => {
     let creneau = { ...cr };
@@ -316,7 +339,11 @@ class CalendarListPage extends Component {
     const candidat = { ...this.state.candidat };
     const lastReserved = { ...this.state.lastReserved };
     const isDeleteResa = this.state.isDeleteResa;
-    if (lastReserved && lastReserved !== 'null' && lastReserved !== 'undefined') {
+    if (
+      lastReserved &&
+      lastReserved !== 'null' &&
+      lastReserved !== 'undefined'
+    ) {
       this.unselectCreneau(lastReserved);
     }
 
@@ -355,7 +382,7 @@ class CalendarListPage extends Component {
     }
 
     this.setState({ open: true });
-  }
+  };
 
   render() {
     const { classes } = this.props;
@@ -382,10 +409,15 @@ class CalendarListPage extends Component {
     const maxHour = new Date();
     maxHour.setHours(17, 59, 59);
 
-    if (candidat && candidat.creneau && candidat.creneau.title && candidat.creneau.start) {
+    if (
+      candidat &&
+      candidat.creneau &&
+      candidat.creneau.title &&
+      candidat.creneau.start
+    ) {
       isCreneau = true;
       site = candidat.creneau.title;
-      siteAdresse = sites.find((item) => item.nom.toUpperCase() === site);
+      siteAdresse = sites.find(item => item.nom.toUpperCase() === site);
       dateResa = moment(candidat.creneau.start).format('DD MMMM YYYY à HH:mm');
     } else {
       isCreneau = false;
@@ -435,12 +467,14 @@ class CalendarListPage extends Component {
                   </Typography>
                   {candidat.dateReussiteETG && (
                     <Typography component="p">
-                      Date d'expiration du Code : {moment(candidat.dateReussiteETG).format('DD MMMM YYYY')}
+                      Date d'expiration du Code :{' '}
+                      {moment(candidat.dateReussiteETG).format('DD MMMM YYYY')}
                     </Typography>
                   )}
                   {candidat.dateDernierEchecPratique && (
                     <Typography component="p">
-                      Date dernier échec pratique Permis B : {moment(candidat.dateDernierEchecPratique).format(
+                      Date dernier échec pratique Permis B :{' '}
+                      {moment(candidat.dateDernierEchecPratique).format(
                         'DD MMMM YYYY',
                       )}
                     </Typography>
@@ -449,43 +483,46 @@ class CalendarListPage extends Component {
               </Card>
               <Card className={classes.cardResa}>
                 <CardHeader
-                  className={classes.cardHeaderResa} title={
-                    <Typography component="h5">
-                      Ma réservation
-                  </Typography>
-                  }
+                  className={classes.cardHeaderResa}
+                  title={<Typography component="h5">Ma réservation</Typography>}
                 />
                 <CardContent>
-                  {!isCreneau &&
-                    <Typography variant="body1">
+                  {!isCreneau && (
+                    <Typography variant="body1">{dateResa}</Typography>
+                  )}
+                  {isCreneau && (
+                    <Typography component="h6" variant={'headline'}>
                       {dateResa}
                     </Typography>
-                  }
-                  {isCreneau &&
-                    <Typography component="h6" variant={"headline"}>
-                      {dateResa}
-                    </Typography>
-                  }
-                  {siteAdresse &&
-                    <Typography variant="body1">
-                      {siteAdresse.nom}
-                    </Typography>
-                  }
-                  {siteAdresse &&
+                  )}
+                  {siteAdresse && (
+                    <Typography variant="body1">{siteAdresse.nom}</Typography>
+                  )}
+                  {siteAdresse && (
                     <Typography variant="caption">
                       {siteAdresse.adresse}
                     </Typography>
-                  }
-
+                  )}
                 </CardContent>
                 <CardContent>
-                  {isCreneau &&
+                  {isCreneau && (
                     <Button onClick={this.deleteReservation}>
                       Annuler ma reservation
-                  </Button>
-                  }
+                    </Button>
+                  )}
                 </CardContent>
               </Card>
+
+              <div className={classes.cardContactUs}>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  className={classes.buttonContactUs}
+                  href="mailto: candilib93@developpement-durable.gouv.fr"
+                >
+                  Nous contacter
+                </Button>
+              </div>
             </Grid>
             <Grid item lg={9} sm={12} xs={12} className={classes.gridCalendar}>
               <Paper className={classes.paper}>
@@ -502,7 +539,7 @@ class CalendarListPage extends Component {
                   startAccessor="start"
                   endAccessor="end"
                   defaultView="work_week"
-                  eventPropGetter={(eventStyleGetter)}
+                  eventPropGetter={eventStyleGetter}
                   components={{
                     event: CreneauEvent,
                   }}
@@ -512,21 +549,22 @@ class CalendarListPage extends Component {
             </Grid>
           </Grid>
         </div>
-        <div>{success && (
-          <Snackbar
-            open={openSnack}
-            autoHideDuration={8000}
-            onClose={this.handleCloseSnack}
-            className={classes.snackbar}
-          >
-            <SnackbarNotification
+        <div>
+          {success && (
+            <Snackbar
+              open={openSnack}
+              autoHideDuration={8000}
               onClose={this.handleCloseSnack}
-              variant="success"
-              className={classes.snackbarContent}
-              message={message}
-            />
-          </Snackbar>
-        )}
+              className={classes.snackbar}
+            >
+              <SnackbarNotification
+                onClose={this.handleCloseSnack}
+                variant="success"
+                className={classes.snackbarContent}
+                message={message}
+              />
+            </Snackbar>
+          )}
           {!success && (
             <Snackbar
               open={openSnack}
