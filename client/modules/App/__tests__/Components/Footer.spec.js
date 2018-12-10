@@ -9,5 +9,5 @@ test('renders the footer properly', t => {
   );
   t.true(wrapper.hasClass('footer'));
   t.is(wrapper.find('p').length, 1);
-  t.is(wrapper.find('p').first().text(), '© 2018 · Candilib.');
+  t.is(wrapper.find('p').first().text(), '© 2018 · Candilib. - <Link />');
 });
