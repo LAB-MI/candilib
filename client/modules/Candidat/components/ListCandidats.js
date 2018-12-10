@@ -8,11 +8,12 @@ import {
   TableHeaderRow,
   TableRowDetail,
 } from '@devexpress/dx-react-grid-material-ui';
-import 'moment/locale/fr';
 import moment from 'moment';
-moment.locale('fr');
+import 'moment/locale/fr';
 import { callApi } from '../../../util/apiCaller.admin';
 import RowDetail from './RowDetail';
+
+moment.locale('fr');
 
 const styles = () => ({
   table: {

@@ -1,10 +1,12 @@
 import sanitizeHtml from 'sanitize-html';
-import User from '../models/user';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+
+import User from '../models/user';
 import serverConfig from '../config';
 import { REDIRECTTOLEVEL } from '../util/redirect2Level';
 import { USER_STATUS2EXPIRESIN, USER_STATUS2LEVEL } from '../util/jwt.constant';
+
 
 export function register(req, res, next) {
   const hashPassowrd = bcrypt.hashSync(req.body.password, 8);
@@ -22,7 +24,9 @@ export function register(req, res, next) {
           success: false,
           message: err.errmsg,
         });
-      } else if (previousUsers.length > 0) {
+      }
+
+      if (previousUsers.length > 0) {
         return res.status(409).send({
           success: false,
           message: 'Error: Account already exist.',

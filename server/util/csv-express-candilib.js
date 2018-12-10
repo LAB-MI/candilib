@@ -59,7 +59,7 @@ export default (res.csv = function sendCsv(
   if (headers && headers instanceof Object) {
     // Use res.header() instead of res.set() to maintain backward compatibility with Express 2
     // Change to res.set() in next major version so that iteration is not required
-    Object.keys(headers).forEach(header => {
+    Object.keys(headers).forEach((header) => {
       this.header(header, headers[header]);
     });
   }
@@ -75,8 +75,8 @@ export default (res.csv = function sendCsv(
   }
 
   // headerRow is used to ensure key order
-  Object.keys(data[0]).map(prop => {
-    if (data[0].hasOwnProperty(prop)) {
+  Object.keys(data[0]).map((prop) => {
+    if (data[0].hasOwnProperty(prop)) { // eslint-disable-line no-prototype-builtins
       headerRow.push(prop);
     }
   });
@@ -87,11 +87,12 @@ export default (res.csv = function sendCsv(
   }
 
   // Convert the data to a CSV-like structure
+  // eslint-disable-next-line no-restricted-syntax
   for (const line of data) {
     let convertedLine = line;
     if (!(line instanceof Array)) {
-      convertedLine = headerRow.map(key => {
-        if (line.hasOwnProperty(key)) {
+      convertedLine = headerRow.map((key) => {
+        if (line.hasOwnProperty(key)) { // eslint-disable-line no-prototype-builtins
           return line[key];
         }
         return null;

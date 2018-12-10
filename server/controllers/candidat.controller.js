@@ -1,15 +1,16 @@
 /* eslint no-console: ["error", { allow: ["warn"] }] */
-import Candidat from '../models/candidat';
-import sanitizeHtml from 'sanitize-html';
-import csv from '../util/csv-express-candilib'; // eslint-disable-line no-unused-vars
-import sendMailToAccount from '../util/sendMail';
-import jwt from 'jsonwebtoken';
-import serverConfig from '../config';
-import sendMagicLink from '../util/sendMagicLink';
-import moment from 'moment';
-import path from 'path';
 import fs from 'fs';
 import * as csvParser from 'fast-csv';
+import jwt from 'jsonwebtoken';
+import moment from 'moment';
+import path from 'path';
+import sanitizeHtml from 'sanitize-html';
+
+import Candidat from '../models/candidat';
+import csv from '../util/csv-express-candilib'; // eslint-disable-line no-unused-vars
+import sendMailToAccount from '../util/sendMail';
+import serverConfig from '../config';
+import sendMagicLink from '../util/sendMagicLink';
 import {
   INSCRIPTION_OK,
   EPREUVE_PRATIQUE_OK,
@@ -20,14 +21,19 @@ import {
   ANNULATION_CONVOCATION,
   INSCRIPTION_UPDATE,
 } from '../util/constant';
-
 import Creneau from '../models/creneau';
 import messagesConstant from '../util/messages.constant.json';
 
 const DATE_CODE_VALID = 5;
 
 export function ValidationParamRegister(req, res, next) {
-  const { nom, neph, email, portable, adresse } = req.body;
+  const {
+    nom,
+    neph,
+    email,
+    portable,
+    adresse,
+  } = req.body;
   let isOk = false;
 
   if (!email) {
@@ -37,15 +43,15 @@ export function ValidationParamRegister(req, res, next) {
     });
   }
 
-  isOk =
-    nom &&
-    nom.trim().length > 0 &&
-    neph &&
-    neph.trim().length > 0 &&
-    portable &&
-    portable.trim().length > 0 &&
-    adresse &&
-    adresse.trim().length > 0;
+  isOk = nom
+    && nom.trim().length > 0
+    && neph
+    && neph.trim().length > 0
+    && portable
+    && portable.trim().length > 0
+    && adresse
+    && adresse.trim().length > 0;
+
   if (!isOk) {
     return res.status(403).send({
       success: false,
@@ -55,6 +61,7 @@ export function ValidationParamRegister(req, res, next) {
   }
   return next();
 }
+
 /**
  *
  * @param {*} req
@@ -62,7 +69,14 @@ export function ValidationParamRegister(req, res, next) {
  * @param {*} next
  */
 export function CheckCandidatIsSignedBefore(req, res, next) {
-  const { nom, neph, email, prenom, portable, adresse } = req.body;
+  const {
+    nom,
+    neph,
+    email,
+    prenom,
+    portable,
+    adresse,
+  } = req.body;
 
   Candidat.findOne({
     nomNaissance: nom,
@@ -77,10 +91,10 @@ export function CheckCandidatIsSignedBefore(req, res, next) {
         });
       }
       if (
-        candidat.email === email &&
-        candidat.prenom === prenom &&
-        candidat.portable === portable &&
-        candidat.adresse === adresse
+        candidat.email === email
+          && candidat.prenom === prenom
+          && candidat.portable === portable
+          && candidat.adresse === adresse
       ) {
         return res.status(422).send({
           success: false,
@@ -130,8 +144,17 @@ export function checkMailIsUsed(req, res, next) {
 }
 
 export function preUpdateInfoCandidat(req, res, next) {
-  const { candidat, body } = req;
-  const { email, prenom, portable, adresse } = body;
+  const {
+    candidat,
+    body,
+  } = req;
+
+  const {
+    email,
+    prenom,
+    portable,
+    adresse,
+  } = body;
 
   if (!candidat) {
     return next();
@@ -199,7 +222,14 @@ export function updateInfoCandidat(req, res, next) {
 export function signUp(req, res) {
   const { body } = req;
 
-  const { nom, neph, email, prenom, portable, adresse } = body;
+  const {
+    nom,
+    neph,
+    email,
+    prenom,
+    portable,
+    adresse,
+  } = body;
 
   if (!email) {
     return res.status(403).send({
@@ -222,7 +252,9 @@ export function signUp(req, res) {
           success: false,
           message: 'Error: Server error',
         });
-      } else if (previousUsers.length > 0) {
+      }
+
+      if (previousUsers.length > 0) {
         return res.status(422).send({
           success: false,
           message:
@@ -339,7 +371,7 @@ export function login(req, res) {
     );
 
     sendMagicLink(user, token)
-      .then(response => {
+      .then((response) => {
         res.status(200).send({
           success: true,
           token,
@@ -348,7 +380,7 @@ export function login(req, res) {
             'Veuillez consulter votre boîte mail pour vous connecter (pensez à vérifier dans vos courriers indésirables).',
         });
       })
-      .catch(error => {
+      .catch((error) => {
         res.status(500).send({
           success: false,
           token,
@@ -356,7 +388,7 @@ export function login(req, res) {
           message:
             "Un problème est survenu lors de l'envoi du lien de connexion. Nous vous prions de réessayer plus tard.",
         });
-      }); // eslint-disable-line no-console
+      });
   });
 }
 
@@ -385,9 +417,9 @@ export function getCandidats(req, res) {
  */
 export function addCandidat(req, res) {
   if (
-    !req.body.candidat.nomNaissance ||
-    !req.body.candidat.codeNeph ||
-    !req.body.candidat.email
+    !req.body.candidat.nomNaissance
+      || !req.body.candidat.codeNeph
+      || !req.body.candidat.email
   ) {
     res.status(403).end();
   }
@@ -529,7 +561,7 @@ export function exportToCSV(req, res) {
     .exec({}, (err, candidats) => {
       if (err) res.send(err);
       const newData = [];
-      candidats.map(n => {
+      candidats.map((n) => {
         newData.push({
           'Code NEPH': n.codeNeph,
           'Nom de naissance': n.nomNaissance,
@@ -548,7 +580,7 @@ export function exportToCSV(req, res) {
 }
 
 export function destroyAll(req, res) {
-  Candidat.remove({}, err => {
+  Candidat.remove({}, (err) => {
     if (err) {
       console.warn(err); // eslint-disable-line no-console
     } else {
@@ -558,14 +590,14 @@ export function destroyAll(req, res) {
   });
 }
 
-export const epreuveEtgInvalid = candidatAurige => {
+export const epreuveEtgInvalid = (candidatAurige) => {
   return (
-    !moment(candidatAurige.dateReussiteETG).isValid() ||
-    candidatAurige.dateReussiteETG === ''
+    !moment(candidatAurige.dateReussiteETG).isValid()
+      || candidatAurige.dateReussiteETG === ''
   );
 };
 
-const synchroAurige = pathname => {
+const synchroAurige = (pathname) => {
   const FileContents = fs.readFileSync(pathname, 'utf8');
   let retourAurige = [];
   try {
@@ -578,8 +610,8 @@ const synchroAurige = pathname => {
     const lgtCandilib = candidatsBase.length;
     const lgthsAurige = retourAurige.length;
 
-    for (let i = 0; i < lgtCandilib; i++) {
-      for (let j = 0; j < lgthsAurige; j++) {
+    for (let i = 0; i < lgtCandilib; i++) { // eslint-disable-line no-plusplus
+      for (let j = 0; j < lgthsAurige; j++) { // eslint-disable-line no-plusplus
         const candidatAurige = retourAurige[j];
         const candidatCandilib = candidatsBase[i];
         if (candidatCandilib.codeNeph === candidatAurige.codeNeph) {
@@ -673,8 +705,7 @@ const synchroAurige = pathname => {
               },
             );
           } else if (
-            moment().diff(candidatAurige.dateReussiteETG, 'years', true) >
-            DATE_CODE_VALID
+            moment().diff(candidatAurige.dateReussiteETG, 'years', true) > DATE_CODE_VALID
           ) {
             // check si code moins de 5 ans
             Candidat.findOneAndRemove(
@@ -812,7 +843,7 @@ export function purgePermisOk(req, res) {
       if (err) {
         console.warn(err); // eslint-disable-line no-console
       } else {
-        candidats.map(c => {
+        candidats.map((c) => {
           Candidat.findOne({ _id: c._id }).exec((error, cand) => {
             if (error) {
               res.send(error);
@@ -831,7 +862,7 @@ export const uploadAurigeCSV = (req, res, next) => {
   const csvFile = req.files.file;
   const csvFilePath = path.resolve(__dirname, '../../temp/csv/', csvFile.name);
 
-  csvFile.mv(csvFilePath, err => {
+  csvFile.mv(csvFilePath, (err) => {
     if (err) {
       return res.status(500).send(err);
     }
@@ -839,19 +870,21 @@ export const uploadAurigeCSV = (req, res, next) => {
 
     csvParser
       .fromStream(stream, { headers: false, ignoreEmpty: true })
-      .on('data', data => {
+      .on('data', (data) => {
         const creneau = new Creneau();
         if (data[0] === 'Date') return;
 
-        const myDate = `${data[0]} ${data[1]}`;
-        const formatDate = moment(
+        const [day, time, inspecteur, centre] = creneau;
+
+        const myDate = `${day} ${time}`;
+        const formattedDate = moment(
           moment(myDate, 'DD-MM-YYYY HH:mm:ss').format('YYYY-MM-DD HH:mm:ss'),
         ).add(60, 'minutes');
-        creneau.date = formatDate;
-        creneau.inspecteur = data[2];
-        creneau.centre = data[3];
+        creneau.date = formattedDate;
+        creneau.inspecteur = inspecteur;
+        creneau.centre = centre;
 
-        const { date, inspecteur, centre } = creneau;
+        const { date } = creneau;
 
         Creneau.find(
           {
@@ -864,9 +897,8 @@ export const uploadAurigeCSV = (req, res, next) => {
               console.warn(errFind);
             } else if (previousCreneau.length > 0) {
               console.warn(previousCreneau, 'deja en base');
-              return;
             } else {
-              creneau.save(errSave => {
+              creneau.save((errSave) => {
                 if (errSave) {
                   console.warn(errSave); // eslint-disable-line no-console
                 }
@@ -893,7 +925,7 @@ export const uploadAurigeJSON = (req, res) => {
     jsonFile.name,
   );
 
-  jsonFile.mv(jsonFilePath, err => {
+  jsonFile.mv(jsonFilePath, (err) => {
     if (err) {
       return res.status(500).send(err);
     }

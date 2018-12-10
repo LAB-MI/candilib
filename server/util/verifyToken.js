@@ -3,15 +3,15 @@ import serverConfig from '../config';
 
 export default function verifyToken(req, res, next) {
   if (
-    req.url === '/candidats/login' ||
-    req.url === '/candidats/signup' ||
-    (serverConfig.fastAccessApi &&
-      (req.url === '/candidats/export' ||
-        req.url === '/candidats' ||
-        req.url === '/candidats/upload/csv' ||
-        req.url === '/candidats/upload/json' ||
-        req.url === '/candidats/synchro' ||
-        req.url === '/creneaux'))
+    req.url === '/candidats/login'
+      || req.url === '/candidats/signup'
+      || (serverConfig.fastAccessApi
+        && (req.url === '/candidats/export'
+        || req.url === '/candidats'
+        || req.url === '/candidats/upload/csv'
+        || req.url === '/candidats/upload/json'
+        || req.url === '/candidats/synchro'
+        || req.url === '/creneaux'))
   ) {
     return next();
   }

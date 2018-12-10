@@ -12,9 +12,9 @@ import routes from './routes';
 // Base stylesheet
 require('./main.css');
 
-export default function App(props) {
+export default function MainApp({ store }) {
   return (
-    <Provider store={props.store}>
+    <Provider store={store}>
       <Router history={browserHistory}>
         {routes}
       </Router>
@@ -22,6 +22,6 @@ export default function App(props) {
   );
 }
 
-App.propTypes = {
-  store: PropTypes.object.isRequired,
+MainApp.propTypes = {
+  store: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
 };

@@ -4,7 +4,6 @@ import test from 'ava';
 import sinon from 'sinon';
 import { shallow } from 'enzyme';
 import { App } from '../App';
-import { toggleAddPost } from '../AppActions';
 import { CssBaseline } from '@material-ui/core';
 
 const children = <h1>Test</h1>;

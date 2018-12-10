@@ -4,16 +4,15 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
-import App from './App';
-import { configureStore } from './store';
-
 import {
   createMuiTheme,
   MuiThemeProvider,
 } from '@material-ui/core';
-
 import blue from '@material-ui/core/colors/blue';
 
+
+import App from './App';
+import configureStore from './store';
 
 const theme = createMuiTheme({
   palette: {

@@ -3,6 +3,8 @@ import { Link } from 'react-router';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core';
 
+import bg from '../../header-bk.png';
+
 const styles = () => ({
   footer: {
     textAlign: 'center',
@@ -11,8 +13,6 @@ const styles = () => ({
   },
 });
 
-// Import Images
-import bg from '../../header-bk.png';
 
 export function Footer(props) {
   const { classes = {} } = props;
