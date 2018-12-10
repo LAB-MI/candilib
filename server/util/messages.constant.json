@@ -1,3 +1,8 @@
 {
-  "NO_AUTH_WHITELIST": "Ce site sera ouvert prochainement. "
+  "NO_AUTH_WHITELIST": "Ce site sera ouvert prochainement. ",
+  "ALREADY_REGISTERED": "Vous possédez déjà un compte, merci de vous connecter via déjà inscrit",
+  "ALREADY_REGISTERED_NO_AURIGE": "Vous avez déjà un compte sur Candilib, votre compte est en cours de vérification",
+  "UPDATE_REGISTERED": "La modification des vos informations ont bien été prise en compte.",
+  "UPDATE_REGISTERED_WITH_MAIL": "La modification des vos informations ont bien été prise en compte. Veuillez consulter votre messagerie (pensez à vérifier dans vos courriers indésirables).",
+  "ERROR_FIELDS_EMPTY": "Les champs obligatoires ne doivent pas être vides."
 }
