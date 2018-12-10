@@ -29,11 +29,13 @@ RUN if [ ! -z "$proxy" ] ; then \
         npm config delete proxy; \
         npm config set proxy $proxy; \
         npm config set https-proxy $proxy ; \
+        npm config set no-proxy $no_proxy; \
    fi ; \
    [ -z "$npm_registry" ] || npm config set registry=$npm_registry ; \
+    npm install -g node-pre-gyp ; \
     npm install
 
-COPY .env server/inbox/sites.json .babelrc index.js nodemon.json webpack.config.babel.js webpack.config.dev.js webpack.config.prod.js webpack.config.server.js ./
+COPY .env .eslintignore .eslintrc server/inbox/sites.json .babelrc index.js nodemon.json webpack.config.babel.js webpack.config.dev.js webpack.config.prod.js webpack.config.server.js ./
 COPY client ./client
 COPY Intl ./Intl
 COPY server ./server
@@ -41,7 +43,9 @@ CMD ["npm", "start"]
 
 FROM development as build
 ENV NODE_ENV=production
-RUN npm run build && npm run build:server
+RUN npm run lint ; \
+    npm run test ; \
+    npm run build && npm run build:server
 
 FROM base as production
 ENV NODE_ENV=production
