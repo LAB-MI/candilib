@@ -17,9 +17,13 @@
   margin-top: 20px;
   margin-bottom: 10px;
 }
-.informations ol li {
+.informations ol {
   margin-left: 20px;
 }
-.informations ul li {
+.informations ul {
   margin-left: 20px;
+}
+
+.informations h3 {
+  margin-top: 20px;
 }
