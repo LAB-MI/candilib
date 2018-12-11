@@ -20,7 +20,10 @@ import SnackbarNotification from '../../../../components/Notifications/SnackbarN
 import AutoCompleteAddresses from '../../../../components/AutoCompleteAddresses/AutoCompleteAddresses';
 import { errorsConstants } from '../errors.constants';
 import { setInStorage } from '../../../../util/storage';
-import { email as emailRegex, phone as phoneRegex } from '../../../../util/regex';
+import {
+  email as emailRegex,
+  phone as phoneRegex,
+} from '../../../../util/regex';
 
 const styles = theme => ({
   layout: {
@@ -90,9 +93,11 @@ class Login extends Component {
     adresse: '',
     email: '',
     emailError: false,
+    portableError: false,
     emailConfirmation: '',
     emailConfirmationError: false,
-    signUpError: '',
+    messageSnackbar: '',
+    openSnackbar: false,
   };
 
   componentDidMount() {
@@ -106,7 +111,8 @@ class Login extends Component {
         if (message !== undefined) {
           this.setState({
             success: false,
-            signUpError: message,
+            openSnackbar: true,
+            messageSnackbar: message,
             isLogin: islogin,
           });
         }
@@ -134,7 +140,9 @@ class Login extends Component {
     if (reason === 'clickaway') {
       return;
     }
-    this.setState({ open: false, signUpError: '' });
+    this.setState({
+      openSnackbar: false,
+    });
   };
 
   isIdenticalEmail = () => {
@@ -149,10 +157,14 @@ class Login extends Component {
     const isEmailValid = emailRegex.test(this.state.email);
     const newState = {
       emailError: !isEmailValid,
-      signUpError: '',
+
+      messageSnackbar: '',
+      openSnackbar: false,
+      success: false,
     };
     if (!isEmailValid && openSnackbar) {
-      newState.signUpError = 'Veuillez vérifier votre adresse email.';
+      newState.messageSnackbar = 'Veuillez vérifier votre adresse email.';
+      newState.openSnackbar = true;
     }
     this.setState(newState);
   };
@@ -161,11 +173,14 @@ class Login extends Component {
     const isIdenticalEmail = this.isIdenticalEmail();
     const newState = {
       emailConfirmationError: !isIdenticalEmail,
-      signUpError: '',
+      messageSnackbar: '',
+      openSnackbar: false,
+      success: false,
     };
     if (!isIdenticalEmail && openSnackbar) {
-      newState.signUpError =
+      newState.messageSnackbar =
         "Veuillez vérifier votre confirmation d'adresse email.";
+      newState.openSnackbar = true;
     }
     this.setState(newState);
   };
@@ -175,17 +190,20 @@ class Login extends Component {
     if (!portable) {
       return;
     }
-    const isPhoneValid = portable && portable.length == 10 && phoneRegex.test(portable)
+    const isPhoneValid =
+      portable && portable.length == 10 && phoneRegex.test(portable);
     const newState = {
       portableError: !isPhoneValid,
-      portableErrorMessage: '',
+      messageSnackbar: '',
+      openSnackbar: !isPhoneValid,
+      success: false,
     };
     if (!isPhoneValid && openSnackbar) {
-      newState.portableErrorMessage =
-        "Veuillez vérifier votre numéro de téléphone.";
+      newState.messageSnackbar = 'Veuillez vérifier votre numéro de téléphone.';
+      newState.openSnackbar = true;
     }
     this.setState(newState);
-  }
+  };
 
   handleChange = ({ target: { name, value } }) => {
     this.setState(
@@ -196,7 +214,7 @@ class Login extends Component {
     );
   };
 
-  handleCreate = (e) => {
+  handleCreate = e => {
     e.preventDefault();
 
     const {
@@ -232,14 +250,15 @@ class Login extends Component {
           }),
         })
           .then(res => res.json())
-          .then((json) => {
+          .then(json => {
             if (json.success) {
               setInStorage('candilib', {
                 token: json.token,
                 id: json.candidat._id,
               });
               this.setState({
-                signUpError: json.message,
+                messageSnackbar: json.message,
+                openSnackbar: true,
                 isLoading: false,
                 emailError: false,
                 portableError: false,
@@ -258,26 +277,30 @@ class Login extends Component {
             }
             if (json.message.includes('email')) {
               this.setState({
-                signUpError:
+                messageSnackbar:
                   'Vous avez déjà un compte sur Candilib, veuillez cliquer sur le lien "Déjà inscrit',
                 portableError: false,
+                openSnackbar: true,
+
                 emailError: !json.success,
                 isLoading: false,
                 success: false,
               });
             } else if (json.message.includes('portable')) {
               this.setState({
-                signUpError: 'Vérifier votre numéro de téléphone.',
                 portableError: !json.success,
                 emailError: false,
+                messageSnackbar: 'Vérifier votre numéro de téléphone.',
+                openSnackbar: true,
                 isLoading: false,
                 success: false,
               });
             } else {
               this.setState({
-                signUpError: json.message,
                 portableError: false,
                 emailError: false,
+                messageSnackbar: json.message,
+                openSnackbar: true,
                 isLoading: false,
                 success: false,
               });
@@ -294,10 +317,11 @@ class Login extends Component {
           }),
         })
           .then(res => res.json())
-          .then((json) => {
+          .then(json => {
             if (json.success) {
               this.setState({
-                signUpError: json.message,
+                messageSnackbar: json.message,
+                openSnackbar: true,
                 isLoading: false,
                 emailError: false,
                 portableError: false,
@@ -307,9 +331,10 @@ class Login extends Component {
               });
             } else {
               this.setState({
-                signUpError: json.message,
                 emailError: false,
                 portableError: false,
+                messageSnackbar: json.message,
+                openSnackbar: true,
                 isLoading: false,
                 success: false,
               });
@@ -319,9 +344,9 @@ class Login extends Component {
     } else {
       this.setState({
         isLoading: false,
-      })
+      });
     }
-  }
+  };
 
   render() {
     const { classes } = this.props;
@@ -330,9 +355,7 @@ class Login extends Component {
       isLoading,
       emailError,
       emailConfirmationError,
-      signUpError,
       portableError,
-      portableErrorMessage,
       neph,
       nom,
       email,
@@ -340,6 +363,8 @@ class Login extends Component {
       prenom,
       portable,
       success,
+      openSnackbar,
+      messageSnackbar,
     } = this.state;
 
     return (
@@ -402,7 +427,7 @@ class Login extends Component {
                       autoFocus
                       required
                       onChange={this.handleChange}
-                      onBlur={(e) => this.checkEmailValidity(true)}
+                      onBlur={e => this.checkEmailValidity(true)}
                     />
                   </FormControl>
                   <FormControl margin="normal" required fullWidth>
@@ -508,36 +533,19 @@ class Login extends Component {
             </Typography>
           </Paper>
         </main>
-        {success && (
-          <Snackbar
-            open={success}
-            autoHideDuration={8000}
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={8000}
+          onClose={this.handleClose}
+          className={classes.snackbar}
+        >
+          <SnackbarNotification
             onClose={this.handleClose}
-            className={classes.snackbar}
-          >
-            <SnackbarNotification
-              onClose={this.handleClose}
-              variant="success"
-              className={classes.snackbarContent}
-              message={signUpError}
-            />
-          </Snackbar>
-        )}
-        {!success && (
-          <Snackbar
-            open={!!signUpError || portableError}
-            autoHideDuration={8000}
-            onClose={this.handleClose}
-            className={classes.snackbar}
-          >
-            <SnackbarNotification
-              onClose={this.handleClose}
-              variant="error"
-              className={classes.snackbarContent}
-              message={signUpError || portableErrorMessage}
-            />
-          </Snackbar>
-        )}
+            variant={success ? 'success' : 'error'}
+            className={classes.snackbarContent}
+            message={messageSnackbar}
+          />
+        </Snackbar>
       </React.Fragment>
     );
   }
