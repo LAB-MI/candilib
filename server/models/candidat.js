@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs';
+import { getHash, compareToHash } from '../util/crypto';
 
 const { Schema } = mongoose;
 
@@ -59,12 +59,12 @@ const candidatSchema = new Schema({
   },
 });
 
-candidatSchema.methods.generateHash = (password) => {
-  bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
-};
+candidatSchema.methods.generateHash = (password) => (
+  getHash(password)
+);
 
-candidatSchema.methods.validPassword = (password) => {
-  bcrypt.compareSync(password, this.password);
-};
+candidatSchema.methods.checkPassword = (password) => (
+  compareToHash(password, this.password)
+);
 
 export default mongoose.model('Candidat', candidatSchema);

@@ -1,19 +1,18 @@
 import sanitizeHtml from 'sanitize-html';
-import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 import User from '../models/user';
 import serverConfig from '../config';
 import { REDIRECTTOLEVEL } from '../util/redirect2Level';
 import { USER_STATUS2EXPIRESIN, USER_STATUS2LEVEL } from '../util/jwt.constant';
+import { getHash, compareToHash } from '../util/crypto';
 
 
 export function register(req, res, next) {
-  const hashPassword = bcrypt.hashSync(req.body.password, 8);
-  const { email, name } = req.body;
+  const { email, name, password } = req.body;
+  const hashPassword = getHash(password);
 
-  // verify user don't exist
-
+  // verify user doesn't exist
   User.find(
     {
       email,
@@ -98,7 +97,7 @@ export function login(req, res) {
     let passwordIsValid = false;
 
     if (password !== undefined) {
-      passwordIsValid = bcrypt.compareSync(password, user.password);
+      passwordIsValid = compareToHash(password, user.password);
     }
     const usernameIsValid = email === user.email;
 
