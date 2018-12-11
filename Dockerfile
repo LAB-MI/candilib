@@ -41,9 +41,7 @@ CMD ["npm", "start"]
 
 FROM development as build
 ENV NODE_ENV=production
-RUN npm run lint ; \
-    npm run test ; \
-    npm run build && npm run build:server
+RUN npm run build
 
 FROM base as production
 ENV NODE_ENV=production
