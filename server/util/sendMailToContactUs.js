@@ -1,13 +1,15 @@
-import sendMail from './sendMailTemplate';
+import { sendMailTemplate } from './sendMailTemplate';
 import serverConfig from '../config';
 
 export const sendMailToContactUs = (candidat, subject, message) => {
+  const msg = {};
+  msg.content = message;
   const messageSendMail = {
     from: candidat.email,
     to: serverConfig.supportMail,
     subject,
-    message,
+    message: msg,
   };
 
-  sendMail(messageSendMail);
+  return sendMailTemplate(messageSendMail);
 };

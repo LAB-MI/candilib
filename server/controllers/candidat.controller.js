@@ -744,6 +744,7 @@ export const uploadAurigeJSON = (req, res) => {
 
 export function findCandidatById(req, res, next) {
   const { userId } = req;
+
   Candidat.findById(userId, (err, candidat) => {
     if (err) {
       return res.status(500).send({
@@ -757,7 +758,7 @@ export function findCandidatById(req, res, next) {
         .send({ auth: false, message: 'Utilisateur non reconnu.' });
     }
 
-    req.candiat = candidat;
+    req.candidat = candidat;
 
     return next();
   });

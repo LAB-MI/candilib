@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer';
 import smtpTransport from 'nodemailer-smtp-transport';
 import { smtpOptions } from '../config';
 
-export const sendMail = message => {
+export const sendMailTemplate = message => {
   const transporter = nodemailer.createTransport(smtpTransport(smtpOptions));
 
   const mailOptions = {

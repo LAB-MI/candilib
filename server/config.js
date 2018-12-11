@@ -13,6 +13,7 @@ const config = {
   mailPassword: process.env.MAIL_PASSWORD || undefined,
   mailFrom: process.env.MAIL_FROM || '<mail_from>',
   appURL: process.env.APP_URL || 'http://localhost:8000',
+  supportMail: process.env.EMAIL_SUPPORT || undefined,
 };
 
 export const smtpOptions = {

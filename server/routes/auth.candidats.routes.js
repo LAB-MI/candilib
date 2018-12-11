@@ -9,19 +9,19 @@ router.route('/candidats/me').get(CandidatsController.verifyMe);
 // Get all Candidats
 router.route('/candidats').get(CandidatsController.getCandidats);
 
-// Get one Candidat by id
-router.route('/candidats/:id').post(CandidatsController.getCandidat);
-
-// Get one Candidat by neph
-router.route('/candidats/neph/:neph').get(CandidatsController.getCandidatNeph);
-
-router.route('/candidats/:id').put(CandidatsController.updateCandidat);
-
 router
   .route('/candidats/contactus')
   .post(
     CandidatsController.findCandidatById,
     CandidatsController.mailToContactUs,
   );
+
+// Get one Candidat by neph
+router.route('/candidats/neph/:neph').get(CandidatsController.getCandidatNeph);
+
+// Get one Candidat by id
+router.route('/candidats/:id').post(CandidatsController.getCandidat);
+
+router.route('/candidats/:id').put(CandidatsController.updateCandidat);
 
 export default router;
