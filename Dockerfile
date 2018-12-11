@@ -32,7 +32,6 @@ RUN if [ ! -z "$proxy" ] ; then \
         npm config set no-proxy $no_proxy; \
    fi ; \
    [ -z "$npm_registry" ] || npm config set registry=$npm_registry ; \
-    npm install -g node-pre-gyp ; \
     npm install
 
 COPY .env .eslintignore .eslintrc server/inbox/sites.json .babelrc index.js nodemon.json webpack.config.babel.js webpack.config.dev.js webpack.config.prod.js webpack.config.server.js ./

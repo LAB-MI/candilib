@@ -1,13 +1,13 @@
 import sanitizeHtml from 'sanitize-html';
-import bcrypt from 'bcrypt';
 
 import User from '../models/user';
+import { getHash } from '../util/crypto';
 
 // eslint-disable-next-line import/prefer-default-export
 export function registerAdmin(req, res, next) {
   const { email, password } = req.body;
 
-  const hashPassowrd = bcrypt.hashSync(password, 8);
+  const hashPassword = getHash(password);
 
   // verify user don't exist
 
@@ -29,7 +29,7 @@ export function registerAdmin(req, res, next) {
     User.create(
       {
         email: sanitizeHtml(email),
-        password: hashPassowrd,
+        password: hashPassword,
         status: 'admin',
       },
       (error, user) => {
