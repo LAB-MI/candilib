@@ -1,5 +1,5 @@
 import sanitizeHtml from 'sanitize-html';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 import User from '../models/user';
@@ -9,7 +9,7 @@ import { USER_STATUS2EXPIRESIN, USER_STATUS2LEVEL } from '../util/jwt.constant';
 
 
 export function register(req, res, next) {
-  const hashPassowrd = bcrypt.hashSync(req.body.password, 8);
+  const hashPassword = bcrypt.hashSync(req.body.password, 8);
   const { email, name } = req.body;
 
   // verify user don't exist
@@ -36,7 +36,7 @@ export function register(req, res, next) {
       User.create(
         {
           email: sanitizeHtml(email),
-          password: hashPassowrd,
+          password: hashPassword,
           name: sanitizeHtml(name),
         },
         (error, user) => {
@@ -67,7 +67,7 @@ export function verifyMe(req, res) {
     if (err) {
       return res.status(500).send({
         auth: false,
-        message: 'Problème pour retrouver cet utilisateur .',
+        message: 'Problème pour retrouver cet utilisateur.',
       });
     }
 
@@ -86,7 +86,7 @@ export function login(req, res) {
 
   User.findOne({ email }, (err, user) => {
     if (err) {
-      return res.status(500).send({ auth: false, message: 'Erreur serveur ' });
+      return res.status(500).send({ auth: false, message: 'Erreur serveur' });
     }
 
     if (!user) {
