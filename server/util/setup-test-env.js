@@ -11,11 +11,20 @@ require('babel-register');
 require('babel-polyfill');
 require('raf/polyfill');
 
-global.document = require('jsdom').jsdom('<body></body>');
-global.window = document.defaultView;
-global.navigator = window.navigator;
+
+const { JSDOM } = require('jsdom');
+
+const jsdom = new JSDOM('<!doctype html><html><body></body></html>');
+const { window } = jsdom;
+
+global.window = window;
+global.document = window.document;
+global.navigator = {
+  userAgent: 'node.js',
+};
 
 // use .default export?
 const Enzyme = require('enzyme');
 const Adapter = require('enzyme-adapter-react-16');
+
 Enzyme.configure({ adapter: new Adapter() });

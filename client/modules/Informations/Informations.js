@@ -22,28 +22,29 @@ const Informations = ({ classes }) => (
       <div className={styles.informations}>
         <h1>Foire Aux Questions</h1>
         <p className={styles.informationsDate}>modifié le 06/12/2018</p>
-        <h2>Qu'est-ce que CandiLib</h2>
+        <h2>Qu&apos;est-ce que CandiLib</h2>
 
         <p>
-          CandilLib est une expérimentation d'un nouveau service de
-          réservation en ligne des places d'examen pratique du permis de
+          CandilLib est une expérimentation d&apos;un nouveau service de
+          réservation en ligne des places d&apos;examen pratique du permis de
           conduire pour des candidats libres domiciliés en Seine-Saint-Denis.
         </p>
 
-        <h2>Qu'est-ce qu'un candidat libre ?</h2>
+        <h2>Qu&apos;est-ce qu&apos;un candidat libre ?</h2>
 
         <p>
-          Est défini réglementairement comme "candidat libre" tout candidat
-          qui n'est pas présenté sur les droits à places d'une école de
-          conduite et qui fait l'objet d'une convocation nominative de la part
-          de l'administration.
+          Est défini réglementairement comme « candidat libre » tout candidat
+          qui n&apos;est pas présenté sur les droits à places d&apos;une école de
+          conduite et qui fait l&apos;objet d&apos;une convocation nominative de la part
+          de l&apos;administration.
         </p>
 
         <p>
-          Source réglementaire :{' '}
+          Source réglementaire :
+          {' '}
           <a href="https://www.legifrance.gouv.fr/affichTexteArticle.do?idArticle=LEGIARTI000032966489&cidTexte=LEGITEXT000029705598&dateTexte=20181205">
             Arrêté du 22 octobre 2014 fixant la méthode nationale
-            d'attribution des places d'examen du permis de conduire - Article
+            d&apos;attribution des places d&apos;examen du permis de conduire - Article
             5
           </a>
         </p>
@@ -51,8 +52,8 @@ const Informations = ({ classes }) => (
         <h2>Qui peut utiliser le service ?</h2>
 
         <p>
-          Les "candidats libres" résidant dans le 93 qui ont reçu un mail
-          d'invitation pour participer à l'expérimentation.
+          Les « candidats libres » résidant dans le 93 qui ont reçu un mail
+          d&apos;invitation pour participer à l&apos;expérimentation.
         </p>
 
         <h2>Comment ça marche ?</h2>
@@ -62,12 +63,12 @@ const Informations = ({ classes }) => (
           examens de la Seine-Saint-Denis à vous inscrire sur Candilib.
         </p>
 
-        <h3>Pour s'inscrire :</h3>
+        <h3>Pour s&apos;inscrire :</h3>
         <ul>
-          <li>Rendez vous sur la page d'accueil du service</li>
+          <li>Rendez vous sur la page d&apos;accueil du service</li>
           <li>
-            Déposez une demande d'inscription à Candilib en saisissant vos
-            NEPH (le numéro que vous avez reçu pour l'inscription au permis),
+            Déposez une demande d&apos;inscription à Candilib en saisissant vos
+            NEPH (le numéro que vous avez reçu pour l&apos;inscription au permis),
             Nom, prénom, mail, téléphone et adresse postale.
           </li>
         </ul>
@@ -75,15 +76,15 @@ const Informations = ({ classes }) => (
         <h3>Pour réserver :</h3>
         <ul>
           <li>
-            Connectez vous à Candilib après réception du mail "Validation de
-            votre inscription à Candilib" (lien de connexion dans le mail de
+            Connectez vous à Candilib après réception du mail « Validation de
+            votre inscription à Candilib » (lien de connexion dans le mail de
             validation).
           </li>
           <li>
             {' '}
             Sur le planning, sélectionnez le créneau disponible à la date et
-            au centre d'examen qui vous conviennent (si besoin, déplacez-vous
-            sur les vues "mois", "semaine" et " jour").
+            au centre d&apos;examen qui vous conviennent (si besoin, déplacez-vous
+            sur les vues « mois », « semaine » et « jour »).
           </li>
           <li> Confirmez votre réservation.</li>
         </ul>
@@ -96,16 +97,16 @@ const Informations = ({ classes }) => (
           <li>Vous pouvez annuler librement 7 jours avant la date prévue.</li>
           <li>
             Si vous devez annuler moins de 7 jours avant la date, vous serez
-            placé en liste d'attente non prioritaire.
+            placé en liste d&apos;attente non prioritaire.
           </li>
         </ul>
         <p>
-          Merci de nous prévenir en cas d'empêchement afin de libérer le
+          Merci de nous prévenir en cas d&apos;empêchement afin de libérer le
           créneau pour un autre candidat.
         </p>
-        <h2>Quels sont les pré-requis le jour de l'examen ?</h2>
+        <h2>Quels sont les pré-requis le jour de l&apos;examen ?</h2>
         <p>
-          Nous vous rappelons les éléments à vérifier le jour de l'examen :
+          Nous vous rappelons les éléments à vérifier le jour de l&apos;examen :
         </p>
         <ul>
           <li>
@@ -118,7 +119,7 @@ const Informations = ({ classes }) => (
             <ul>
               <li>
                 soit un enseignant de la conduite en possession de son
-                autorisation d'enseigner pour la présenter à l'inspecteur,
+                autorisation d&apos;enseigner pour la présenter à l&apos;inspecteur,
               </li>
               <li>
                 soit une personne dont le permis B est en cours de validité.
@@ -132,11 +133,12 @@ const Informations = ({ classes }) => (
           </li>
           <li>
             Vous présenterez un titre d’identité en cours de validité : carte
-            nationale d’identité, passeport ou titre de séjour (liste complète :{' '}
+            nationale d’identité, passeport ou titre de séjour (liste complète :
+            {' '}
             <a href="https://legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000033736411&categorieLien=id">
               arrêté du 23 décembre 2016 relatif à la justification de
-              l'identité, du domicile, de la résidence normale et de la
-              régularité du séjour pour l'obtention du permis de conduire
+              l&apos;identité, du domicile, de la résidence normale et de la
+              régularité du séjour pour l&apos;obtention du permis de conduire
             </a>
             ).
           </li>
@@ -146,30 +148,33 @@ const Informations = ({ classes }) => (
             d’examen théorique général.
           </li>
           <li>
-            L'attestation d'assurance du véhicule, en cours de validité, à
+            L&apos;attestation d&apos;assurance du véhicule, en cours de validité, à
             votre nom.
           </li>
           <li>Une enveloppe affranchie à 20g.</li>
           <li>
-            Lorsque vous avez fait l'objet d'une annulation du permis, le
+            Lorsque vous avez fait l&apos;objet d&apos;une annulation du permis, le
             récépissé de la « fiche retour au permis de conduire » que vous
             aurez imprimé sur le site de
-            l’<a href="https://permisdeconduire.ants.gouv.fr/">ANTS</a>.
+            l&apos;
+            <a href="https://permisdeconduire.ants.gouv.fr/">ANTS</a>
+            .
           </li>
         </ul>
         <p>
-          <strong>Attention</strong> : le mauvais état du véhicule (pneus
+          <strong>Attention :</strong>
+          le mauvais état du véhicule (pneus
           lisses, rétros cassés ou absents, non fonctionnement de tous les
-          feux, etc.), ou l'absence ou la non-validité d'un des documents
-          exigés ci-dessus, pour le candidat ou pour l'accompagnateur,
-          entraîne le report de l'examen à une date ultérieure.
+          feux, etc.), ou l&apos;absence ou la non-validité d&apos;un des documents
+          exigés ci-dessus, pour le candidat ou pour l&apos;accompagnateur,
+          entraîne le report de l&apos;examen à une date ultérieure.
         </p>
         <h2>Je ne trouve pas de place disponible</h2>
         <p>De nouveaux créneaux sont ajoutés chaque mois.</p>
         <h2>Je n’ai pas été invité à participer à l’expérimentation</h2>
         <p>
           Ce service est restreint aux candidats domiciliés en
-          Seine-Saint-Denis qui ont reçu un mail d'invitation à participer à
+          Seine-Saint-Denis qui ont reçu un mail d&apos;invitation à participer à
           cette expérimentation.
         </p>
       </div>
@@ -178,7 +183,7 @@ const Informations = ({ classes }) => (
 );
 
 Informations.propTypes = {
-  classes: PropTypes.object,
+  classes: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
 };
 
 export default withStyles(jssStyles)(Informations);

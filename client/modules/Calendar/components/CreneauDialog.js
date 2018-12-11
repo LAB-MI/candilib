@@ -1,19 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
-import 'moment/locale/fr';
 import moment from 'moment';
+import 'moment/locale/fr';
+
 moment.locale('fr');
-
-const styles = {
-
-};
 
 class CreneauDialog extends Component {
   onCancel = () => {
@@ -59,10 +55,10 @@ class CreneauDialog extends Component {
             <DialogActions>
               <Button onClick={this.onCancel} color="primary">
                 Non
-            </Button>
+              </Button>
               <Button onClick={this.handleClose} color="primary">
                 Oui
-            </Button>
+              </Button>
             </DialogActions>
           </div>
         }
@@ -77,10 +73,10 @@ class CreneauDialog extends Component {
             <DialogActions>
               <Button onClick={this.onCancel} color="primary">
                 Non
-            </Button>
+              </Button>
               <Button onClick={this.handleClose} color="primary">
                 Oui
-            </Button>
+              </Button>
             </DialogActions>
           </div>
         }
@@ -95,10 +91,10 @@ class CreneauDialog extends Component {
             <DialogActions>
               <Button onClick={this.onCancel} color="primary">
                 Annuler
-            </Button>
+              </Button>
               <Button onClick={this.handleClose} color="primary">
                 Confirmer
-            </Button>
+              </Button>
             </DialogActions>
           </div>
         }
@@ -117,4 +113,4 @@ CreneauDialog.propTypes = {
   isDeleteResa: PropTypes.bool,
 };
 
-export default withStyles(styles)(CreneauDialog);
+export default CreneauDialog;

@@ -1,7 +1,9 @@
 import sanitizeHtml from 'sanitize-html';
-import User from '../models/user';
 import bcrypt from 'bcrypt';
 
+import User from '../models/user';
+
+// eslint-disable-next-line import/prefer-default-export
 export function registerAdmin(req, res, next) {
   const { email, password } = req.body;
 
@@ -15,7 +17,9 @@ export function registerAdmin(req, res, next) {
         success: false,
         message: err.errmsg,
       });
-    } else if (previousUsers.length > 0) {
+    }
+
+    if (previousUsers.length > 0) {
       return res.status(409).send({
         success: false,
         message: 'Error: Account already exist.',

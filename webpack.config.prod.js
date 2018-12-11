@@ -2,7 +2,7 @@ var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var ManifestPlugin = require('webpack-manifest-plugin');
 var ChunkManifestPlugin = require('chunk-manifest-webpack-plugin');
-var cssnext = require('postcss-cssnext');
+var postcssPresetEnv = require('postcss-preset-env');
 var postcssFocus = require('postcss-focus');
 var postcssReporter = require('postcss-reporter');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
@@ -56,7 +56,7 @@ module.exports = {
               options: {
                 plugins: () => [
                   postcssFocus(),
-                  cssnext({
+                  postcssPresetEnv({
                     browsers: ['last 2 versions', 'IE > 10'],
                   }),
                   cssnano({

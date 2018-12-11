@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
-import mailMessage from '../util/messageMailManager';
 import smtpTransport from 'nodemailer-smtp-transport';
+import mailMessage from './messageMailManager';
 import serverConfig, { smtpOptions } from '../config';
 
 
@@ -96,9 +96,7 @@ const sendMailToAccount = (candidatAurige, flag) => {
                                                                         </tr>
                                                                         <tr>
                                                                             <td class="article-content" colspan="2">
-                                                                                ${
-                                                                                  message.content
-                                                                                }
+                                                                                ${message.content}
                                                                             </td>
                                                                         </tr>
                                                                     </tbody>

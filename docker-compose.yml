@@ -16,7 +16,6 @@ services:
       - "9229:9229"
     volumes:
       - ./client:/usr/src/app/client
-      - ./Intl:/usr/src/app/Intl
       - ./server:/usr/src/app/server
       - ./.babelrc:/usr/src/app/.babelrc
       - ./index.js:/usr/src/app/index.js

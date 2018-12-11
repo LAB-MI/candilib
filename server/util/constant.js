@@ -4,6 +4,7 @@ export const CANDIDAT_NOK_NOM = 'NOK Nom';
 export const EPREUVE_PRATIQUE_OK = 'OK';
 export const EPREUVE_ETG_KO = 'KO';
 export const INSCRIPTION_OK = 'SIGNUP_OK';
+export const INSCRIPTION_VALID = 'VALID';
 export const AURIGE_OK = 'CHECK_OK';
 export const MAIL_CONVOCATION = 'MAIL_CONVOCATION';
 export const ANNULATION_CONVOCATION = 'ANNULATION_CONVOCATION';

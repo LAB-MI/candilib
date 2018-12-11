@@ -6,8 +6,7 @@
   ],
   "verbose": true,
   "watch": [
-    "server",
-    "Intl"
+    "server"
   ],
   "legacyWatch": true,
   "env": {

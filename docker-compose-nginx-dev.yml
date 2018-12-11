@@ -20,7 +20,7 @@ services:
       context: ./
       dockerfile: Dockerfile
       target: development
-      args: 
+      args:
           proxy: ${http_proxy}
     container_name: ${APP}_front
     depends_on:
@@ -29,7 +29,6 @@ services:
       - "${WEB_PORT:-8000}:8000"
     volumes:
       - ./client:/usr/src/app/client
-      - ./Intl:/usr/src/app/Intl
       - ./server:/usr/src/app/server
       - ./.babelrc:/usr/src/app/.babelrc
       - ./index.js:/usr/src/app/index.js

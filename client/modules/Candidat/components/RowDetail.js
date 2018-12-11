@@ -1,12 +1,13 @@
+import React from 'react';
+import PropTypes from 'prop-types';
 import {
   Typography,
 } from '@material-ui/core';
 
-import PropTypes from 'prop-types';
 import 'moment/locale/fr';
 import moment from 'moment';
+
 moment.locale('fr');
-import React from 'react';
 
 const RowDetail = ({ row }) => (
   <div>
@@ -51,7 +52,7 @@ const RowDetail = ({ row }) => (
   </div >
 );
 
-RowDetail.protoTypes = {
+RowDetail.propTypes = {
   row: PropTypes.object,
 };
 

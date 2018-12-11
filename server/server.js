@@ -3,8 +3,33 @@ import compression from 'compression';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import path from 'path';
-import IntlWrapper from '../client/modules/Intl/IntlWrapper';
 import fileUpload from 'express-fileupload';
+
+// React And Redux Setup
+import { Provider } from 'react-redux';
+import React from 'react';
+import { renderToString } from 'react-dom/server';
+import { match, RouterContext } from 'react-router';
+import Helmet from 'react-helmet';
+
+// Import required modules
+import configureStore from '../client/store';
+import routes from '../client/routes';
+import { REDIRECTTOLEVEL } from './util/redirect2Level';
+import fetchComponentData from './util/fetchData';
+import candidats from './routes/candidats.routes';
+import authAdminCandidats from './routes/admin.candidats.routes';
+import authCandidats from './routes/auth.candidats.routes';
+import creneaux from './routes/creneaux.routes';
+import adminCreneaux from './routes/admin.creneaux.routes';
+import users from './routes/users.routes';
+import adminUsers from './routes/admin.users.routes';
+
+import serverConfig from './config';
+import verifyToken from './util/verifyToken';
+import isAdmin from './util/isAdmin';
+import whitelists from './routes/whitelist.routes';
+
 // Initialize the Express App
 const app = new Express();
 
@@ -36,30 +61,6 @@ if (isDevMode) {
   app.use(webpackHotMiddleware(compiler));
 }
 
-// React And Redux Setup
-import { configureStore } from '../client/store';
-import { Provider } from 'react-redux';
-import React from 'react';
-import { renderToString } from 'react-dom/server';
-import { match, RouterContext } from 'react-router';
-import Helmet from 'react-helmet';
-
-// Import required modules
-import routes from '../client/routes';
-import { REDIRECTTOLEVEL } from './util/redirect2Level';
-import { fetchComponentData } from './util/fetchData';
-import candidats from './routes/candidats.routes';
-import authAdminCandidats from './routes/admin.candidats.routes';
-import authCandidats from './routes/auth.candidats.routes';
-import creneaux from './routes/creneaux.routes';
-import adminCreneaux from './routes/admin.creneaux.routes';
-import users from './routes/users.routes';
-import adminUsers from './routes/admin.users.routes';
-
-import serverConfig from './config';
-import verifyToken from './util/verifyToken';
-import isAdmin from './util/isAdmin';
-import whitelists from './routes/whitelist.routes';
 
 // Set native promises as mongoose promise
 mongoose.Promise = global.Promise;
@@ -68,7 +69,7 @@ mongoose.Promise = global.Promise;
 if (process.env.NODE_ENV !== 'test') {
   mongoose.connect(
     serverConfig.mongoURL,
-    error => {
+    (error) => {
       if (error) {
         console.error('Please make sure Mongodb is installed and running!'); // eslint-disable-line no-console
         throw error;
@@ -78,7 +79,7 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 // Set Level to redirect
-routes.props.children.forEach(child => {
+routes.props.children.forEach((child) => {
   if (child.type.name === 'PrivateRoute') {
     if (child.props.path !== undefined) {
       const pathAdmin = child.props.path.toLowerCase();
@@ -110,11 +111,9 @@ const renderFullPage = (html, initialState) => {
   const head = Helmet.rewind();
 
   // Import Manifests
-  const assetsManifest =
-    process.env.webpackAssets && JSON.parse(process.env.webpackAssets);
-  const chunkManifest =
-    process.env.webpackChunkAssets &&
-    JSON.parse(process.env.webpackChunkAssets);
+  const assetsManifest = process.env.webpackAssets && JSON.parse(process.env.webpackAssets);
+  const chunkManifest = process.env.webpackChunkAssets
+    && JSON.parse(process.env.webpackChunkAssets);
 
   return `
     <!doctype html>
@@ -126,10 +125,9 @@ const renderFullPage = (html, initialState) => {
         ${head.link.toString()}
         ${head.script.toString()}
 
-        ${
-          isProdMode
-            ? `<link rel='stylesheet' href='${assetsManifest['/app.css']}' />`
-            : ''
+        ${isProdMode
+          ? `<link rel='stylesheet' href='${assetsManifest['/app.css']}' />`
+          : ''
         }
         <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,700' rel='stylesheet' type='text/css'/>
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -159,7 +157,7 @@ const renderFullPage = (html, initialState) => {
   `;
 };
 
-const renderError = err => {
+const renderError = (err) => {
   const softTab = '&#32;&#32;&#32;&#32;';
   const errTrace = isProdMode
     ? `:<br><br><pre style="color:red">${softTab}${err.stack.replace(
@@ -190,15 +188,15 @@ app.use((req, res, next) => {
 
     // PrivateRoute
     if (typeof routes.props.children === 'object') {
-      const childrenPrivateRoute = routes.props.children.find(child => {
+      const childrenPrivateRoute = routes.props.children.find((child) => {
         return (
-          child.type !== undefined &&
-          child.props !== undefined &&
-          renderProps !== undefined &&
-          renderProps.location !== undefined &&
-          child.type.name === 'PrivateRoute' &&
-          child.props.path === renderProps.location.pathname.toLowerCase() &&
-          renderProps.location.pathname !== '/auth'
+          child.type !== undefined
+          && child.props !== undefined
+          && renderProps !== undefined
+          && renderProps.location !== undefined
+          && child.type.name === 'PrivateRoute'
+          && child.props.path === renderProps.location.pathname.toLowerCase()
+          && renderProps.location.pathname !== '/auth'
         );
       });
       if (childrenPrivateRoute !== undefined) {
@@ -215,9 +213,7 @@ app.use((req, res, next) => {
       .then(() => {
         const initialView = renderToString(
           <Provider store={store}>
-            <IntlWrapper>
-              <RouterContext {...renderProps} />
-            </IntlWrapper>
+            <RouterContext {...renderProps} />
           </Provider>,
         );
         const finalState = store.getState();
@@ -232,11 +228,11 @@ app.use((req, res, next) => {
 });
 
 // start app
-app.listen(serverConfig.port, error => {
+app.listen(serverConfig.port, (error) => {
   if (!error) {
     console.log(
-      `Candilib is running on port: ${process.env.PORT ||
-        serverConfig.port}! Build something amazing!`,
+      `Candilib is running on port: ${process.env.PORT
+        || serverConfig.port}! Build something amazing!`,
     ); // eslint-disable-line
   }
 });
