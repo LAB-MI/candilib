@@ -20,7 +20,7 @@ import SnackbarNotification from '../../../../components/Notifications/SnackbarN
 import AutoCompleteAddresses from '../../../../components/AutoCompleteAddresses/AutoCompleteAddresses';
 import { errorsConstants } from '../errors.constants';
 import { setInStorage } from '../../../../util/storage';
-import { email as emailRegex } from '../../../../util/regex';
+import { email as emailRegex, phone as phoneRegex } from '../../../../util/regex';
 
 const styles = theme => ({
   layout: {
@@ -78,29 +78,22 @@ const styles = theme => ({
 });
 
 class Login extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isLoading: false,
-      isLogin: false,
-      success: false,
-      neph: '',
-      nom: '',
-      prenom: '',
-      nomUsage: '',
-      portable: '',
-      adresse: '',
-      email: '',
-      emailError: false,
-      emailConfirmation: '',
-      emailConfirmationError: false,
-      open: false,
-      signUpError: '',
-    };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleCreate = this.handleCreate.bind(this);
-  }
+  state = {
+    isLoading: false,
+    isLogin: false,
+    success: false,
+    neph: '',
+    nom: '',
+    prenom: '',
+    nomUsage: '',
+    portable: '',
+    adresse: '',
+    email: '',
+    emailError: false,
+    emailConfirmation: '',
+    emailConfirmationError: false,
+    signUpError: '',
+  };
 
   componentDidMount() {
     const { location = {} } = this.props;
@@ -112,7 +105,6 @@ class Login extends Component {
 
         if (message !== undefined) {
           this.setState({
-            open: true,
             success: false,
             signUpError: message,
             isLogin: islogin,
@@ -151,6 +143,9 @@ class Login extends Component {
   };
 
   checkEmailValidity = openSnackbar => {
+    if (!this.state.email) {
+      return;
+    }
     const isEmailValid = emailRegex.test(this.state.email);
     const newState = {
       emailError: !isEmailValid,
@@ -175,6 +170,23 @@ class Login extends Component {
     this.setState(newState);
   };
 
+  checkPhone = openSnackbar => {
+    const portable = this.state.portable;
+    if (!portable) {
+      return;
+    }
+    const isPhoneValid = portable && portable.length == 10 && phoneRegex.test(portable)
+    const newState = {
+      portableError: !isPhoneValid,
+      portableErrorMessage: '',
+    };
+    if (!isPhoneValid && openSnackbar) {
+      newState.portableErrorMessage =
+        "Veuillez vérifier votre numéro de téléphone.";
+    }
+    this.setState(newState);
+  }
+
   handleChange = ({ target: { name, value } }) => {
     this.setState(
       {
@@ -184,10 +196,9 @@ class Login extends Component {
     );
   };
 
-  handleCreate(e) {
+  handleCreate = (e) => {
     e.preventDefault();
 
-    // Grab state
     const {
       neph,
       nom,
@@ -203,8 +214,6 @@ class Login extends Component {
       isLoading: true,
     });
     if (email && emailRegex.test(email)) {
-      // Post request to backend
-
       if (!isLogin) {
         fetch('/api/candidats/signup', {
           method: 'POST',
@@ -232,9 +241,8 @@ class Login extends Component {
               this.setState({
                 signUpError: json.message,
                 isLoading: false,
-                open: true,
-                emailError: !json.success,
-                portableError: !json.success,
+                emailError: false,
+                portableError: false,
                 neph: '',
                 nom: '',
                 nomUsage: '',
@@ -255,7 +263,6 @@ class Login extends Component {
                 portableError: false,
                 emailError: !json.success,
                 isLoading: false,
-                open: true,
                 success: false,
               });
             } else if (json.message.includes('portable')) {
@@ -264,16 +271,14 @@ class Login extends Component {
                 portableError: !json.success,
                 emailError: false,
                 isLoading: false,
-                open: true,
                 success: false,
               });
             } else {
               this.setState({
                 signUpError: json.message,
                 portableError: false,
-                emailError: !json.success,
+                emailError: false,
                 isLoading: false,
-                open: true,
                 success: false,
               });
             }
@@ -294,7 +299,6 @@ class Login extends Component {
               this.setState({
                 signUpError: json.message,
                 isLoading: false,
-                open: true,
                 emailError: false,
                 portableError: false,
                 emailConfirmationError: false,
@@ -304,15 +308,18 @@ class Login extends Component {
             } else {
               this.setState({
                 signUpError: json.message,
-                emailError: true,
-                portableError: true,
+                emailError: false,
+                portableError: false,
                 isLoading: false,
-                open: true,
                 success: false,
               });
             }
           });
       }
+    } else {
+      this.setState({
+        isLoading: false,
+      })
     }
   }
 
@@ -321,11 +328,11 @@ class Login extends Component {
     const {
       isLogin,
       isLoading,
-      open,
       emailError,
       emailConfirmationError,
       signUpError,
       portableError,
+      portableErrorMessage,
       neph,
       nom,
       email,
@@ -353,6 +360,7 @@ class Login extends Component {
                       autoComplete="neph"
                       value={neph}
                       autoFocus
+                      required
                       onChange={this.handleChange}
                     />
                   </FormControl>
@@ -365,6 +373,7 @@ class Login extends Component {
                       autoComplete="nom"
                       value={nom}
                       autoFocus
+                      required
                       onChange={this.handleChange}
                     />
                   </FormControl>
@@ -391,8 +400,9 @@ class Login extends Component {
                       autoComplete="email"
                       value={email}
                       autoFocus
+                      required
                       onChange={this.handleChange}
-                      onBlur={() => this.checkEmailValidity(true)}
+                      onBlur={(e) => this.checkEmailValidity(true)}
                     />
                   </FormControl>
                   <FormControl margin="normal" required fullWidth>
@@ -425,7 +435,7 @@ class Login extends Component {
                       value={portable}
                       autoFocus
                       onChange={this.handleChange}
-                      onBlur={this.handleBlur}
+                      onBlur={() => this.checkPhone(true)}
                     />
                   </FormControl>
                   <AutoCompleteAddresses
@@ -500,7 +510,7 @@ class Login extends Component {
         </main>
         {success && (
           <Snackbar
-            open={open}
+            open={success}
             autoHideDuration={8000}
             onClose={this.handleClose}
             className={classes.snackbar}
@@ -515,7 +525,7 @@ class Login extends Component {
         )}
         {!success && (
           <Snackbar
-            open={!!signUpError}
+            open={!!signUpError || portableError}
             autoHideDuration={8000}
             onClose={this.handleClose}
             className={classes.snackbar}
@@ -524,7 +534,7 @@ class Login extends Component {
               onClose={this.handleClose}
               variant="error"
               className={classes.snackbarContent}
-              message={signUpError}
+              message={signUpError || portableErrorMessage}
             />
           </Snackbar>
         )}
