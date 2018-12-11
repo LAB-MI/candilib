@@ -40,10 +40,9 @@ class AutoCompleteAddresses extends React.Component {
                   <Input
                     id={inputName}
                     name={inputName}
-                    placeholder="10 rue des examens 93000 Bobigny"
+                    placeholder={placeholder || '10 rue des examens 93000 Bobigny'}
                     autoFocus
                     {...getInputProps()}
-                    placeholder={placeholder}
                   />
                   {isOpen &&
                   <div className={classes.dropdownWrapper}>
@@ -53,23 +52,23 @@ class AutoCompleteAddresses extends React.Component {
                     >
                       {adresses
                         ? adresses.map((item, index) => (
-                            <div
-                              className={classes.dropdownItem}
-                              {...getItemProps({
-                                key: index,
-                                index,
-                                item,
-                                style: {
-                                  backgroundColor:
-                                    highlightedIndex === index
-                                      ? 'lightgray'
-                                      : 'white',
-                                },
-                              })}
-                            >
-                              {item.properties.label}
-                            </div>
-                          ))
+                          <div
+                            className={classes.dropdownItem}
+                            {...getItemProps({
+                              key: index,
+                              index,
+                              item,
+                              style: {
+                                backgroundColor:
+                                  highlightedIndex === index
+                                    ? 'lightgray'
+                                    : 'white',
+                              },
+                            })}
+                          >
+                            {item.properties.label}
+                          </div>
+                        ))
                         : null}
                     </div>
                   </div>

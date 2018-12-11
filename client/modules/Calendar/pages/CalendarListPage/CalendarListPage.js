@@ -13,9 +13,9 @@ import {
   Button,
 } from '@material-ui/core';
 import BigCalendar from 'react-big-calendar';
-import 'moment/locale/fr';
 import moment from 'moment';
-moment.locale('fr');
+import 'moment/locale/fr';
+
 import CreneauEvent from '../../../../components/calendar/CreneauEvent';
 import messages from '../../../../components/calendar/messages';
 import callApi from '../../../../util/apiCaller';
@@ -23,6 +23,8 @@ import { getFromStorage } from '../../../../util/storage';
 import CreneauDialog from '../../components/CreneauDialog';
 import SnackbarNotification from '../../../../components/Notifications/SnackbarNotificationWrapper';
 import sites from '../../../../../server/inbox/sites.json';
+
+moment.locale('fr');
 
 const localizer = BigCalendar.momentLocalizer(moment);
 const MESSAGES_RESA =

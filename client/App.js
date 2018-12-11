@@ -5,7 +5,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
 import { Router, browserHistory } from 'react-router';
-import IntlWrapper from './modules/Intl/IntlWrapper';
 
 // Import Routes
 import routes from './routes';
@@ -13,18 +12,16 @@ import routes from './routes';
 // Base stylesheet
 require('./main.css');
 
-export default function App(props) {
+export default function MainApp({ store }) {
   return (
-    <Provider store={props.store}>
-      <IntlWrapper>
-        <Router history={browserHistory}>
-          {routes}
-        </Router>
-      </IntlWrapper>
+    <Provider store={store}>
+      <Router history={browserHistory}>
+        {routes}
+      </Router>
     </Provider>
   );
 }
 
-App.propTypes = {
-  store: PropTypes.object.isRequired,
+MainApp.propTypes = {
+  store: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
 };

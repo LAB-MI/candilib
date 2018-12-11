@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
-import mailMessage from '../util/messageMailManager';
-import serverConfig, { smtpOptions } from '../config';
 import smtpTransport from 'nodemailer-smtp-transport';
+import mailMessage from './messageMailManager';
+import serverConfig, { smtpOptions } from '../config';
 
 
 const sendMagicLink = (candidatAurige, token) => {

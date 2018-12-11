@@ -17,6 +17,7 @@ export class ApiCaller {
   set body(value) {
     this._body = JSON.stringify(value);
   }
+
   set headers(value) {
     this._headers = value;
     this._headers['x-access-token'] = getFromStorage(KEYSTORAGETOKEN);
@@ -34,7 +35,7 @@ export class ApiCaller {
       options.body = this._body;
     }
 
-    return fetch(`${API_URL}/${_endpoint}`, options).then(response => {
+    return fetch(`${API_URL}/${_endpoint}`, options).then((response) => {
       if (!response.ok) {
         return Promise.reject(response.json());
       }
@@ -48,14 +49,14 @@ export class ApiCaller {
   }
 
   download() {
-    let filename = undefined;
+    let filename;
     return this._fetch()
-      .then(response => {
+      .then((response) => {
         // responseContentType = response.headers.get('Content-Type');
-        filename = response.headers.get('Content-Disposition').split('=')[1];
+        [, filename] = response.headers.get('Content-Disposition').split('=');
         return response.blob();
       })
-      .then(response => {
+      .then((response) => {
         const ret = {
           filename,
           url: URL.createObjectURL(response),
@@ -82,6 +83,7 @@ export class ApiCaller {
     }
     return this._fetch();
   }
+
   delete(id) {
     this._method = 'delete';
     const endpoint = this._endpoint + '/' + id;
@@ -93,5 +95,4 @@ export class ApiCaller {
   }
 }
 
-export const callApi = (endpoint, method, body) =>
-  new ApiCaller(endpoint, method, body);
+export const callApi = (endpoint, method, body) => new ApiCaller(endpoint, method, body);

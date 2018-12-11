@@ -95,8 +95,7 @@ class Login extends Component {
       emailConfirmation: '',
       emailConfirmationError: false,
       open: false,
-      serverMessage: '',
-      emailValid: true,
+      signUpError: '',
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -104,8 +103,9 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    if (this.props.location.state !== undefined) {
-      const { error } = this.props.location.state;
+    const { location = {} } = this.props;
+    if (location.state !== undefined) {
+      const { error } = location.state;
       if (error !== undefined) {
         const message = errorsConstants[error];
         const islogin = error === 'token_no_valid';
@@ -125,14 +125,14 @@ class Login extends Component {
   debouncedValidateField = debounce(
     fieldName => {
       switch (fieldName) {
-        case 'email':
-          this.checkEmailValidity();
-          break;
-        case 'emailConfirmation':
-          this.checkEmailConfirmation();
-          break;
-        default:
-          break;
+      case 'email':
+        this.checkEmailValidity();
+        break;
+      case 'emailConfirmation':
+        this.checkEmailConfirmation();
+        break;
+      default:
+        break;
       }
     },
     { wait: 300 },
@@ -223,7 +223,7 @@ class Login extends Component {
           }),
         })
           .then(res => res.json())
-          .then(json => {
+          .then((json) => {
             if (json.success) {
               setInStorage('candilib', {
                 token: json.token,
@@ -246,36 +246,36 @@ class Login extends Component {
                 adresse: '',
                 success: true,
               });
+              return;
+            }
+            if (json.message.includes('email')) {
+              this.setState({
+                signUpError:
+                  'Vous avez déjà un compte sur Candilib, veuillez cliquer sur le lien "Déjà inscrit',
+                portableError: false,
+                emailError: !json.success,
+                isLoading: false,
+                open: true,
+                success: false,
+              });
+            } else if (json.message.includes('portable')) {
+              this.setState({
+                signUpError: 'Vérifier votre numéro de téléphone.',
+                portableError: !json.success,
+                emailError: false,
+                isLoading: false,
+                open: true,
+                success: false,
+              });
             } else {
-              if (json.message.includes('email')) {
-                this.setState({
-                  signUpError:
-                    'Vous avez déjà un compte sur Candilib, veuillez cliquer sur le lien "Déjà inscrit',
-                  portableError: false,
-                  emailError: !json.success,
-                  isLoading: false,
-                  open: true,
-                  success: false,
-                });
-              } else if (json.message.includes('portable')) {
-                this.setState({
-                  signUpError: 'Vérifier votre numéro de téléphone.',
-                  portableError: !json.success,
-                  emailError: false,
-                  isLoading: false,
-                  open: true,
-                  success: false,
-                });
-              } else {
-                this.setState({
-                  signUpError: json.message,
-                  portableError: false,
-                  emailError: !json.success,
-                  isLoading: false,
-                  open: true,
-                  success: false,
-                });
-              }
+              this.setState({
+                signUpError: json.message,
+                portableError: false,
+                emailError: !json.success,
+                isLoading: false,
+                open: true,
+                success: false,
+              });
             }
           });
       } else {
@@ -289,7 +289,7 @@ class Login extends Component {
           }),
         })
           .then(res => res.json())
-          .then(json => {
+          .then((json) => {
             if (json.success) {
               this.setState({
                 signUpError: json.message,
@@ -350,7 +350,6 @@ class Login extends Component {
                       id="neph"
                       name="neph"
                       placeholder="0123456978912"
-                      type="number"
                       autoComplete="neph"
                       value={neph}
                       autoFocus
@@ -376,7 +375,6 @@ class Login extends Component {
                       name="prenom"
                       placeholder="Jean"
                       autoComplete="prenom"
-                      placeholder="Jean"
                       value={prenom}
                       autoFocus
                       onChange={this.handleChange}
@@ -387,11 +385,10 @@ class Login extends Component {
                     <Input
                       type="email"
                       id="email"
-                      placeholder="jdup@email.com"
-                      error={emailError}
                       name="email"
-                      autoComplete="email"
                       placeholder="jean.dupont@gmail.com"
+                      error={emailError}
+                      autoComplete="email"
                       value={email}
                       autoFocus
                       onChange={this.handleChange}
@@ -432,7 +429,7 @@ class Login extends Component {
                     />
                   </FormControl>
                   <AutoCompleteAddresses
-                    inputName={'adresse'}
+                    inputName="adresse"
                     handleChange={this.handleChange}
                     placeholder="10 Rue Lecourbe 75015 Paris"
                   />
@@ -536,9 +533,13 @@ class Login extends Component {
   }
 }
 
+Login.defaultProps = {
+  location: {},
+};
+
 Login.propTypes = {
-  classes: PropTypes.object.isRequired,
-  location: PropTypes.object,
+  classes: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
+  location: PropTypes.object, // eslint-disable-line react/forbid-prop-types
 };
 
 export default withStyles(styles)(Login);

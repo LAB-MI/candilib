@@ -12,19 +12,20 @@ import {
   withStyles,
   Snackbar,
 } from '@material-ui/core';
-import SnackbarNotification from '../../../../components/Notifications/SnackbarNotificationWrapper';
-
 import Grid from '@material-ui/core/Grid';
 import BigCalendar from 'react-big-calendar';
-import 'moment/locale/fr';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 import moment from 'moment';
-moment.locale('fr');
+import 'moment/locale/fr';
+
 import CreneauEvent from '../../../../components/calendar/CreneauEvent';
 import messages from '../../../../components/calendar/messages';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { callApi } from '../../../../util/apiCaller.admin';
 import ListCandidats from '../../../Candidat/components/ListCandidats';
 import ListWhitelist from '../WhiteList/ListWhitelist';
+import SnackbarNotification from '../../../../components/Notifications/SnackbarNotificationWrapper';
+
+moment.locale('fr');
 
 const localizer = BigCalendar.momentLocalizer(moment);
 

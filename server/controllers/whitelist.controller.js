@@ -1,6 +1,8 @@
-import messages from '../util/messages.constant.json';
-import WhitelistCandidat from '../models/whitelistCandidat.js';
 import sanitizeHtml from 'sanitize-html';
+
+import messages from '../util/messages.constant.json';
+import WhitelistCandidat from '../models/whitelistCandidat';
+
 
 export function canToRegister(req, res, next) {
   const { body } = req;

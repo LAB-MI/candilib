@@ -1,3 +1,4 @@
+import moment from 'moment';
 import {
   CANDIDAT_NOK,
   CANDIDAT_NOK_NOM,
@@ -11,7 +12,6 @@ import {
   ANNULATION_CONVOCATION,
 } from './constant';
 import sites from '../inbox/sites.json';
-import moment from 'moment';
 
 const mailMessage = (candidatAurige, flag) => {
   const { codeNeph, nomNaissance, creneau } = candidatAurige;
@@ -21,12 +21,11 @@ const mailMessage = (candidatAurige, flag) => {
   const nomMaj = nomNaissance ? nomNaissance.toUpperCase() : '';
 
   const site = creneau && creneau.title ? creneau.title : '';
-  const dateCreneau =
-    creneau && creneau.start
-      ? moment(creneau.start).format('DD MMMM YYYY')
-      : '';
-  const heureCreneau =
-    creneau && creneau.start ? moment(creneau.start).format('HH:mm') : '';
+  const dateCreneau = creneau && creneau.start
+    ? moment(creneau.start).format('DD MMMM YYYY')
+    : '';
+  const heureCreneau = creneau && creneau.start
+    ? moment(creneau.start).format('HH:mm') : '';
 
   let siteAdresse = [];
 
@@ -130,9 +129,9 @@ const mailMessage = (candidatAurige, flag) => {
   <br>
   <p>Vous êtes à présent inscrit sur le site de réservation de l'examen pratique du permis de conduire.</p>
   <p><b>Conservez précieusement ce mail qui vous permettra de vous connecter sur le site Candilib</b></p>
-  <p>Votre identifiant de connexion est l'adresse mail que vous nous avez fournie lors de votre inscription : ${
-    candidatAurige.email
-  }</p>`;
+  <p>Votre identifiant de connexion est l'adresse mail que vous nous avez fournie lors de votre inscription :
+  ${candidatAurige.email}
+  </p>`;
 
   const INSCRIPTION_KO_MSG = `<p>Bonjour Mr/Mme ${nomMaj},</p>
   <br>
@@ -179,52 +178,48 @@ const mailMessage = (candidatAurige, flag) => {
   <p align="right">L'équipe Candilib</p>`;
 
   switch (flag) {
-    case CANDIDAT_NOK:
-      message.content = INSCRIPTION_KO_MSG;
-      message.subject = '<ne pas répondre> Inscription Candilib non validée';
-      return message;
-    case INSCRIPTION_VALID:
-      message.content = INSCRIPTION_VALID_MSG;
-      message.subject = "<ne pas répondre> Confirmation d'inscription Candilib";
-      return message;
-    case CANDIDAT_NOK_NOM:
-      message.content = INSCRIPTION_KO_MSG;
-      message.subject = '<ne pas répondre> Inscription Candilib non validée';
-      return message;
-    case EPREUVE_PRATIQUE_OK:
-      message.content = EPREUVE_PRATIQUE_OK_MSG;
-      message.subject = '<ne pas répondre> Problème inscription Candilib';
-      return message;
-    case INSCRIPTION_OK:
-      message.content = INSCRIPTION_VALID_MSG;
-      message.subject =
-        '<ne pas répondre> Inscription Candilib en attente de vérification';
-      return message;
-    case EPREUVE_ETG_KO:
-      message.content = EPREUVE_ETG_KO_MSG;
-      message.subject = '<ne pas répondre> Problème inscription Candilib';
-      return message;
-    case AURIGE_OK:
-      message.content = INSCRIPTION_OK_MSG;
-      message.subject =
-        '<ne pas répondre> Validation de votre inscription à Candilib';
-      return message;
-    case MAIL_CONVOCATION:
-      message.content = MAIL_CONVOCATION_MSG;
-      message.subject = "<ne pas répondre> Convocation à l'examen";
-      return message;
-    case ANNULATION_CONVOCATION:
-      message.content = ANNULATION_CONVOCATION_MSG;
-      message.subject =
-        "<ne pas répondre> Annulation de Convocation à l'examen";
-      return message;
-    case INSCRIPTION_UPDATE:
-      message.content = INSCRIPTION_VALID_MSG;
-      message.subject =
-        '<ne pas répondre> Inscription Candilib en attente de vérification';
-      return message;
-    default:
-      return '';
+  case CANDIDAT_NOK:
+    message.content = INSCRIPTION_KO_MSG;
+    message.subject = '<ne pas répondre> Inscription Candilib non validée';
+    return message;
+  case INSCRIPTION_VALID:
+    message.content = INSCRIPTION_VALID_MSG;
+    message.subject = "<ne pas répondre> Confirmation d'inscription Candilib";
+    return message;
+  case CANDIDAT_NOK_NOM:
+    message.content = INSCRIPTION_KO_MSG;
+    message.subject = '<ne pas répondre> Inscription Candilib non validée';
+    return message;
+  case EPREUVE_PRATIQUE_OK:
+    message.content = EPREUVE_PRATIQUE_OK_MSG;
+    message.subject = '<ne pas répondre> Problème inscription Candilib';
+    return message;
+  case INSCRIPTION_OK:
+    message.content = INSCRIPTION_VALID_MSG;
+    message.subject = '<ne pas répondre> Inscription Candilib en attente de vérification';
+    return message;
+  case EPREUVE_ETG_KO:
+    message.content = EPREUVE_ETG_KO_MSG;
+    message.subject = '<ne pas répondre> Problème inscription Candilib';
+    return message;
+  case AURIGE_OK:
+    message.content = INSCRIPTION_OK_MSG;
+    message.subject = '<ne pas répondre> Validation de votre inscription à Candilib';
+    return message;
+  case MAIL_CONVOCATION:
+    message.content = MAIL_CONVOCATION_MSG;
+    message.subject = "<ne pas répondre> Convocation à l'examen";
+    return message;
+  case ANNULATION_CONVOCATION:
+    message.content = ANNULATION_CONVOCATION_MSG;
+    message.subject = "<ne pas répondre> Annulation de Convocation à l'examen";
+    return message;
+  case INSCRIPTION_UPDATE:
+    message.content = INSCRIPTION_VALID_MSG;
+    message.subject = '<ne pas répondre> Inscription Candilib en attente de vérification';
+    return message;
+  default:
+    return '';
   }
 };
 
