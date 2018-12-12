@@ -12,6 +12,7 @@ const config = {
   mailUser: process.env.MAIL_USER || undefined,
   mailPassword: process.env.MAIL_PASSWORD || undefined,
   mailFrom: process.env.MAIL_FROM || '<mail_from>',
+  tokenCandidatExpired: process.env.CANDIDAT_EXPIREDIN || '1h',
   appURL: process.env.APP_URL || 'http://localhost:8000',
 };
 

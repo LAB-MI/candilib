@@ -1,4 +1,5 @@
 import moment from 'moment';
+import serverConfig from '../config';
 
 export const USER_STATUS2EXPIRESIN = {
   admin: () => {
@@ -18,7 +19,7 @@ export const USER_STATUS2EXPIRESIN = {
     return duration + 's';
   },
   candidat: () => {
-    return '1h';
+    return serverConfig.tokenCandidatExpired;
   },
 };
 export const USER_STATUS2LEVEL = {
