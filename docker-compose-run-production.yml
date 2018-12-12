@@ -2,31 +2,23 @@ version: '3.4'
 services:
   web:
     image: candilib_web:${APP_VERSION:-latest}
-    build:
-      context: ./
-      dockerfile: Dockerfile
-      target: production
-      args:
-          proxy: ${http_proxy}
-          npm_registry: ${NPM_REGISTRY}
-          no_proxy: ${no_proxy}
     depends_on:
       - db
     ports:
       - "${WEB_PORT:-80}:8000"
+    env_file:
+      - ${cnf:-.env}
     environment:
       NODE_ENV: production
-      MONGO_URL: mongodb://db:27017/candilib
+      MONGO_URL: ${MONGO_URL:-mongodb://db:27017/candilib}
     networks:
       - candilib-network
   db:
     image: mongo:latest
     volumes:
-      - dbdata:/data/db
+      - ${DBDATA}/db:/data/db
     networks:
       - candilib-network
-volumes:
-  dbdata:
 networks:
   candilib-network:
     driver: bridge
