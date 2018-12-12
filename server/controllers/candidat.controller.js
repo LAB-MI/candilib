@@ -23,7 +23,7 @@ import {
 } from '../util/constant';
 import Creneau from '../models/creneau';
 import messagesConstant from '../util/messages.constant.json';
-import { USER_STATUS2EXPIRESIN } from '../util/jwt.constant';
+import { USER_STATUS_EXPIRES_IN } from '../util/jwt.constant';
 
 const DATE_CODE_VALID = 5;
 
@@ -194,7 +194,7 @@ export function updateInfoCandidat(req, res, next) {
         },
         serverConfig.secret,
         {
-          expiresIn: USER_STATUS2EXPIRESIN.candidat(),
+          expiresIn: USER_STATUS_EXPIRES_IN.candidat(),
         },
       );
 
@@ -298,7 +298,7 @@ export function signUp(req, res) {
           },
           serverConfig.secret,
           {
-            expiresIn: USER_STATUS2EXPIRESIN.candidat(),
+            expiresIn: USER_STATUS_EXPIRES_IN.candidat(),
           },
         );
 
@@ -367,7 +367,7 @@ export function login(req, res) {
       },
       serverConfig.secret,
       {
-        expiresIn: USER_STATUS2EXPIRESIN.candidat(),
+        expiresIn: USER_STATUS_EXPIRES_IN.candidat(),
       },
     );
 
@@ -788,7 +788,7 @@ const synchroAurige = (pathname) => {
                     },
                     serverConfig.secret,
                     {
-                      expiresIn: USER_STATUS2EXPIRESIN.candidat(),
+                      expiresIn: USER_STATUS_EXPIRES_IN.candidat(),
                     },
                   );
                   console.warn(

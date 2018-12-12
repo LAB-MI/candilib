@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import User from '../models/user';
 import serverConfig from '../config';
 import { REDIRECTTOLEVEL } from '../util/redirect2Level';
-import { USER_STATUS2EXPIRESIN, USER_STATUS2LEVEL } from '../util/jwt.constant';
+import { USER_STATUS_EXPIRES_IN, USER_STATUS_LEVEL } from '../util/jwt.constant';
 import { getHash, compareToHash } from '../util/crypto';
 
 
@@ -49,7 +49,7 @@ export function register(req, res, next) {
               },
               serverConfig.secret,
               {
-                expiresIn: USER_STATUS2EXPIRESIN.candidat(),
+                expiresIn: USER_STATUS_EXPIRES_IN.candidat(),
               },
             );
             res.status(200).send({ auth: true, token });
@@ -109,14 +109,14 @@ export function login(req, res) {
       {
         id: user._id,
         email: user.email,
-        level: USER_STATUS2LEVEL[user.status],
+        level: USER_STATUS_LEVEL[user.status],
       },
       serverConfig.secret,
       {
         expiresIn:
-          USER_STATUS2EXPIRESIN[user.status] === undefined
+          USER_STATUS_EXPIRES_IN[user.status] === undefined
             ? '0'
-            : USER_STATUS2EXPIRESIN[user.status](),
+            : USER_STATUS_EXPIRES_IN[user.status](),
       },
     );
 
