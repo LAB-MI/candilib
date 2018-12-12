@@ -20,7 +20,10 @@ import SnackbarNotification from '../../../../components/Notifications/SnackbarN
 import AutoCompleteAddresses from '../../../../components/AutoCompleteAddresses/AutoCompleteAddresses';
 import { errorsConstants } from '../errors.constants';
 import { setInStorage } from '../../../../util/storage';
-import { email as emailRegex } from '../../../../util/regex';
+import {
+  email as emailRegex,
+  phone as phoneRegex,
+} from '../../../../util/regex';
 
 const styles = theme => ({
   layout: {
@@ -78,29 +81,24 @@ const styles = theme => ({
 });
 
 class Login extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isLoading: false,
-      isLogin: false,
-      success: false,
-      neph: '',
-      nom: '',
-      prenom: '',
-      nomUsage: '',
-      portable: '',
-      adresse: '',
-      email: '',
-      emailError: false,
-      emailConfirmation: '',
-      emailConfirmationError: false,
-      open: false,
-      signUpError: '',
-    };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.handleCreate = this.handleCreate.bind(this);
-  }
+  state = {
+    isLoading: false,
+    isLogin: false,
+    success: false,
+    neph: '',
+    nom: '',
+    prenom: '',
+    nomUsage: '',
+    portable: '',
+    adresse: '',
+    email: '',
+    emailError: false,
+    portableError: false,
+    emailConfirmation: '',
+    emailConfirmationError: false,
+    messageSnackbar: '',
+    openSnackbar: false,
+  };
 
   componentDidMount() {
     const { location = {} } = this.props;
@@ -112,9 +110,9 @@ class Login extends Component {
 
         if (message !== undefined) {
           this.setState({
-            open: true,
             success: false,
-            signUpError: message,
+            openSnackbar: true,
+            messageSnackbar: message,
             isLogin: islogin,
           });
         }
@@ -142,7 +140,9 @@ class Login extends Component {
     if (reason === 'clickaway') {
       return;
     }
-    this.setState({ open: false, signUpError: '' });
+    this.setState({
+      openSnackbar: false,
+    });
   };
 
   isIdenticalEmail = () => {
@@ -151,13 +151,20 @@ class Login extends Component {
   };
 
   checkEmailValidity = openSnackbar => {
+    if (!this.state.email) {
+      return;
+    }
     const isEmailValid = emailRegex.test(this.state.email);
     const newState = {
       emailError: !isEmailValid,
-      signUpError: '',
+
+      messageSnackbar: '',
+      openSnackbar: false,
+      success: false,
     };
     if (!isEmailValid && openSnackbar) {
-      newState.signUpError = 'Veuillez vérifier votre adresse email.';
+      newState.messageSnackbar = 'Veuillez vérifier votre adresse email.';
+      newState.openSnackbar = true;
     }
     this.setState(newState);
   };
@@ -166,11 +173,34 @@ class Login extends Component {
     const isIdenticalEmail = this.isIdenticalEmail();
     const newState = {
       emailConfirmationError: !isIdenticalEmail,
-      signUpError: '',
+      messageSnackbar: '',
+      openSnackbar: false,
+      success: false,
     };
     if (!isIdenticalEmail && openSnackbar) {
-      newState.signUpError =
+      newState.messageSnackbar =
         "Veuillez vérifier votre confirmation d'adresse email.";
+      newState.openSnackbar = true;
+    }
+    this.setState(newState);
+  };
+
+  checkPhone = openSnackbar => {
+    const portable = this.state.portable;
+    if (!portable) {
+      return;
+    }
+    const isPhoneValid =
+      portable && portable.length == 10 && phoneRegex.test(portable);
+    const newState = {
+      portableError: !isPhoneValid,
+      messageSnackbar: '',
+      openSnackbar: !isPhoneValid,
+      success: false,
+    };
+    if (!isPhoneValid && openSnackbar) {
+      newState.messageSnackbar = 'Veuillez vérifier votre numéro de téléphone.';
+      newState.openSnackbar = true;
     }
     this.setState(newState);
   };
@@ -184,10 +214,9 @@ class Login extends Component {
     );
   };
 
-  handleCreate(e) {
+  handleCreate = e => {
     e.preventDefault();
 
-    // Grab state
     const {
       neph,
       nom,
@@ -203,8 +232,6 @@ class Login extends Component {
       isLoading: true,
     });
     if (email && emailRegex.test(email)) {
-      // Post request to backend
-
       if (!isLogin) {
         fetch('/api/candidats/signup', {
           method: 'POST',
@@ -223,18 +250,18 @@ class Login extends Component {
           }),
         })
           .then(res => res.json())
-          .then((json) => {
+          .then(json => {
             if (json.success) {
               setInStorage('candilib', {
                 token: json.token,
                 id: json.candidat._id,
               });
               this.setState({
-                signUpError: json.message,
+                messageSnackbar: json.message,
+                openSnackbar: true,
                 isLoading: false,
-                open: true,
-                emailError: !json.success,
-                portableError: !json.success,
+                emailError: false,
+                portableError: false,
                 neph: '',
                 nom: '',
                 nomUsage: '',
@@ -250,30 +277,31 @@ class Login extends Component {
             }
             if (json.message.includes('email')) {
               this.setState({
-                signUpError:
+                messageSnackbar:
                   'Vous avez déjà un compte sur Candilib, veuillez cliquer sur le lien "Déjà inscrit',
                 portableError: false,
+                openSnackbar: true,
+
                 emailError: !json.success,
                 isLoading: false,
-                open: true,
                 success: false,
               });
             } else if (json.message.includes('portable')) {
               this.setState({
-                signUpError: 'Vérifier votre numéro de téléphone.',
                 portableError: !json.success,
                 emailError: false,
+                messageSnackbar: 'Vérifier votre numéro de téléphone.',
+                openSnackbar: true,
                 isLoading: false,
-                open: true,
                 success: false,
               });
             } else {
               this.setState({
-                signUpError: json.message,
                 portableError: false,
-                emailError: !json.success,
+                emailError: false,
+                messageSnackbar: json.message,
+                openSnackbar: true,
                 isLoading: false,
-                open: true,
                 success: false,
               });
             }
@@ -289,12 +317,12 @@ class Login extends Component {
           }),
         })
           .then(res => res.json())
-          .then((json) => {
+          .then(json => {
             if (json.success) {
               this.setState({
-                signUpError: json.message,
+                messageSnackbar: json.message,
+                openSnackbar: true,
                 isLoading: false,
-                open: true,
                 emailError: false,
                 portableError: false,
                 emailConfirmationError: false,
@@ -303,28 +331,30 @@ class Login extends Component {
               });
             } else {
               this.setState({
-                signUpError: json.message,
-                emailError: true,
-                portableError: true,
+                emailError: false,
+                portableError: false,
+                messageSnackbar: json.message,
+                openSnackbar: true,
                 isLoading: false,
-                open: true,
                 success: false,
               });
             }
           });
       }
+    } else {
+      this.setState({
+        isLoading: false,
+      });
     }
-  }
+  };
 
   render() {
     const { classes } = this.props;
     const {
       isLogin,
       isLoading,
-      open,
       emailError,
       emailConfirmationError,
-      signUpError,
       portableError,
       neph,
       nom,
@@ -333,6 +363,8 @@ class Login extends Component {
       prenom,
       portable,
       success,
+      openSnackbar,
+      messageSnackbar,
     } = this.state;
 
     return (
@@ -353,6 +385,7 @@ class Login extends Component {
                       autoComplete="neph"
                       value={neph}
                       autoFocus
+                      required
                       onChange={this.handleChange}
                     />
                   </FormControl>
@@ -365,6 +398,7 @@ class Login extends Component {
                       autoComplete="nom"
                       value={nom}
                       autoFocus
+                      required
                       onChange={this.handleChange}
                     />
                   </FormControl>
@@ -391,8 +425,9 @@ class Login extends Component {
                       autoComplete="email"
                       value={email}
                       autoFocus
+                      required
                       onChange={this.handleChange}
-                      onBlur={() => this.checkEmailValidity(true)}
+                      onBlur={e => this.checkEmailValidity(true)}
                     />
                   </FormControl>
                   <FormControl margin="normal" required fullWidth>
@@ -425,7 +460,7 @@ class Login extends Component {
                       value={portable}
                       autoFocus
                       onChange={this.handleChange}
-                      onBlur={this.handleBlur}
+                      onBlur={() => this.checkPhone(true)}
                     />
                   </FormControl>
                   <AutoCompleteAddresses
@@ -498,36 +533,19 @@ class Login extends Component {
             </Typography>
           </Paper>
         </main>
-        {success && (
-          <Snackbar
-            open={open}
-            autoHideDuration={8000}
+        <Snackbar
+          open={openSnackbar}
+          autoHideDuration={8000}
+          onClose={this.handleClose}
+          className={classes.snackbar}
+        >
+          <SnackbarNotification
             onClose={this.handleClose}
-            className={classes.snackbar}
-          >
-            <SnackbarNotification
-              onClose={this.handleClose}
-              variant="success"
-              className={classes.snackbarContent}
-              message={signUpError}
-            />
-          </Snackbar>
-        )}
-        {!success && (
-          <Snackbar
-            open={!!signUpError}
-            autoHideDuration={8000}
-            onClose={this.handleClose}
-            className={classes.snackbar}
-          >
-            <SnackbarNotification
-              onClose={this.handleClose}
-              variant="error"
-              className={classes.snackbarContent}
-              message={signUpError}
-            />
-          </Snackbar>
-        )}
+            variant={success ? 'success' : 'error'}
+            className={classes.snackbarContent}
+            message={messageSnackbar}
+          />
+        </Snackbar>
       </React.Fragment>
     );
   }
