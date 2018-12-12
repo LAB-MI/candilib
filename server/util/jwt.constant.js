@@ -1,6 +1,7 @@
 import moment from 'moment';
+import serverConfig from '../config';
 
-export const USER_STATUS2EXPIRESIN = {
+export const USER_STATUS_EXPIRES_IN = {
   admin: () => {
     const now = moment();
     const midnight = now
@@ -18,9 +19,9 @@ export const USER_STATUS2EXPIRESIN = {
     return duration + 's';
   },
   candidat: () => {
-    return '1h';
+    return serverConfig.tokenCandidatExpired;
   },
 };
-export const USER_STATUS2LEVEL = {
+export const USER_STATUS_LEVEL = {
   admin: 1,
 };
