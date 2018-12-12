@@ -23,6 +23,7 @@ import {
 } from '../util/constant';
 import Creneau from '../models/creneau';
 import messagesConstant from '../util/messages.constant.json';
+import { USER_STATUS2EXPIRESIN } from '../util/jwt.constant';
 
 const DATE_CODE_VALID = 5;
 
@@ -92,9 +93,9 @@ export function CheckCandidatIsSignedBefore(req, res, next) {
       }
       if (
         candidat.email === email
-          && candidat.prenom === prenom
-          && candidat.portable === portable
-          && candidat.adresse === adresse
+        && candidat.prenom === prenom
+        && candidat.portable === portable
+        && candidat.adresse === adresse
       ) {
         return res.status(422).send({
           success: false,
@@ -193,7 +194,7 @@ export function updateInfoCandidat(req, res, next) {
         },
         serverConfig.secret,
         {
-          expiresIn: 86400,
+          expiresIn: USER_STATUS2EXPIRESIN.candidat(),
         },
       );
 
@@ -297,7 +298,7 @@ export function signUp(req, res) {
           },
           serverConfig.secret,
           {
-            expiresIn: 86400,
+            expiresIn: USER_STATUS2EXPIRESIN.candidat(),
           },
         );
 
@@ -366,7 +367,7 @@ export function login(req, res) {
       },
       serverConfig.secret,
       {
-        expiresIn: '7d',
+        expiresIn: USER_STATUS2EXPIRESIN.candidat(),
       },
     );
 
@@ -418,8 +419,8 @@ export function getCandidats(req, res) {
 export function addCandidat(req, res) {
   if (
     !req.body.candidat.nomNaissance
-      || !req.body.candidat.codeNeph
-      || !req.body.candidat.email
+    || !req.body.candidat.codeNeph
+    || !req.body.candidat.email
   ) {
     res.status(403).end();
   }
@@ -593,7 +594,7 @@ export function destroyAll(req, res) {
 export const epreuveEtgInvalid = (candidatAurige) => {
   return (
     !moment(candidatAurige.dateReussiteETG).isValid()
-      || candidatAurige.dateReussiteETG === ''
+    || candidatAurige.dateReussiteETG === ''
   );
 };
 
@@ -640,7 +641,7 @@ const synchroAurige = (pathname) => {
                 } else {
                   console.warn(
                     `Ce candidat ${
-                      candidatAurige.email
+                    candidatAurige.email
                     } a été detruit: NEPH inconnu`,
                   ); // eslint-disable-line no-console
                   sendMailToAccount(candidatAurige, CANDIDAT_NOK);
@@ -670,7 +671,7 @@ const synchroAurige = (pathname) => {
                 } else {
                   console.warn(
                     `Ce candidat ${
-                      candidatAurige.email
+                    candidatAurige.email
                     } a été detruit: Nom inconnu`,
                   ); // eslint-disable-line no-console
                   sendMailToAccount(candidatAurige, CANDIDAT_NOK_NOM);
@@ -728,7 +729,7 @@ const synchroAurige = (pathname) => {
                 } else {
                   console.warn(
                     `Ce candidat ${
-                      candidatAurige.email
+                    candidatAurige.email
                     } a été detruit: Date ETG KO`,
                   ); // eslint-disable-line no-console
                   sendMailToAccount(candidatAurige, EPREUVE_ETG_KO);
@@ -757,7 +758,7 @@ const synchroAurige = (pathname) => {
                 } else {
                   console.warn(
                     `Ce candidat ${
-                      candidatAurige.email
+                    candidatAurige.email
                     } a été detruit: PRATIQUE OK`,
                   ); // eslint-disable-line no-console
                   sendMailToAccount(candidatAurige, EPREUVE_PRATIQUE_OK);
@@ -787,7 +788,7 @@ const synchroAurige = (pathname) => {
                     },
                     serverConfig.secret,
                     {
-                      expiresIn: 86400,
+                      expiresIn: USER_STATUS2EXPIRESIN.candidat(),
                     },
                   );
                   console.warn(
