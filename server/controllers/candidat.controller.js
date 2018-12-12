@@ -874,7 +874,7 @@ export const uploadAurigeCSV = (req, res, next) => {
         const creneau = new Creneau();
         if (data[0] === 'Date') return;
 
-        const [day, time, inspecteur, centre] = creneau;
+        const [day, time, inspecteur, centre] = data;
 
         const myDate = `${day} ${time}`;
         const formattedDate = moment(
