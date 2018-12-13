@@ -36,7 +36,7 @@ const eventStyleGetter = event => {
   const newStyle = {
     backgroundColor: 'lightblue',
     color: 'black',
-    borderRadius: '0px',
+    borderRadius: '3px', // un rectangle arrondi ?
     border: 'light',
     borderColor: 'white',
     fontSize: 10,
@@ -102,7 +102,7 @@ const styles = theme => ({
     textAlign: 'center',
   },
   cardHeader: {
-    backgroundColor: theme.palette.primary.dark,
+    backgroundColor: 'lightblue',
     alignItems: 'center',
     justifyContent: 'center',
     color: 'white',
@@ -450,14 +450,20 @@ class CalendarListPage extends Component {
                     </Avatar>
                   }
                   className={classes.cardHeader}
+                  // info candidat a cote de son avatar
+                  title = {
+                    <Typography component="h5" variant="headline">
+                      Candidat
+                  </Typography>
+                  }
+                  subheader = {
+                    <Typography component="p" variant="body2">
+                      {candidat.nomNaissance} {candidat.prenom}
+                      <p>Neph : {candidat.codeNeph}</p>
+                  </Typography>
+                  }
                 />
                 <CardContent>
-                  <Typography component="p">
-                    Nom : {candidat.nomNaissance} {candidat.prenom}
-                  </Typography>
-                  <Typography component="p">
-                    Neph : {candidat.codeNeph}
-                  </Typography>
                   <Typography component="p">
                     Email : {candidat.email}
                   </Typography>
@@ -469,15 +475,16 @@ class CalendarListPage extends Component {
                   </Typography>
                   {candidat.dateReussiteETG && (
                     <Typography component="p">
-                      Date d'obtention du code : {moment(candidat.dateReussiteETG).format('DD MMMM YYYY')}
+                      Date d'obtention du code : 
+                      <p>{moment(candidat.dateReussiteETG).format('DD MMMM YYYY')}</p>
                     </Typography>
                   )}
                   {candidat.dateDernierEchecPratique && (
                     <Typography component="p">
                       Date dernier échec pratique Permis B :{' '}
-                      {moment(candidat.dateDernierEchecPratique).format(
+                      <p>{moment(candidat.dateDernierEchecPratique).format(
                         'DD MMMM YYYY',
-                      )}
+                      )}</p>
                     </Typography>
                   )}
                 </CardContent>
@@ -485,23 +492,25 @@ class CalendarListPage extends Component {
               <Card className={classes.cardResa}>
                 <CardHeader
                   className={classes.cardHeaderResa}
-                  title={<Typography component="h5">Ma réservation</Typography>}
+                  title={<Typography component="h5" variant="headline">Ma réservation</Typography>}
                 />
                 <CardContent>
+                  {siteAdresse &&
+                    <Typography component="h6" variant="display1">
+                      {siteAdresse.nom}
+                    </Typography>
+                  }
+                  {siteAdresse &&
+                    <Typography component="p" variant="caption">
+                      {siteAdresse.adresse}
+                    </Typography>
+                  }
                   {!isCreneau && (
-                    <Typography variant="body1">{dateResa}</Typography>
+                    <Typography component="p" variant="body1">{dateResa}</Typography>
                   )}
                   {isCreneau && (
-                    <Typography component="h6" variant={'headline'}>
+                    <Typography component="p" variant={'headline'}>
                       {dateResa}
-                    </Typography>
-                  )}
-                  {siteAdresse && (
-                    <Typography variant="body1">{siteAdresse.nom}</Typography>
-                  )}
-                  {siteAdresse && (
-                    <Typography variant="caption">
-                      {siteAdresse.adresse}
                     </Typography>
                   )}
                 </CardContent>
@@ -539,7 +548,7 @@ class CalendarListPage extends Component {
                   step={30}
                   startAccessor="start"
                   endAccessor="end"
-                  defaultView="work_week"
+                  defaultView="month" // vue mois pour avoir un apperçu rapide
                   eventPropGetter={eventStyleGetter}
                   components={{
                     event: CreneauEvent,
