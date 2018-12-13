@@ -454,13 +454,13 @@ class CalendarListPage extends Component {
                   title = {
                     <Typography component="h5" variant="headline">
                       Candidat
-                  </Typography>
+                    </Typography>
                   }
                   subheader = {
                     <Typography component="p" variant="body2">
                       {candidat.nomNaissance} {candidat.prenom}
                       <p>Neph : {candidat.codeNeph}</p>
-                  </Typography>
+                    </Typography>
                   }
                 />
                 <CardContent>
