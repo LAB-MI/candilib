@@ -59,9 +59,10 @@ const styles = theme => ({
   card: {
     height: '100%',
   },
+  calendar: {
+    height: '1000px',
+  },
   paper: {
-    width: '97%',
-    height: 1000,
     padding: theme.spacing.unit * 2,
     margin: theme.spacing.unit * 2,
   },
@@ -267,9 +268,9 @@ class AdminPage extends Component {
               </form>
             </CardContent>
 
-            <Paper className={classes.paper}>
+            <Paper className={`${classes.paper} ${classes.calendar}`}>
               <Typography variant="headline" component="h3">
-                calendar
+                Calendrier
               </Typography>
               <BigCalendar
                 defaultDate={new Date(moment().startOf('day'))}
@@ -287,7 +288,7 @@ class AdminPage extends Component {
                 defaultView="work_week"
                 eventPropGetter={eventStyleGetter}
                 onSelectEvent={
-                  event => alert(`${event.title} : ${event.start}`) // eslint-disable-line no-alert
+                  event => alert(`${event.title} : ${moment(event.start).format('LLL')}`) // eslint-disable-line no-alert
                 }
                 components={{
                   event: CreneauEvent,
