@@ -23,7 +23,7 @@ import { setInStorage } from '../../../../util/storage';
 import {
   email as emailRegex,
   phone as phoneRegex,
-} from '../../../../util/regex';
+} from '../../../../lib/regex';
 
 const styles = theme => ({
   layout: {
@@ -191,7 +191,7 @@ class Login extends Component {
       return;
     }
     const isPhoneValid =
-      portable && portable.length == 10 && phoneRegex.test(portable);
+      portable && portable.length === 10 && phoneRegex.test(portable);
     const newState = {
       portableError: !isPhoneValid,
       messageSnackbar: '',

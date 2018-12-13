@@ -1,5 +1,11 @@
 import mongoose from 'mongoose';
+
 import { getHash, compareToHash } from '../util/crypto';
+import {
+  email as emailRegex,
+  phone as phoneRegex,
+  neph as nephRegex,
+} from '../lib/regex';
 
 const { Schema } = mongoose;
 
@@ -15,7 +21,7 @@ const candidatSchema = new Schema({
   codeNeph: {
     type: String,
     required: true,
-    match: /^[0-9]*$/,
+    match: nephRegex,
   },
   dateReussiteETG: {
     type: Date,
@@ -35,14 +41,14 @@ const candidatSchema = new Schema({
     required: true,
     trim: true,
     unique: true,
-    match: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+    match: emailRegex,
   },
   portable: {
     type: String,
     default: '',
     required: true,
     trim: true,
-    match: /^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/,
+    match: phoneRegex,
   },
   adresse: {
     type: String,
