@@ -184,7 +184,6 @@ class Login extends Component {
                     error={emailError}
                     name="password"
                     value={password}
-                    autoFocus
                     onChange={this.handleChange}
                   />
                 </FormControl>

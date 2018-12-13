@@ -14,29 +14,27 @@ export const App = (props) => (
   <React.Fragment>
     <CssBaseline />
     <div>
-      <div>
-        <Helmet
-          title="Candlib Dev en cours"
-          titleTemplate="%s -candilib"
-          meta={[
-            { charset: 'utf-8' },
-            {
-              'http-equiv': 'X-UA-Compatible',
-              content: 'IE=edge',
-            },
-            {
-              name: 'viewport',
-              content: 'width=device-width, initial-scale=1',
-            },
-          ]}
-        />
-        <Header
-        />
-        <div className={styles.container}>
-          {props.children}
-        </div>
-        <Footer />
+      <Helmet
+        title="Candilib"
+        titleTemplate="%s - candilib"
+        meta={[
+          { charset: 'utf-8' },
+          {
+            'http-equiv': 'X-UA-Compatible',
+            content: 'IE=edge',
+          },
+          {
+            name: 'viewport',
+            content: 'width=device-width, initial-scale=1',
+          },
+        ]}
+      />
+      <Header
+      />
+      <div className={styles.container}>
+        {props.children}
       </div>
+      <Footer />
     </div>
   </React.Fragment>
 );
