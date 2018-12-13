@@ -36,7 +36,7 @@ const eventStyleGetter = event => {
   const newStyle = {
     backgroundColor: 'lightblue',
     color: 'black',
-    borderRadius: '0px',
+    borderRadius: '3px', // coins arrondis pour l'affichages des places
     border: 'light',
     borderColor: 'white',
     fontSize: 10,
@@ -102,7 +102,7 @@ const styles = theme => ({
     textAlign: 'center',
   },
   cardHeader: {
-    backgroundColor: theme.palette.primary.dark,
+    backgroundColor: 'lightblue', // uniformiser les couleurs
     alignItems: 'center',
     justifyContent: 'center',
     color: 'white',
@@ -450,11 +450,18 @@ class CalendarListPage extends Component {
                     </Avatar>
                   }
                   className={classes.cardHeader}
+                  title = {
+                    <Typography component="h5" variant="headline">
+                      Candidat
+                  </Typography>
+                  }
+                  subheader = {
+                    <Typography component="p" variant="body2">
+                      {candidat.nomNaissance} {candidat.prenom}
+                  </Typography>
+                  }
                 />
                 <CardContent>
-                  <Typography component="p">
-                    Nom : {candidat.nomNaissance} {candidat.prenom}
-                  </Typography>
                   <Typography component="p">
                     Neph : {candidat.codeNeph}
                   </Typography>
