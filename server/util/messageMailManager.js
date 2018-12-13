@@ -12,8 +12,10 @@ import {
   ANNULATION_CONVOCATION,
 } from './constant';
 import sites from '../inbox/sites.json';
+import serverConfig from '../config';
 
 const mailMessage = (candidatAurige, flag) => {
+  const urlFAQ = `${serverConfig.host}:${serverConfig.portMail}/informations`;
   const { codeNeph, nomNaissance, creneau } = candidatAurige;
 
   const message = {};
@@ -67,14 +69,14 @@ const mailMessage = (candidatAurige, flag) => {
               soit une personne dont le permis B est en cours de validité.
               Cette dernière devra présenter son permis ainsi que
               la « charte de l’accompagnateur »
-              (https://www.legifrance.gouv.fr/jo_pdf.do?id=JORFTEXT000036251681) remplie et signée
+              (<a href='https://www.legifrance.gouv.fr/jo_pdf.do?id=JORFTEXT000036251681'>https://www.legifrance.gouv.fr/jo_pdf.do?id=JORFTEXT000036251681</a>) remplie et signée
               pour la remettre à l’inspecteur avant le début de l’examen.
             </li>
             <li>
               <p>
                 Vous présenterez un titre d’identité en cours de validité : carte nationale
                 d’identité, passeport ou titre de séjour
-                (liste complète https://legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000033736411&categorieLien=id).
+                (liste complète <a href='https://legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000033736411&categorieLien=id'>https://legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000033736411&categorieLien=id</a>).
               <p>
             </li>
             <li>
@@ -102,7 +104,7 @@ const mailMessage = (candidatAurige, flag) => {
         Lorsque vous avez fait l'objet d'une annulation du permis, le récépissé
         de la « fiche retour au permis de conduire » que vous aurez imprimé
         sur le site de l’ ANTS :
-        https://permisdeconduire.ants.gouv.fr/.
+        <a href='https://permisdeconduire.ants.gouv.fr/'>https://permisdeconduire.ants.gouv.fr/</a>.
       </li>
     </ul>
   </div>
@@ -143,7 +145,7 @@ const mailMessage = (candidatAurige, flag) => {
   <p>Merci de les vérifier avant de renouveler votre demande d’inscription.</p>
   <br>
   <p>Veuillez consulter notre aide en ligne :<p>
-  <p>Url FAQ site</p>
+  <p><a href=${urlFAQ}>Informations</a></p>
   <br>
   <p align="right">L'équipe Candilib</p>`;
 
@@ -158,7 +160,7 @@ const mailMessage = (candidatAurige, flag) => {
     et en cours de validité.
   </p>
   <p>Vous pourrez trouver des informations utiles en consultant notre aide en ligne:<p>
-  <p>Url FAQ site</p>
+  <p><a href=${urlFAQ}>Informations</a></p>
   <br>
   <p align="right">L'équipe Candilib</p>`;
 
@@ -167,7 +169,7 @@ const mailMessage = (candidatAurige, flag) => {
   <p>Votre code de la route n’est pas/plus valide.</p>
   </p>Vous ne pouvez pas rejoindre le site de réservation des candidats libres sans examen du code de la route réussi et en cours de validité.</p>
   <p>Vous pourrez trouver des informations utiles en consultant notre aide en ligne:<p>
-  <p>Url FAQ site</p>
+  <p><a href=${urlFAQ}>Informations</a></p>
   <br>
   <p align="right">L'équipe Candilib</p>`;
 
