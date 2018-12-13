@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 
+import { email as emailRegex } from '../lib/regex'
+
 const { Schema } = mongoose;
 
 const whitelistCanditatSchema = new Schema({
@@ -8,7 +10,7 @@ const whitelistCanditatSchema = new Schema({
     required: false,
     trim: true,
     unique: true,
-    match: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+    match: emailRegex,
   },
 });
 
