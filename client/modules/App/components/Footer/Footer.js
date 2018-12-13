@@ -24,7 +24,7 @@ const styles = () => ({
 
 export const Footer = ({ classes = {} }) => (
   <div
-    style={{ background: `#FFF url(${bg}) center` }}
+    style={{ background: `#FFF url(../${bg}) center` }}
     className={classes.footer}
   >
     <p>

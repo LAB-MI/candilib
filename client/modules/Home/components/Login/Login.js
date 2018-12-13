@@ -372,7 +372,7 @@ class Login extends Component {
         <CssBaseline />
         <main className={classes.layout}>
           <Paper className={classes.paper}>
-            <Typography variant="display1" align="center" gutterBottom>
+            <div style={{ textAlign: 'center' }}>
               {!isLogin && (
                 <form className={classes.form} onSubmit={this.handleCreate}>
                   <FormControl margin="normal" required fullWidth>
@@ -522,15 +522,15 @@ class Login extends Component {
                   </FormControl>
                   <FormControl margin="normal" className={classes.buttonLogin}>
                     <Button
-                      color="default"
+                      color="primary"
                       onClick={() => this.setState({ isLogin: false })}
                     >
-                      <Typography variant="caption">Inscription</Typography>
+                      Inscription
                     </Button>
                   </FormControl>
                 </form>
               )}
-            </Typography>
+            </div>
           </Paper>
         </main>
         <Snackbar
