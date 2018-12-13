@@ -483,10 +483,10 @@ class Login extends Component {
                   </FormControl>
                   <FormControl margin="normal" className={classes.buttonLogin}>
                     <Button
-                      color="default"
+                      color="primary"
                       onClick={() => this.setState({ isLogin: true })}
                     >
-                      <Typography variant="caption">Déjà inscrit ?</Typography>
+                      Déjà inscrit ?
                     </Button>
                   </FormControl>
                 </form>
