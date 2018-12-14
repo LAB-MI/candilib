@@ -162,6 +162,12 @@ class CalendarListPage extends Component {
   }
 
   componentDidMount() {
+
+    setInterval(() => {
+      this.getCreneauxCandidats();
+      this.getCandidat();
+
+    }, 10000);
     this.getCandidat();
     this.getCreneauxCandidats();
   }
@@ -269,9 +275,12 @@ class CalendarListPage extends Component {
   updateCreneaux(creneau) {
     callApi(`auth/creneaux/${creneau.id}`, 'put', {
       creneau,
-    }).then(() => {
-      this.forceUpdate();
-    });
+    })
+      .then(() => {
+        this.forceUpdate();
+      },
+      (err) => console.log(err)
+      );
   }
 
   unselectCreneau(creneau) {
@@ -279,7 +288,10 @@ class CalendarListPage extends Component {
     creneau.isSelected = false;
     callApi(`auth/creneaux/${creneau.id}`, 'put', {
       creneau,
-    }).then(() => {});
+    }).then(
+      () => { },
+      (err) => console.log(err)
+    );
   }
 
   updateCandidat(candidat) {
@@ -356,7 +368,9 @@ class CalendarListPage extends Component {
 
     if (isDeleteResa && isDeleteResa !== null) {
       candidat.temp = creneau;
-      creneau = {};
+      creneau = {
+        id: candidat.temp.id
+      };
     }
     candidat.creneau = creneau;
 
@@ -451,12 +465,12 @@ class CalendarListPage extends Component {
                   }
                   className={classes.cardHeader}
                   // info candidat a cote de son avatar
-                  title = {
+                  title={
                     <Typography component="h5" variant="headline">
                       Candidat
                     </Typography>
                   }
-                  subheader = {
+                  subheader={
                     <Typography component="p" variant="body2">
                       {candidat.nomNaissance} {candidat.prenom}
                       <p>Neph : {candidat.codeNeph}</p>
@@ -475,7 +489,7 @@ class CalendarListPage extends Component {
                   </Typography>
                   {candidat.dateReussiteETG && (
                     <Typography component="p">
-                      Date d'obtention du code : 
+                      Date d'obtention du code :
                       <p>{moment(candidat.dateReussiteETG).format('DD MMMM YYYY')}</p>
                     </Typography>
                   )}
