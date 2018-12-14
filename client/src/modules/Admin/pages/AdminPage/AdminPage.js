@@ -254,7 +254,6 @@ class AdminPage extends Component {
                     inputRef={ref => {
                       this.uploadInputCVS = ref;
                     }}
-                    autoFocus
                   />
                 </FormControl>
 

@@ -1,4 +1,4 @@
 export const errorsConstants = {
-  token_no_valid: 'Votre session a expiré. Veuillez vous reconnecter',
+  invalid_token: 'Votre session a expiré. Veuillez vous reconnecter',
   unknown: 'Problème inconnu',
 };

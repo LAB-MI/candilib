@@ -4,11 +4,8 @@ import { setInStorage, getFromStorage } from '../../util/storage';
 import { DEFAULT_REDIRECT, KEYSTORAGETOKEN } from '../../util/app.constants';
 
 class Auth extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      shouldRedirect: false,
-    };
+  state = {
+    shouldRedirect: false,
   }
 
   componentDidMount() {
@@ -17,6 +14,9 @@ class Auth extends Component {
     let tokenToSend = token;
     if (token === undefined) {
       tokenToSend = getFromStorage(KEYSTORAGETOKEN);
+    }
+    if (!tokenToSend) {
+      return null;
     }
     let url = `/api/users/validate_token?token=${tokenToSend}`;
     if (redirect !== undefined) {
@@ -36,7 +36,7 @@ class Auth extends Component {
         } else {
           router.push({
             pathname: '/',
-            state: { error: 'token_no_valid' },
+            state: { error: 'invalid_token' },
           });
         }
       })

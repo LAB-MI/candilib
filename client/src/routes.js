@@ -25,7 +25,7 @@ export default (
       path="/calendar"
       getComponent={(nextState, cb) => {
         import('./modules/Calendar/pages/CalendarListPage/CalendarListPage')
-          .then(module => cb(null, module.default))
+          .then(module => cb(null, module))
           .catch(err => cb(err))
       }}
     />

@@ -105,7 +105,7 @@ class Login extends Component {
       const { error } = location.state;
       if (error !== undefined) {
         const message = errorsConstants[error];
-        const islogin = error === 'token_no_valid';
+        const islogin = error === 'invalid_token';
 
         if (message !== undefined) {
           this.setState({
@@ -383,7 +383,6 @@ class Login extends Component {
                       placeholder="0123456978912"
                       autoComplete="neph"
                       value={neph}
-                      autoFocus
                       required
                       onChange={this.handleChange}
                     />
@@ -396,7 +395,6 @@ class Login extends Component {
                       placeholder="DUPONT"
                       autoComplete="nom"
                       value={nom}
-                      autoFocus
                       required
                       onChange={this.handleChange}
                     />
@@ -409,7 +407,6 @@ class Login extends Component {
                       placeholder="Jean"
                       autoComplete="prenom"
                       value={prenom}
-                      autoFocus
                       onChange={this.handleChange}
                     />
                   </FormControl>
@@ -423,7 +420,6 @@ class Login extends Component {
                       error={emailError}
                       autoComplete="email"
                       value={email}
-                      autoFocus
                       required
                       onChange={this.handleChange}
                       onBlur={e => this.checkEmailValidity(true)}
@@ -441,7 +437,6 @@ class Login extends Component {
                       placeholder="jean.dupont@gmail.com"
                       autoComplete="emailConfirmation"
                       value={emailConfirmation}
-                      autoFocus
                       onChange={this.handleChange}
                       onBlur={() => this.checkEmailConfirmation(true)}
                     />
@@ -457,7 +452,6 @@ class Login extends Component {
                       placeholder="06xxxxxxxx"
                       autoComplete="portable"
                       value={portable}
-                      autoFocus
                       onChange={this.handleChange}
                       onBlur={() => this.checkPhone(true)}
                     />
