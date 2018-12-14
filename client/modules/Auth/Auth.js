@@ -24,10 +24,10 @@ class Auth extends Component {
     }
     fetch(url)
       .then(response => response.json())
-      .then(response => {
-        if (response.isTokenValid) {
+      .then(data => {
+        if (data.isTokenValid) {
           setInStorage(KEYSTORAGETOKEN, tokenToSend);
-          setInStorage('candidatId', response.id);
+          setInStorage('candidatId', data.id);
           if (redirect === undefined) {
             router.push(DEFAULT_REDIRECT);
           } else {
