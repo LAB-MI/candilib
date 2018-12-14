@@ -25,7 +25,7 @@ const styles = () => ({
 
 const AddButton = ({ onExecute }) => (
   <div style={{ textAlign: 'center' }}>
-    <Button color="primary" onClick={onExecute} title="Ajoute un adresse mail">
+    <Button color="primary" onClick={onExecute} title="Ajoute une adresse email">
       Ajouter
     </Button>
   </div>
@@ -35,7 +35,7 @@ AddButton.propTypes = {
 };
 
 const DeleteButton = ({ onExecute }) => (
-  <IconButton onClick={onExecute} title="Supprimer un adresse mail">
+  <IconButton onClick={onExecute} title="Supprimer une adresse email">
     <DeleteIcon />
   </IconButton>
 );

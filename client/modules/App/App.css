@@ -9,3 +9,7 @@
   background-size:contain;
   overflow: visible;
 }
+
+.fullHeight {
+  height: 100%;
+}
