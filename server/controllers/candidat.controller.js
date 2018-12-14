@@ -24,6 +24,7 @@ import {
 import Creneau from '../models/creneau';
 import messagesConstant from '../util/messages.constant.json';
 import { USER_STATUS_EXPIRES_IN } from '../util/jwt.constant';
+import { TOKEN_HEADER_NAME } from '../constants';
 
 const DATE_CODE_VALID = 5;
 
@@ -328,7 +329,7 @@ export function verifyMe(req, res) {
         .status(404)
         .send({ auth: false, message: 'Utilisateur non reconnu.' });
     }
-    const token = req.headers['x-access-token'] || req.query.token;
+    const token = req.headers[TOKEN_HEADER_NAME] || req.query.token;
     res.redirect('/sites?token=' + token);
   });
 }

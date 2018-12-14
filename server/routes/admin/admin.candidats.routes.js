@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import multer from 'multer';
 
-import * as CandidatsController from '../controllers/candidat.controller';
+import * as CandidatsController from '../../controllers/candidat.controller';
 
 const uploadCSV = multer({ dest: 'temp/csv/' });
 const uploadJSON = multer({ dest: 'temp/json/' });

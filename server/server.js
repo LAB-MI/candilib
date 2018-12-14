@@ -18,17 +18,14 @@ import routes from '../client/routes';
 import { REDIRECTTOLEVEL } from './util/redirect2Level';
 import fetchComponentData from './util/fetchData';
 import candidats from './routes/candidats.routes';
-import authAdminCandidats from './routes/admin.candidats.routes';
-import authCandidats from './routes/auth.candidats.routes';
 import creneaux from './routes/creneaux.routes';
-import adminCreneaux from './routes/admin.creneaux.routes';
+import authCandidats from './routes/auth.candidats.routes';
 import users from './routes/users.routes';
-import adminUsers from './routes/admin.users.routes';
+import admin from './routes/admin';
 
 import serverConfig from './config';
 import verifyToken from './util/verifyToken';
 import isAdmin from './util/isAdmin';
-import whitelists from './routes/whitelist.routes';
 
 // Initialize the Express App
 const app = new Express();
@@ -94,17 +91,13 @@ app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
 app.use(fileUpload());
 app.use(Express.static(path.resolve(__dirname, '../dist/client')));
-app.use('/api', users);
-app.use('/api/admin', verifyToken, isAdmin, adminUsers);
 
-app.use('/api', candidats);
+app.use('/api/auth', verifyToken, authCandidats, creneaux);
+app.use('/api/admin', verifyToken, isAdmin, admin);
 
-app.use('/api/auth', verifyToken, authCandidats);
-app.use('/api/admin', verifyToken, isAdmin, authAdminCandidats);
-app.use('/api/auth', verifyToken, creneaux);
-app.use('/api/admin', verifyToken, isAdmin, adminCreneaux);
+app.use('/api', users, candidats);
 
-app.use('/api/admin', verifyToken, isAdmin, whitelists);
+
 
 // Render Initial HTML
 const renderFullPage = (html, initialState) => {

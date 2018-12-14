@@ -34,7 +34,7 @@ export function registerAdmin(req, res, next) {
       },
       (error, user) => {
         if (error) {
-          res.status(500).send('Il y a un problème avec votre demande!');
+          res.status(500).send('Il y a un problème avec votre demande !');
           next(error);
         } else {
           res

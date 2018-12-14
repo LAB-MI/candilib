@@ -6,6 +6,7 @@ import serverConfig from '../config';
 import { REDIRECTTOLEVEL } from '../util/redirect2Level';
 import { USER_STATUS_EXPIRES_IN, USER_STATUS_LEVEL } from '../util/jwt.constant';
 import { getHash, compareToHash } from '../util/crypto';
+import { TOKEN_HEADER_NAME } from '../constants';
 
 
 export function register(req, res, next) {
@@ -125,31 +126,31 @@ export function login(req, res) {
 }
 
 export function validateToken(req, res) {
-  const token = req.headers['x-access-token'] || req.query.token;
+  const token = req.headers[TOKEN_HEADER_NAME] || req.query.token;
 
   if (!token) {
-    return res.status(403).send({ message: 'Pas de Token ' });
+    return res.status(401).send({ message: 'Token absent' });
   }
 
-  jwt.verify(token, serverConfig.secret, (err, decoded) => {
-    if (err) {
-      return res.status(200).send({ isTokenValid: false });
-    }
+  try {
+    const decoded = jwt.verify(token, serverConfig.secret)
     if (req.query.redirect !== undefined) {
       let redirect = req.query.redirect.toLowerCase();
       if (!redirect.startsWith('/')) {
         redirect = '/' + redirect;
       }
       if (REDIRECTTOLEVEL[redirect] === undefined) {
-        return res.status(200).send({ isTokenValid: false });
+        return res.status(401).send({ isTokenValid: false });
       }
       const level = decoded.level === undefined ? 0 : decoded.level;
       if (REDIRECTTOLEVEL[redirect] <= level) {
         return res.status(200).send({ isTokenValid: true, id: decoded.id });
       }
-      return res.status(200).send({ isTokenValid: false });
+      return res.status(401).send({ isTokenValid: false });
     }
 
     res.status(200).send({ isTokenValid: true, id: decoded.id });
-  });
+  } catch (err) {
+    return res.status(401).send({ message: 'Token invalide', isTokenValid: false });
+  }
 }

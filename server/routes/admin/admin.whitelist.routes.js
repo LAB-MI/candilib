@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as WhitelistController from '../controllers/whitelist.controller';
+import * as WhitelistController from '../../controllers/whitelist.controller';
 
 const router = new Router();
 

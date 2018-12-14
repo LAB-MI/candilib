@@ -27,7 +27,7 @@ export function canToRegister(req, res, next) {
   });
 }
 
-export function addWhitelist(req, res) {
+export async function addWhitelist(req, res) {
   const { email } = req.body;
 
   const newCandidat = new WhitelistCandidat();
@@ -35,15 +35,16 @@ export function addWhitelist(req, res) {
   // Let's sanitize inputs
   newCandidat.email = sanitizeHtml(email);
 
-  newCandidat.save((error, candidat) => {
-    if (error) {
-      return res.status(500).send({
-        success: false,
-        message: error.message,
-      });
-    }
+
+  try {
+    const candidat = await newCandidat.save()
     res.status(200).json(candidat);
-  });
+  } catch (error) {
+    return res.status(500).send({
+      success: false,
+      message: error.message,
+    });
+  }
 }
 
 export function getWhitelistCandidats(req, res) {

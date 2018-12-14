@@ -3,6 +3,6 @@ export default function isAdmin(req, res, next) {
     return next();
   }
   res
-    .status(500)
-    .send({ auth: false, message: 'Erreur de verification Token.' });
+    .status(401)
+    .send({ auth: false, message: 'Erreur de vérification Token.' });
 }
