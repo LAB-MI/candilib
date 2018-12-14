@@ -3,20 +3,6 @@ import serverConfig from '../config';
 import { TOKEN_HEADER_NAME } from '../constants';
 
 export default function verifyToken(req, res, next) {
-  if (
-    req.url === '/candidats/login'
-      || req.url === '/candidats/signup'
-      || (serverConfig.fastAccessApi
-        && (req.url === '/candidats/export'
-        || req.url === '/candidats'
-        || req.url === '/candidats/upload/csv'
-        || req.url === '/candidats/upload/json'
-        || req.url === '/candidats/synchro'
-        || req.url === '/creneaux'))
-  ) {
-    return next();
-  }
-
   const token = req.headers[TOKEN_HEADER_NAME] || req.query.token;
   if (!token) {
     if (res !== undefined) {
