@@ -12,11 +12,17 @@ import {
   withStyles,
   Snackbar,
 } from '@material-ui/core';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 import Grid from '@material-ui/core/Grid';
 import BigCalendar from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import moment from 'moment';
 import 'moment/locale/fr';
+import CheckIcon from '@material-ui/icons/Check';
+import CloseIcon from '@material-ui/icons/Close';
 
 import CreneauEvent from '../../../../components/calendar/CreneauEvent';
 import messages from '../../../../components/calendar/messages';
@@ -149,9 +155,13 @@ class AdminPage extends Component {
 
   handleUploadJSON(ev) {
     ev.preventDefault();
+    this.setState({
+      resultCandidats: undefined,
+    });
 
     const data = new FormData();
     data.append('file', this.uploadInputJSON.files[0]);
+
 
     callApi('admin/candidats/upload/json')
       .post(data)
@@ -163,6 +173,7 @@ class AdminPage extends Component {
           open: true,
           snackBarMessage: json.message,
           fileName: json.fileName,
+          resultCandidats: json.candidats
         });
       });
   }
@@ -193,6 +204,7 @@ class AdminPage extends Component {
       open,
       fileName,
       eventsCreneaux,
+      resultCandidats
     } = this.state;
 
     const minHour = new Date();
@@ -205,32 +217,46 @@ class AdminPage extends Component {
         <Grid item xs={12}>
           <Card className={classes.card}>
             <CardContent>
-              <form onSubmit={this.handleUploadJSON}>
-                <FormControl margin="normal" required>
-                  <InputLabel htmlFor="jsonFile">JSON Aurige</InputLabel>
-                  <Input
-                    type="file"
-                    name="jsonFile"
-                    accept=".json"
-                    inputRef={ref => {
-                      this.uploadInputJSON = ref;
-                    }}
-                    encType="multipart/form-data"
-                    autoFocus
-                  />
-                </FormControl>
+              <Grid container spacing={16}>
+                <Grid item lg={8} sm={12} xs={12} >
+                  <form onSubmit={this.handleUploadJSON}>
+                    <FormControl margin="normal" required>
+                      <InputLabel htmlFor="jsonFile">JSON Aurige</InputLabel>
+                      <Input
+                        type="file"
+                        name="jsonFile"
+                        accept=".json"
+                        inputRef={ref => {
+                          this.uploadInputJSON = ref;
+                        }}
+                        encType="multipart/form-data"
+                        autoFocus
+                      />
+                    </FormControl>
 
-                <FormControl margin="normal" required>
-                  <Button type="submit" color="primary" variant="raised">
-                    Synchronisation JSON Aurige
-                  </Button>
-                </FormControl>
-              </form>
-              {success !== '' && (
-                <Typography variant="subheading" align="center">
-                  Synchronisation {fileName} effectué.
-                </Typography>
-              )}
+                    <FormControl margin="normal" required>
+                      <Button type="submit" color="primary" variant="raised">
+                        Synchronisation JSON Aurige
+                      </Button>
+                    </FormControl>
+                  </form>
+                  {success !== '' && (
+                    <Typography variant="subheading" align="center">
+                      Synchronisation {fileName} effectué.
+                    </Typography>
+                  )}
+                </Grid>
+                <Grid item lg={3} sm={12} xs={12} >
+                  <Paper style={{ maxHeight: 250, overflow: 'auto' }}>
+                    <List>
+                      {resultCandidats &&
+                        resultCandidats.map(candidat => {
+                          return <ListItem> <ListItemIcon>{candidat.status === 'success' ? <CheckIcon /> : <CloseIcon />}</ListItemIcon> <ListItemText>{candidat.nom}/{candidat.neph}  </ListItemText></ListItem>
+                        })}
+                    </List>
+                  </Paper>
+                </Grid>
+              </Grid>
             </CardContent>
             <CardContent>
               <Button
