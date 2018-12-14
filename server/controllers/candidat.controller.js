@@ -281,7 +281,7 @@ export function signUp(req, res) {
       newCandidat.adresse = sanitizeHtml(adresse);
       newCandidat.email = sanitizeHtml(email);
       newCandidat.isValid = false;
-      newCandidat.creneau = new Creneau();
+      newCandidat.creneau = {}
 
       newCandidat.save((error, candidat) => {
         if (error) {
