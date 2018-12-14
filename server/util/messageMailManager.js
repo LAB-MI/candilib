@@ -13,9 +13,11 @@ import {
 } from './constant';
 import sites from '../inbox/sites.json';
 import serverConfig from '../config';
+import Downshift from 'downshift';
 
 const mailMessage = (candidatAurige, flag) => {
   const urlFAQ = `${serverConfig.host}:${serverConfig.portMail}/informations`;
+  const urlRESA = `${serverConfig.host}:${serverConfig.portMail}/auth?redirect=calendar`;
   const { codeNeph, nomNaissance, creneau } = candidatAurige;
 
   const message = {};
@@ -108,18 +110,22 @@ const mailMessage = (candidatAurige, flag) => {
       </li>
     </ul>
   </div>
+  <p><b>Attention :</b></p>
   <p>
-    Attention : le mauvais état du véhicule (pneus lisses, rétros cassés ou
+    Le mauvais état du véhicule (pneus lisses, rétros cassés ou
     absents, non fonctionnement de tous les feux, etc.),
     ou l'absence ou la non-validité d'un des documents exigés ci-dessus,
     pour le candidat ou pour l'accompagnateur, entraîne le report de l'examen
     À une date ultérieure.
+    <br/>
   </p>
   <p>
-    Si besoin, vous pouvez annuler votre réservation sur [lien à définir].
+    Si besoin, vous pouvez annuler votre réservation sur <a href=${urlRESA}>Ma réservation</a>.
     Si vous annulez 7 jours avant la date prévue, vous pourrez choisir un autre créneau disponible.
     Nous vous souhaitons une bonne préparation et le succès à l'examen.
-    Pour toute information, vous pouvez consulter la FAQ [lien à définir].
+    Pour toute information, vous pouvez consulter notre aide en ligne : <a href=${urlFAQ}>Informations</a>.
+  </p>
+  <p>
     Sincères salutations,
   </p>
   <p>Candilib</p>
