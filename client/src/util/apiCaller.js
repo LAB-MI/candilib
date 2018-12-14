@@ -1,12 +1,13 @@
 import fetch from 'isomorphic-fetch';
 
-import Config from '../../server/config';
 import { getFromStorage } from './storage';
 import { KEYSTORAGETOKEN } from './app.constants';
 
-export const API_URL = typeof window === 'undefined' || process.env.NODE_ENV === 'test'
-  ? process.env.BASE_URL || `http://localhost:${process.env.PORT || Config.port}/api`
-  : '/api';
+export const API_URL = typeof window === 'undefined'
+  || process.env.NODE_ENV === 'test'
+  || process.env.NODE_ENV === 'development'
+    ? process.env.BASE_URL || `http://localhost:${process.env.PORT}/api`
+    : '/candilib/api';
 
 export default function callApi(endpoint, method = 'get', body) {
   // const { token } = getFromStorage(KEYSTORAGETOKEN);

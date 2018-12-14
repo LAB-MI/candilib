@@ -10,6 +10,9 @@ import App from './App';
 import configureStore from './store';
 import theme from './theme';
 
+import * as serviceWorker from './serviceWorker';
+
+
 // Initialize store
 const store = configureStore(window.__INITIAL_STATE__);
 const mountApp = document.getElementById('root');
@@ -33,3 +36,5 @@ if (module.hot) {
     renderApp();
   });
 }
+
+serviceWorker.unregister();

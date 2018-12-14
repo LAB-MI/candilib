@@ -22,7 +22,7 @@ import callApi from '../../../../util/apiCaller';
 import { getFromStorage } from '../../../../util/storage';
 import CreneauDialog from '../../components/CreneauDialog';
 import SnackbarNotification from '../../../../components/Notifications/SnackbarNotificationWrapper';
-import sites from '../../../../../server/inbox/sites.json';
+import sites from './sites.json';
 
 moment.locale('fr');
 
@@ -475,7 +475,7 @@ class CalendarListPage extends Component {
                   </Typography>
                   {candidat.dateReussiteETG && (
                     <Typography component="p">
-                      Date d'obtention du code : 
+                      Date d'obtention du code :
                       <p>{moment(candidat.dateReussiteETG).format('DD MMMM YYYY')}</p>
                     </Typography>
                   )}

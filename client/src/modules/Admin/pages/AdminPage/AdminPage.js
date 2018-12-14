@@ -100,13 +100,12 @@ class AdminPage extends Component {
         return response.json();
       })
       .then(body => {
-        const eventsCreneaux = [];
         const { creneaux } = body;
         if (creneaux === undefined) {
           return;
         }
-        creneaux.map(item => {
-          const crenauItem = {
+        const eventsCreneaux = creneaux.map(item => (
+          {
             id: item._id,
             title: `${item.centre} - ${item.inspecteur}`,
             isSelected: item.isSelected,
@@ -118,9 +117,8 @@ class AdminPage extends Component {
             end: moment(moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss'))
               .add(30, 'minutes')
               .toDate(),
-          };
-          eventsCreneaux.push(crenauItem);
-        });
+          }
+        ));
 
         this.setState({ eventsCreneaux });
       });
