@@ -809,7 +809,6 @@ export const uploadAurigeJSON = (req, res) => {
 
     try {
       synchroAurige(jsonFilePath).then(result => {
-        console.debug(result);// eslint-disable-line no-console
 
         res.status(200).send({
           fileName: jsonFile.name,
