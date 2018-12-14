@@ -156,11 +156,16 @@ class AdminPage extends Component {
   handleUploadJSON(ev) {
     ev.preventDefault();
     this.setState({
+<<<<<<< HEAD
       resultCandidats: undefined,
+=======
+      resultCandidats: undefined
+>>>>>>> Correction term success in synchroAurige
     });
 
     const data = new FormData();
     data.append('file', this.uploadInputJSON.files[0]);
+
 
     callApi('admin/candidats/upload/json')
       .post(data)
@@ -250,7 +255,7 @@ class AdminPage extends Component {
                     <List>
                       {resultCandidats &&
                         resultCandidats.map(candidat => {
-                          return <ListItem> <ListItemIcon>{candidat.status === 'sucess' ? <CheckIcon /> : <CloseIcon />}</ListItemIcon> <ListItemText>{candidat.nom}/{candidat.neph}  </ListItemText></ListItem>
+                          return <ListItem> <ListItemIcon>{candidat.status === 'success' ? <CheckIcon /> : <CloseIcon />}</ListItemIcon> <ListItemText>{candidat.nom}/{candidat.neph}  </ListItemText></ListItem>
                         })}
                     </List>
                   </Paper>

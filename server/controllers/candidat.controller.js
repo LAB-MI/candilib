@@ -675,7 +675,7 @@ const synchroAurige = (pathname) => {
           .then(candidat => {
             if (isValid) {
               console.warn(`Ce candidat ${candidat.email} a été mis à jour`); // eslint-disable-line no-console  
-              return getCandidatStatus(nomNaissance, codeNeph, 'sucess');
+              return getCandidatStatus(nomNaissance, codeNeph, 'success');
             } else {
               console.warn(`Ce candidat ${candidat.email} a été validé`); // eslint-disable-line no-console
               const token = jwt.sign(
