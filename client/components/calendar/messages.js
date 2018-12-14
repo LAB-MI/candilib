@@ -11,7 +11,7 @@ const messages = {
   date: 'date',
   time: 'heure',
   event: 'place d\'examen', // on propose des places pas des événements
-  showMore: total => `+ ${total} places(s) supplémentaire(s)`,
+  showMore: total => `+ ${total} place(s) supplémentaire(s)`,
 };
 
 export default messages;
