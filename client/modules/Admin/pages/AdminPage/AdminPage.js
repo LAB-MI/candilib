@@ -155,6 +155,9 @@ class AdminPage extends Component {
 
   handleUploadJSON(ev) {
     ev.preventDefault();
+    this.setState({
+      resultCandidats: undefined,
+    });
 
     const data = new FormData();
     data.append('file', this.uploadInputJSON.files[0]);
@@ -233,13 +236,13 @@ class AdminPage extends Component {
                     <FormControl margin="normal" required>
                       <Button type="submit" color="primary" variant="raised">
                         Synchronisation JSON Aurige
-                  </Button>
+                      </Button>
                     </FormControl>
                   </form>
                   {success !== '' && (
                     <Typography variant="subheading" align="center">
                       Synchronisation {fileName} effectué.
-                </Typography>
+                    </Typography>
                   )}
                 </Grid>
                 <Grid item lg={3} sm={12} xs={12} >
