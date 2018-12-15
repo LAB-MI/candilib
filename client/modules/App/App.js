@@ -10,6 +10,8 @@ import { CssBaseline } from '@material-ui/core';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 
+import bg from './route.jpg';
+
 export const App = (props) => (
   <React.Fragment>
     <CssBaseline />
@@ -31,7 +33,9 @@ export const App = (props) => (
       />
       <Header
       />
-      <div className={styles.container}>
+      <div
+        style={{ background: `#FFF url(../${bg}) center no-repeat` }}
+        className={styles.container}>
         {props.children}
       </div>
       <Footer />

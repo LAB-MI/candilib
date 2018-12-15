@@ -5,11 +5,14 @@ import { Toolbar, AppBar, Button } from '@material-ui/core';
 // Import Style
 import styles from './Header.css';
 
+import logo from '../../candilib_logo.png'
+
 function Header() {
   return (
     <div className={styles.header}>
       <AppBar color="default" position="static">
         <Toolbar>
+          <img src={logo} width="200px" alt="logo" />
           <Button component={Link} to="/">
             Accueil
           </Button>
