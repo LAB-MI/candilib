@@ -542,7 +542,7 @@ class CalendarListPage extends Component {
                   color="primary"
                   variant="contained"
                   className={classes.buttonContactUs}
-                  href="mailto: candilib93@developpement-durable.gouv.fr"
+                  href="mailto: candilib@interieur.gouv.fr"
                 >
                   Nous contacter
                 </Button>
