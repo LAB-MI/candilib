@@ -30,7 +30,7 @@ export const Footer = ({ classes = {} }) => (
     <div className={classes.credit}
       style={{paddingRight: 20,background: "#EEE", color: "#000", textAlign: "right"}}>
       <p>
-      <h5> Un service proposé par</h5>
+        <h5> Un service proposé par</h5>
       </p>
       <div id="logo">
         <img src={logoDSR} style={{width: 80}} alt="logo sécurité routière" />
