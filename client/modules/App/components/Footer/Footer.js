@@ -36,9 +36,7 @@ const styles = () => ({
 export const Footer = ({ classes = {} }) => (
   <div className={classes.footer}>
     <div className={classes.credit}>
-      <p>
-        <h5> Un service proposé par</h5>
-      </p>
+      <h5> Un service proposé par</h5>
       <div>
         <img src={logoDSR} style={{ width: 80 }} alt="logo sécurité routière" />
         <img
