@@ -23,3 +23,7 @@ logs/
 server/inbox/updateCandidats\.json
 
 server/config\.home\.js
+*.tar.gz
+*.tar
+candilib-build/
+db/
