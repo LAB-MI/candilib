@@ -2,13 +2,14 @@
   padding: 56px 0;
   background-size: cover;
   position: relative;
+  text-align: center;
 }
 
 .footer p {
   background: #eee;
   margin: 0 0 8px 0;
   font-size: 14px;
-  color: #000;
+  color: #FFF;
 }
 
 .footer a {

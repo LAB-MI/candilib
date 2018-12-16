@@ -14,6 +14,16 @@ const styles = () => ({
     padding: '20px 0',
     backgroundSize: 'cover',
   },
+  credit: {
+    paddingRight: 20,
+    background: '#EEE',
+    color: '#000',
+    textAlign: 'right',
+  },
+  copyright: {
+    background: `#FFF url(../${bg})`,
+    textAlign: 'center',
+  },
   footerLink: {
     color: '#fff',
     textDecoration: 'none',
@@ -25,14 +35,7 @@ const styles = () => ({
 
 export const Footer = ({ classes = {} }) => (
   <div className={classes.footer}>
-    <div
-      style={{
-        paddingRight: 20,
-        background: '#EEE',
-        color: '#000',
-        textAlign: 'right',
-      }}
-    >
+    <div className={classes.credit}>
       <p>
         <h5> Un service proposé par</h5>
       </p>
@@ -45,7 +48,7 @@ export const Footer = ({ classes = {} }) => (
         />
       </div>
     </div>
-    <div style={{ background: `#FFF url(../${bg}) center` }}>
+    <div className={classes.copyright}>
       <p>
         © 2018 · Candilib. -{' '}
         <Link to="/mentionslegales" className={classes.footerLink}>
