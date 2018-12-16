@@ -1,30 +1,18 @@
-.footer{
+.footer {
   padding: 56px 0;
   background-size: cover;
   position: relative;
 }
 
-.footer p{
-  background:  #EEE;
+.footer p {
+  background: #eee;
   margin: 0 0 8px 0;
   font-size: 14px;
   color: #000;
 }
 
-.footer a{
-  color: #FFF;
+.footer a {
+  color: #fff;
   text-decoration: none;
   font-weight: 700;
-}
-
-.credit{
-  background:  #EEE;
-  margin: 0 0 8px 0;
-  font-size: 14px;
-  color: #000;
-}
-
-.copyright{
-  text-align: center;
-  color: #FFF;
 }
