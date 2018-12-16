@@ -13,6 +13,8 @@ const config = {
   mailFrom: process.env.MAIL_FROM || '<mail_from>',
   tokenCandidatExpired: process.env.CANDIDAT_EXPIREDIN || '1h',
   appURL: process.env.APP_URL || 'http://localhost:8000',
+  URLlogoDSR: process.env.URLlogoDSR || "https://www.cartaplac.com/images/logo-securite-routiere.jpg",
+  URLlogoCandilib: process.env.URLlogoCandilib || "http://localhost:8000/88de6e0a1de39551b1be962a38d2f911.png",
 };
 
 export const smtpOptions = {

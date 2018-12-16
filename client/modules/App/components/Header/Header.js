@@ -5,8 +5,8 @@ import { Toolbar, AppBar, Button, Grid } from '@material-ui/core';
 // Import Style
 import styles from './Header.css';
 
-import logo from '../../candilib_logo.png';
-import beta from '../../beta.png';
+import logo from '../../../../assets/candilib_logo.png';
+import beta from '../../../../assets/beta.png';
 
 function Header() {
   return (

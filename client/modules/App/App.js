@@ -10,7 +10,7 @@ import { CssBaseline } from '@material-ui/core';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
 
-import bg from './route.jpg';
+import bg from '../../assets/route.jpg';
 
 export const App = (props) => (
   <React.Fragment>

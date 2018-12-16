@@ -50,7 +50,7 @@ const mailMessage = (candidatAurige, flag) => {
   <br>
   <p>Nous avons bien pris en compte votre réservation à l'examen pratique
   du permis de conduire à ${site} le ${dateCreneau} à ${heureCreneau} avec
-   le numéro NEPH ${codeNeph}.!</p>
+   le numéro NEPH ${codeNeph}.</p>
   <p>${siteAdresse.adresse} </p>
   <br>
   <p>Nous vous rappelons les éléments à vérifier le jour de l'examen :</p>

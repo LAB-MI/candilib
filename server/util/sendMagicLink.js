@@ -94,12 +94,10 @@ const sendMagicLink = (candidatAurige, token) => {
                                             <tbody>
                                               <tr>
                                                 <td>
-                                                  <img width="80px" src="https://www.cartaplac.com/images/logo-securite-routiere.jpg" />
+                                                  <img width="80px" src=${serverConfig.URLlogoDSR} />
                                                 </td>
-                                                <td class="w580"  width="580" align="center" bgcolor="#64b5f6">
-                                                  <h2>
-                                                    CANDILIB
-                                                  </h2>
+                                                <td class="w580"  width="580" align="center">
+                                                  <img width="300px" src=${serverConfig.URLlogoCandilib} alt="Candilib" />
                                                 </td>
                                               </tr>
                                               <tr>
