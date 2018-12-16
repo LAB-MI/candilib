@@ -14,21 +14,21 @@ function Header() {
       <AppBar color="default" position="static">
         <Grid container spacing={24}>
           <Grid item xs={9}>
-              <Toolbar>
-                <img src={logo} style={{width: 200}} alt="logo" />
-                <Button component={Link} to="/">
-                  Accueil
-                </Button>
-                <Button component={Link} to="/informations">
-                  Informations
-                </Button>
-                <Button component={Link} to="/auth?redirect=calendar">
-                  Ma Réservation
-                </Button>
-              </Toolbar>
+            <Toolbar>
+              <img src={logo} style={{width: 200}} alt="logo" />
+              <Button component={Link} to="/">
+                Accueil
+              </Button>
+              <Button component={Link} to="/informations">
+                Informations
+              </Button>
+              <Button component={Link} to="/auth?redirect=calendar">
+                Ma Réservation
+              </Button>
+            </Toolbar>
           </Grid>
           <Grid item xs={3}>
-              <img src={beta} style={{width: 60, height: 60,float: "right"}} alt="version beta" />
+            <img src={beta} style={{width: 60, height: 60,float: "right"}} alt="version beta" />
           </Grid>
         </Grid>
       </AppBar>

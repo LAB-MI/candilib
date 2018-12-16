@@ -26,17 +26,17 @@ const styles = () => ({
 
 export const Footer = ({ classes = {} }) => (
   <div
-   className={classes.footer}>
-   <div className={classes.credit}
-    style={{paddingRight: 20,background: "#EEE", color: "#000", textAlign: "right"}}>
-    <p>
-     <h5> Un service proposé par</h5>
-    </p>
-    <div id="logo">
-      <img src={logoDSR} style={{width: 80}} alt="logo sécurité routière" />
-      <img src={logoLAB} style={{paddingLeft: 20, height: 80}} alt="logo sécurité routière" />
+    className={classes.footer}>
+    <div className={classes.credit}
+      style={{paddingRight: 20,background: "#EEE", color: "#000", textAlign: "right"}}>
+      <p>
+      <h5> Un service proposé par</h5>
+      </p>
+      <div id="logo">
+        <img src={logoDSR} style={{width: 80}} alt="logo sécurité routière" />
+        <img src={logoLAB} style={{paddingLeft: 20, height: 80}} alt="logo sécurité routière" />
+      </div>
     </div>
-   </div>
     <div className={classes.copyright}
       style={{ background: `#FFF url(../${bg}) center` }}
     >

@@ -369,7 +369,7 @@ class CalendarListPage extends Component {
     if (isDeleteResa && isDeleteResa !== null) {
       candidat.temp = creneau;
       creneau = {
-        id: candidat.temp.id
+        id: candidat.temp.id,
       };
     }
     candidat.creneau = creneau;
