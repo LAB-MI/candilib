@@ -81,8 +81,8 @@ build-all-images: build-dir build-prod
 build-archive: clean-archive build-dir ## Build archive
 	@echo "Build $(APP) $(APP)-$(APP_VERSION) archive"
 	echo "$(APP_VERSION)" > VERSION ; cp VERSION $(BUILD_DIR)/$(APP)-VERSION
-# tar -zcvf $(BUILD_DIR)/$(FILE_ARCHIVE_APP_VERSION) --exclude $$(basename $(BUILD_DIR))  *
-	git archive --format=tar.gz -o $(BUILD_DIR)/$(FILE_ARCHIVE_APP_VERSION) HEAD
+	tar -zcvf $(BUILD_DIR)/$(FILE_ARCHIVE_APP_VERSION) --exclude $$(basename $(BUILD_DIR)) $$( git ls-files ) VERSION
+	# git archive --format=tar.gz -o $(BUILD_DIR)/$(FILE_ARCHIVE_APP_VERSION) HEAD
 	@echo "Build $(APP) $(APP)-$(LATEST_VERSION) archive"
 	cp $(BUILD_DIR)/$(FILE_ARCHIVE_APP_VERSION) $(BUILD_DIR)/$(FILE_ARCHIVE_LATEST_VERSION)
 
