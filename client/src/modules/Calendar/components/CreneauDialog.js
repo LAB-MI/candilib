@@ -104,7 +104,6 @@ class CreneauDialog extends Component {
 }
 
 CreneauDialog.propTypes = {
-  classes: PropTypes.object,
   onClose: PropTypes.func,
   onCancel: PropTypes.func,
   selectedValue: PropTypes.object,
