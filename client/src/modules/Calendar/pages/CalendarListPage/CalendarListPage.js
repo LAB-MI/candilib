@@ -174,15 +174,15 @@ class CalendarListPage extends Component {
 
   getCreneauxCandidats() {
     callApi('auth/creneaux/', 'get').then(res => {
-      const creneauxCandidats = [];
+      let creneauxCandidats = [];
       const { creneaux } = res;
 
       if (creneaux) {
-        creneaux.map(item => {
+        creneauxCandidats = creneaux.map(item => {
           if (item.isSelected && this.state.candidat._id !== item.candidat) {
-            return;
+            return null;
           }
-          const crenauItem = {
+          const creneauItem = {
             id: item._id,
             title: `${item.centre}`,
             isSelected: item.isSelected,
@@ -195,8 +195,9 @@ class CalendarListPage extends Component {
               .add(30, 'minutes')
               .toDate(),
           };
-          creneauxCandidats.push(crenauItem);
-        });
+          return creneauItem;
+        })
+          .filter(item => item !== null);
       }
       this.setState({ creneauxCandidats, success: true });
     });
