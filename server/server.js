@@ -5,18 +5,8 @@ import bodyParser from 'body-parser';
 import path from 'path';
 import fileUpload from 'express-fileupload';
 
-// React And Redux Setup
-import { Provider } from 'react-redux';
-import React from 'react';
-import { renderToString } from 'react-dom/server';
-import { match, RouterContext } from 'react-router';
-import Helmet from 'react-helmet';
-
 // Import required modules
-import configureStore from '../client/store';
-import routes from '../client/routes';
 import { REDIRECTTOLEVEL } from './util/redirect2Level';
-import fetchComponentData from './util/fetchData';
 import candidats from './routes/candidats.routes';
 import creneaux from './routes/creneaux.routes';
 import authCandidats from './routes/auth.candidats.routes';
@@ -34,31 +24,6 @@ const app = new Express();
 const isDevMode = process.env.NODE_ENV === 'development' || false;
 const isProdMode = process.env.NODE_ENV === 'production' || false;
 
-// Run Webpack dev server in development mode
-if (isDevMode) {
-  // Webpack Requirements
-  // eslint-disable-next-line global-require
-  const webpack = require('webpack');
-  // eslint-disable-next-line global-require
-  const config = require('../webpack.config.dev');
-  // eslint-disable-next-line global-require
-  const webpackDevMiddleware = require('webpack-dev-middleware');
-  // eslint-disable-next-line global-require
-  const webpackHotMiddleware = require('webpack-hot-middleware');
-  const compiler = webpack(config);
-  app.use(
-    webpackDevMiddleware(compiler, {
-      noInfo: true,
-      publicPath: config.output.publicPath,
-      watchOptions: {
-        poll: 1000,
-      },
-    }),
-  );
-  app.use(webpackHotMiddleware(compiler));
-}
-
-
 // Set native promises as mongoose promise
 mongoose.Promise = global.Promise;
 
@@ -75,16 +40,6 @@ if (process.env.NODE_ENV !== 'test') {
   );
 }
 
-// Set Level to redirect
-routes.props.children.forEach((child) => {
-  if (child.type.name === 'PrivateRoute') {
-    if (child.props.path !== undefined) {
-      const pathAdmin = child.props.path.toLowerCase();
-      REDIRECTTOLEVEL[pathAdmin] = child.props.admin ? 1 : 0;
-    }
-  }
-});
-
 // Apply body Parser and server public assets and routes
 app.use(compression());
 app.use(bodyParser.json({ limit: '20mb' }));
@@ -97,135 +52,11 @@ app.use('/api/admin', verifyToken, isAdmin, admin);
 
 app.use('/api', users, candidats);
 
-
-
-// Render Initial HTML
-const renderFullPage = (html, initialState) => {
-  const head = Helmet.rewind();
-
-  // Import Manifests
-  const assetsManifest = process.env.webpackAssets && JSON.parse(process.env.webpackAssets);
-  const chunkManifest = process.env.webpackChunkAssets
-    && JSON.parse(process.env.webpackChunkAssets);
-
-  return `
-    <!doctype html>
-    <html>
-      <head>
-        ${head.base.toString()}
-        ${head.title.toString()}
-        ${head.meta.toString()}
-        ${head.link.toString()}
-        ${head.script.toString()}
-
-        ${isProdMode
-          ? `<link rel='stylesheet' href='${assetsManifest['/app.css']}' />`
-          : ''
-        }
-        <link href='https://fonts.googleapis.com/css?family=Roboto:400,300,700' rel='stylesheet' type='text/css'/>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-      </head>
-      <body>
-        <div id="root">${
-          process.env.NODE_ENV === 'production' ? html : `<div>${html}</div>`
-        }</div>
-        <script>
-          window.__INITIAL_STATE__ = ${JSON.stringify(initialState)};
-          ${
-            isProdMode
-              ? `//<![CDATA[
-          window.webpackManifest = ${JSON.stringify(chunkManifest)};
-          //]]>`
-              : ''
-          }
-        </script>
-        <script src='${
-          isProdMode ? assetsManifest['/vendor.js'] : '/vendor.js'
-        }'></script>
-        <script src='${
-          isProdMode ? assetsManifest['/app.js'] : '/app.js'
-        }'></script>
-      </body>
-    </html>
-  `;
-};
-
-const renderError = (err) => {
-  const softTab = '&#32;&#32;&#32;&#32;';
-  const errTrace = isProdMode
-    ? `:<br><br><pre style="color:red">${softTab}${err.stack.replace(
-        /\n/g,
-        `<br>${softTab}`,
-      )}</pre>`
-    : '';
-  return renderFullPage(`Server Error${errTrace}`, {});
-};
-
-// Server Side Rendering based on routes matched by React-router.
-app.use((req, res, next) => {
-  match({ routes, location: req.url }, (err, redirectLocation, renderProps) => {
-    if (err) {
-      return res.status(500).end(renderError(err));
-    }
-
-    if (redirectLocation) {
-      return res.redirect(
-        302,
-        redirectLocation.pathname + redirectLocation.search,
-      );
-    }
-
-    if (!renderProps) {
-      return next();
-    }
-
-    // PrivateRoute
-    if (typeof routes.props.children === 'object') {
-      const childrenPrivateRoute = routes.props.children.find((child) => {
-        return (
-          child.type !== undefined
-          && child.props !== undefined
-          && renderProps !== undefined
-          && renderProps.location !== undefined
-          && child.type.name === 'PrivateRoute'
-          && child.props.path === renderProps.location.pathname.toLowerCase()
-          && renderProps.location.pathname !== '/auth'
-        );
-      });
-      if (childrenPrivateRoute !== undefined) {
-        return res.redirect(
-          302,
-          '/auth?redirect=' + renderProps.location.pathname,
-        );
-      }
-    }
-
-    const store = configureStore();
-
-    return fetchComponentData(store, renderProps.components, renderProps.params)
-      .then(() => {
-        const initialView = renderToString(
-          <Provider store={store}>
-            <RouterContext {...renderProps} />
-          </Provider>,
-        );
-        const finalState = store.getState();
-
-        res
-          .set('Content-Type', 'text/html')
-          .status(200)
-          .end(renderFullPage(initialView, finalState));
-      })
-      .catch(error => next(error));
-  });
-});
-
 // start app
 app.listen(serverConfig.port, (error) => {
   if (!error) {
     console.log(
-      `Candilib is running on port: ${process.env.PORT
-        || serverConfig.port}! Build something amazing!`,
+      `Candilib is running on port: ${process.env.PORT || serverConfig.port}!`,
     ); // eslint-disable-line
   }
 });

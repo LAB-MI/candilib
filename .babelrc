@@ -3,7 +3,17 @@
   "plugins": ["react-hot-loader/babel", "babel-plugin-transform-runtime"],
   "env": {
     "production": {
-      "presets": [["es2015", { "modules": false }], "react", "react-optimize", "stage-0"]
+      "presets": [
+        [
+          "es2015",
+          {
+            "modules": false
+          }
+        ],
+        "react",
+        "react-optimize",
+        "stage-0"
+      ]
     }
   }
 }

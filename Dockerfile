@@ -34,7 +34,7 @@ RUN if [ ! -z "$proxy" ] ; then \
    [ -z "$npm_registry" ] || npm config set registry=$npm_registry ; \
     npm install
 
-COPY .env .eslintignore .eslintrc server/inbox/sites.json .babelrc index.js nodemon.json webpack.config.babel.js webpack.config.dev.js webpack.config.prod.js webpack.config.server.js ./
+COPY .env .eslintignore .eslintrc server/inbox/sites.json .babelrc index.js nodemon.json webpack.config.babel.js webpack.config.prod.js webpack.config.server.js ./
 COPY client ./client
 COPY server ./server
 CMD ["npm", "start"]
