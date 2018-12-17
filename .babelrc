@@ -1,9 +1,9 @@
 {
   "presets": ["react", "es2015", "stage-0"],
-  "plugins": ["react-hot-loader/babel"],
+  "plugins": ["react-hot-loader/babel", "babel-plugin-transform-runtime"],
   "env": {
     "production": {
-      "presets": ["es2015", "react", "react-optimize", "es2015-native-modules", "stage-0"]
+      "presets": [["es2015", { "modules": false }], "react", "react-optimize", "stage-0"]
     }
   }
 }
