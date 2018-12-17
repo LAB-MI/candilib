@@ -1,27 +1,24 @@
-/**
- * Root Component
- */
+// @flow
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
-import { Router, browserHistory } from 'react-router';
+import { BrowserRouter as Router } from 'react-router-dom';
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import 'moment/locale/fr';
 
-// Import Routes
-import routes from './routes';
+import store from './store';
+import theme from './theme';
+import Candilib from './pages/Candilib';
 
-// Base stylesheet
-require('./main.css');
+const basename = process.env.NODE_ENV === 'development' ? '' : '/candilib'
 
-export default function MainApp({ store }) {
-  return (
-    <Provider store={store}>
-      <Router history={browserHistory}>
-        {routes}
+const App = () => (
+  <Provider store={store}>
+    <MuiThemeProvider theme={theme}>
+      <Router basename={basename} >
+        <Candilib />
       </Router>
-    </Provider>
-  );
-}
+    </MuiThemeProvider>
+  </Provider>
+);
 
-MainApp.propTypes = {
-  store: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
-};
+export default App;
