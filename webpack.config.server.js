@@ -34,17 +34,7 @@ module.exports = {
           loader: 'babel-loader',
           options: {
             presets: [
-              'react',
-              'es2015',
-              'stage-0',
-            ],
-            plugins: [
-              [
-                'babel-plugin-webpack-loaders', {
-                  config: './webpack.config.babel.js',
-                  verbose: false,
-                },
-              ],
+              '@babel/preset-env',
             ],
           },
         },

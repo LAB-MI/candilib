@@ -7,7 +7,7 @@ require.extensions['.jpeg'] = noop => noop;
 require.extensions['.png'] = noop => noop;
 require.extensions['.gif'] = noop => noop;
 
-require('babel-register');
+require('@babel/register');
 require('babel-polyfill');
 require('raf/polyfill');
 

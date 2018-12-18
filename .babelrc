@@ -1,18 +1,16 @@
 {
-  "presets": ["react", "es2015", "stage-0"],
-  "plugins": ["react-hot-loader/babel", "babel-plugin-transform-runtime"],
+  "presets": ["@babel/preset-react", "@babel/preset-env", "@ava/stage-4"],
+  "plugins": ["@babel/plugin-transform-runtime"],
   "env": {
     "production": {
       "presets": [
         [
-          "es2015",
+          "@babel/preset-env",
           {
             "modules": false
           }
         ],
-        "react",
-        "react-optimize",
-        "stage-0"
+        "@babel/preset-react"
       ]
     }
   }

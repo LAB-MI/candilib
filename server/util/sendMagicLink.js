@@ -17,7 +17,6 @@ const sendMagicLink = (candidatAurige, token) => {
     smtpTransport(smtpOptions),
   );
 
-  const url = `${serverConfig.host}:${serverConfig.portClient}${serverConfig.authentificationRoute}?token=${encodeURIComponent(token)}&redirect=calendar`;
 
   const mailOptions = {
     from: serverConfig.mailFrom,
