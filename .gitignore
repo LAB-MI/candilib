@@ -14,7 +14,7 @@ server/config.js
 server/models/__tests__
 .history
 .env
-.env-prod 
+.env-prod
 env/*
 server/util/sendMail\.js\.cloud
 
@@ -28,3 +28,4 @@ server/config\.home\.js
 candilib-build/
 db/
 data/
+client/build/

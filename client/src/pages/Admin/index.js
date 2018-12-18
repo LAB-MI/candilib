@@ -35,18 +35,16 @@ class Auth extends Component {
   render () {
     const { isAuthenticated, isGettingToken, signout } = this.props;
     return (
-      <Router>
-        <div>
-          <SignOutButton signout={signout} isAuthenticated={isAuthenticated} />
-          <Route path="/admin-login" component={Login} />
-          <PrivateRoute
-            path="/admin"
-            redirectTo="/admin-login"
-            isAccessGranted={isAuthenticated}
-            component={AdminPage}
-          />
-        </div>
-      </Router>
+      <div>
+        <SignOutButton signout={signout} isAuthenticated={isAuthenticated} />
+        <Route path="/admin-login" component={Login} />
+        <PrivateRoute
+          path="/admin"
+          redirectTo="/admin-login"
+          isAccessGranted={isAuthenticated}
+          component={AdminPage}
+        />
+      </div>
     );
   }
 }

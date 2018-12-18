@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  BrowserRouter as Router,
   Route,
   withRouter
 } from "react-router-dom";
@@ -22,17 +21,15 @@ class Auth extends Component {
   render () {
     const { isAuthenticated, signout } = this.props;
     return (
-      <Router>
-        <div>
-          <Route path="/connexion" component={Login} />
-          <PrivateRoute
-            path="/calendar"
-            redirectTo="/connexion"
-            isAccessGranted={isAuthenticated}
-            component={Candidat}
-          />
-        </div>
-      </Router>
+      <div>
+        <Route path="/connexion" component={Login} />
+        <PrivateRoute
+          path="/calendar"
+          redirectTo="/connexion"
+          isAccessGranted={isAuthenticated}
+          component={Candidat}
+        />
+      </div>
     );
   }
 }
