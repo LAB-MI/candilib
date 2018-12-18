@@ -149,7 +149,7 @@ export default {
     },
 
     async getCreneaux () {
-      const json = await apiClient.get(apiPaths.creneaux, {
+      const json = await apiClient.get(apiPaths.creneaux(), {
         headers: getHeadersForJson(),
       });
       return json;
