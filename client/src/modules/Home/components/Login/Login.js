@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import 'whatwg-fetch';
 import {
   Paper,
@@ -23,6 +25,8 @@ import {
   email as emailRegex,
   phone as phoneRegex,
 } from '../../../../lib/regex';
+import api from '../../../../api';
+import { checkToken } from '../../../../store/Auth/Auth.actions';
 
 const styles = theme => ({
   layout: {
@@ -101,21 +105,28 @@ class Login extends Component {
 
   componentDidMount() {
     const { location = {} } = this.props;
+    const params = new URLSearchParams(location.search);
+    const token = params.get('token');
+    this.props.checkToken(token);
     if (location.state !== undefined) {
       const { error } = location.state;
       if (error !== undefined) {
         const message = errorsConstants[error];
-        const islogin = error === 'token_no_valid';
 
         if (message !== undefined) {
           this.setState({
             success: false,
             openSnackbar: true,
             messageSnackbar: message,
-            isLogin: islogin,
           });
         }
       }
+    }
+  }
+
+  componentDidUpdate () {
+    if (this.props.isAuthenticated) {
+      this.props.history.replace('/calendar');
     }
   }
 
@@ -216,6 +227,8 @@ class Login extends Component {
   handleCreate = e => {
     e.preventDefault();
 
+    const isLogin = this.props.location.pathname.includes('connexion')
+
     const {
       neph,
       nom,
@@ -225,30 +238,23 @@ class Login extends Component {
       prenom,
       portable,
       adresse,
-      isLogin,
     } = this.state;
     this.setState({
       isLoading: true,
     });
     if (email && emailRegex.test(email)) {
       if (!isLogin) {
-        fetch('/api/candidats/signup', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            neph,
-            nom,
-            nomUsage,
-            prenom,
-            email,
-            emailConfirmation,
-            portable,
-            adresse,
-          }),
-        })
-          .then(res => res.json())
+        const formData = {
+          neph,
+          nom,
+          nomUsage,
+          prenom,
+          email,
+          emailConfirmation,
+          portable,
+          adresse,
+        };
+        api.auth.signup(formData)
           .then(json => {
             if (json.success) {
               setInStorage('candilib', {
@@ -273,6 +279,16 @@ class Login extends Component {
                 success: true,
               });
               return;
+            } else {
+              this.setState({
+                messageSnackbar:
+                  'Un problème est survenu, veuillez réessayer plus tard. Nous vous présentons nos excuses.',
+                portableError: false,
+                openSnackbar: true,
+                emailError: false,
+                isLoading: false,
+                success: false,
+              });
             }
             if (json.message.includes('email')) {
               this.setState({
@@ -304,18 +320,20 @@ class Login extends Component {
                 success: false,
               });
             }
+          })
+          .catch(error => {
+            this.setState({
+              messageSnackbar:
+                'Un problème est survenu, veuillez réessayer plus tard. Nous vous présentons nos excuses.',
+              portableError: false,
+              openSnackbar: true,
+              emailError: false,
+              isLoading: false,
+              success: false,
+            });
           });
       } else {
-        fetch('/api/candidats/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email,
-          }),
-        })
-          .then(res => res.json())
+        api.auth.sendMagicLink(this.state.email)
           .then(json => {
             if (json.success) {
               this.setState({
@@ -338,6 +356,15 @@ class Login extends Component {
                 success: false,
               });
             }
+          })
+          .catch(error => {
+            this.setState({
+              messageSnackbar:
+                'Un problème est survenu, veuillez réessayer plus tard. Nous vous présentons nos excuses.',
+              openSnackbar: true,
+              isLoading: false,
+              success: false,
+            });
           });
       }
     } else {
@@ -348,9 +375,9 @@ class Login extends Component {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, location } = this.props;
+    const isLogin = location.pathname.includes('connexion') // TODO: refactor this
     const {
-      isLogin,
       isLoading,
       emailError,
       emailConfirmationError,
@@ -381,9 +408,9 @@ class Login extends Component {
                       id="neph"
                       name="neph"
                       placeholder="0123456978912"
+                      autoFocus
                       autoComplete="neph"
                       value={neph}
-                      autoFocus
                       required
                       onChange={this.handleChange}
                     />
@@ -396,7 +423,6 @@ class Login extends Component {
                       placeholder="DUPONT"
                       autoComplete="nom"
                       value={nom}
-                      autoFocus
                       required
                       onChange={this.handleChange}
                     />
@@ -409,7 +435,6 @@ class Login extends Component {
                       placeholder="Jean"
                       autoComplete="prenom"
                       value={prenom}
-                      autoFocus
                       onChange={this.handleChange}
                     />
                   </FormControl>
@@ -423,7 +448,6 @@ class Login extends Component {
                       error={emailError}
                       autoComplete="email"
                       value={email}
-                      autoFocus
                       required
                       onChange={this.handleChange}
                       onBlur={e => this.checkEmailValidity(true)}
@@ -441,7 +465,6 @@ class Login extends Component {
                       placeholder="jean.dupont@gmail.com"
                       autoComplete="emailConfirmation"
                       value={emailConfirmation}
-                      autoFocus
                       onChange={this.handleChange}
                       onBlur={() => this.checkEmailConfirmation(true)}
                     />
@@ -457,7 +480,6 @@ class Login extends Component {
                       placeholder="06xxxxxxxx"
                       autoComplete="portable"
                       value={portable}
-                      autoFocus
                       onChange={this.handleChange}
                       onBlur={() => this.checkPhone(true)}
                     />
@@ -481,12 +503,14 @@ class Login extends Component {
                     )}
                   </FormControl>
                   <FormControl margin="normal" className={classes.buttonLogin}>
-                    <Button
-                      color="primary"
-                      onClick={() => this.setState({ isLogin: true })}
-                    >
-                      Déjà inscrit ?
-                    </Button>
+                    <Link to="/connexion" className={classes.buttonLogin}>
+                      <Button
+                        color="primary"
+                        onClick={() => this.setState({ isLogin: true })}
+                      >
+                        Déjà inscrit ?
+                      </Button>
+                      </Link>
                   </FormControl>
                 </form>
               )}
@@ -519,13 +543,15 @@ class Login extends Component {
                       <Circle size={25} className={classes.buttonProgress} />
                     )}
                   </FormControl>
-                  <FormControl margin="normal" className={classes.buttonLogin}>
-                    <Button
-                      color="primary"
-                      onClick={() => this.setState({ isLogin: false })}
-                    >
-                      Inscription
-                    </Button>
+                  <FormControl margin="normal" fullWidth>
+                    <Link to="/inscription" className={classes.buttonLogin}>
+                      <Button
+                        color="primary"
+                        onClick={() => this.setState({ isLogin: false })}
+                      >
+                        Inscription
+                      </Button>
+                    </Link>
                   </FormControl>
                 </form>
               )}
@@ -555,8 +581,16 @@ Login.defaultProps = {
 };
 
 Login.propTypes = {
-  classes: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
-  location: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  classes: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(Login);
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+})
+
+const mapDispatchToProps = {
+  checkToken,
+};
+
+export default withStyles(styles)(connect(mapStateToProps, mapDispatchToProps)(Login));

@@ -16,7 +16,7 @@ function Header() {
           <Button component={Link} to="/informations">
             Informations
           </Button>
-          <Button component={Link} to="/auth?redirect=calendar">
+          <Button component={Link} to="/calendar">
             Ma Réservation
           </Button>
         </Toolbar>

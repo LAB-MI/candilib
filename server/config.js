@@ -3,7 +3,7 @@ const config = {
   port: process.env.PORT || 8000,
   portMail: process.env.PORT_MAIL,
   host: process.env.HOST || 'http://localhost',
-  authentificationRoute: '/auth',
+  authentificationRoute: '/connexion',
   secret: process.env.SECRET || 'secret',
   smtpServer: process.env.SMTP_SERVER || '<server>',
   smtpService: process.env.SMTP_SERVICE || undefined,

@@ -41,7 +41,6 @@ class AutoCompleteAddresses extends React.Component {
                     id={inputName}
                     name={inputName}
                     placeholder={placeholder || '10 rue des examens 93000 Bobigny'}
-                    autoFocus
                     {...getInputProps()}
                   />
                   {isOpen &&
