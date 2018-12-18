@@ -31,16 +31,12 @@ script:
   - git fetch --unshallow && git tag -l
 # prepare env
   - touch .env
-#  - echo "# build & run developement"
-#  - docker-compose build && docker-compose up -d
-#  - docker images && docker ps
-#  - timeout=120; test_result=1; until [ "$timeout" -le 0 -o "$test_result" -eq "0" ] ; do curl --retry-max-time 120 --retry-delay 1  --retry 1  http://localhost:8000 ; test_result=$? ; echo "Wait stack up ($timeout)" ; (( timeout-- )) ; sleep 1 ; done
-#  - docker-compose down -v --rmi all
   - echo "# build & run production"
-  - docker-compose -f docker-compose-production.yml build && docker-compose -f docker-compose-production.yml up -d
+  - make build-all-images
   - docker images && docker ps
-  - timeout=120; test_result=1; until [ "$timeout" -le 0 -o "$test_result" -eq "0" ] ; do curl --retry-max-time 120 --retry-delay 1  --retry 1  http://localhost:80 ; test_result=$? ; echo "Wait stack up ($timeout)" ; (( timeout-- )) ; sleep 1 ; done
-  - docker-compose -f docker-compose-production.yml down -v --rmi all
-#
+  - make up-prod
+  - make test-up
+  - make down-prod
 after_script:
+  - make clean-images clean-dir
   - echo "END"
