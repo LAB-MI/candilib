@@ -27,3 +27,4 @@ server/config\.home\.js
 *.tar
 candilib-build/
 db/
+data/

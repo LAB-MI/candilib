@@ -13,7 +13,7 @@ DOCKER := $(shell type -p docker)
 DC     := $(shell type -p docker-compose)
 
 # cli docker-compose
-DC_BUILD_ARGS = --pull --no-cache
+DC_BUILD_ARGS = --pull --no-cache --force-rm
 
 # docker-compose file: development or production  (build or run time)
 DC_APP_BUILD_DEV  := docker-compose.yml
@@ -50,7 +50,7 @@ NPM_REGISTRY = $(shell echo $$NPM_REGISTRY )
 
 # Run env
 #  Mongo DB volume path (in production mode)
-DBDATA := ${APP_PATH}/db
+DBDATA := ${APP_PATH}/data
 
 # export all variables in subshell
 export

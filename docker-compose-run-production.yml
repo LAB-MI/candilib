@@ -16,7 +16,7 @@ services:
   db:
     image: mongo:latest
     volumes:
-      - ${DBDATA}/db:/data/db
+      - ${DBDATA}/mongo:/data/db
     networks:
       - candilib-network
 networks:
