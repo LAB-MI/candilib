@@ -3,7 +3,7 @@ import 'whatwg-fetch';
 import store from '../store';
 import { resetToken } from '../store/Auth/Auth.actions';
 import apiPaths from './api-paths';
-import { ADMIN_STORAGE_TOKEN_KEY, STORAGE_TOKEN_KEY } from '../config/constants';
+import { STORAGE_TOKEN_KEY } from '../config/constants';
 
 const checkStatus = async (response) => {
   if (response.status === 401) {
@@ -32,7 +32,7 @@ export const jsonClient = (url, options) => fetchClient(url, options).then(check
 
 const apiClient = {
   post: (url, options) => (
-    jsonClient(url, { ...options, method: 'POST'})
+    jsonClient(url, { ...options, method: 'post'})
   ),
   get: (url, options) => (
     jsonClient(url, { ...options, method: 'GET'})
@@ -49,15 +49,22 @@ const apiClient = {
 }
 
 const getAdminHeadersForJson = () => {
-  const token = localStorage.getItem(ADMIN_STORAGE_TOKEN_KEY)
+  const token = localStorage.getItem(STORAGE_TOKEN_KEY)
   return {
     'Content-Type': 'application/json',
     'x-access-token': token,
   }
 };
 
+const getTokenHeader = () => {
+  const token = localStorage.getItem(STORAGE_TOKEN_KEY)
+  return {
+    'x-access-token': token,
+  }
+};
+
 const getAdminHeaders = () => {
-  const token = localStorage.getItem(ADMIN_STORAGE_TOKEN_KEY)
+  const token = localStorage.getItem(STORAGE_TOKEN_KEY)
   return {
     'x-access-token': token,
   }
@@ -148,5 +155,35 @@ export default {
       });
       return json;
     },
-  }
+
+    async uploadPlacesCSV (body) {
+      const json = await apiClient.post(apiPaths.admin.uploadPlacesCSV, {
+        headers: getTokenHeader(),
+        body,
+      });
+      return json;
+    },
+
+    async getWhitelist () {
+      const json = await apiClient.get(apiPaths.admin.whitelist, {
+        headers: getTokenHeader(),
+      });
+      return json;
+    },
+
+    async removeFromWhitelist (id) {
+      const json = await apiClient.delete(`${apiPaths.admin.whitelist}/${id}`, {
+        headers: getTokenHeader(),
+      });
+      return json;
+    },
+
+    async addToWhitelist (candidat) {
+      const json = await apiClient.post(apiPaths.admin.whitelist, {
+        headers: getAdminHeadersForJson(),
+        body: JSON.stringify(candidat),
+      });
+     return json;
+    },
+  },
 }

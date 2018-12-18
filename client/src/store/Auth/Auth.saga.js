@@ -1,34 +1,29 @@
 import { call, put, takeEvery } from 'redux-saga/effects';
 import api from '../../api';
 import {
+  CHECK_ADMIN_TOKEN,
   CHECK_TOKEN,
   FETCH_TOKEN,
   RESET_TOKEN,
-  CHECK_ADMIN_TOKEN,
-  FETCH_ADMIN_TOKEN,
-  RESET_ADMIN_TOKEN,
-  resetAdminToken as resetAdminTokenAC,
   resetToken as resetTokenAC,
   setAuthError,
   setToken,
-  setAdminToken,
   setAuthenticated,
-  setAdminAuthenticated,
 } from './Auth.actions';
 
-import { ADMIN_STORAGE_TOKEN_KEY, STORAGE_TOKEN_KEY } from '../../config/constants';
+import { STORAGE_TOKEN_KEY } from '../../config/constants';
 
 const auth = api.auth;
 
 export function * checkAdminToken () {
   const getItem = localStorage.getItem.bind(localStorage)
-  const token = yield call(getItem, ADMIN_STORAGE_TOKEN_KEY);
+  const token = yield call(getItem, STORAGE_TOKEN_KEY);
   if (token) {
-    const action = yield call(setAdminAuthenticated);
+    const action = yield call(setAuthenticated);
     yield put(action);
     return;
   }
-  const action = yield call(resetAdminTokenAC);
+  const action = yield call(resetTokenAC);
   yield put(action);
 }
 
@@ -58,11 +53,6 @@ export function * checkToken (initialAction) {
   }
 }
 
-export function * resetAdminToken () {
-  const removeItem = localStorage.removeItem.bind(localStorage);
-  yield call(removeItem, ADMIN_STORAGE_TOKEN_KEY);
-}
-
 export function * resetToken () {
   const removeItem = localStorage.removeItem.bind(localStorage);
   yield call(removeItem, STORAGE_TOKEN_KEY);
@@ -72,8 +62,8 @@ export function * loginAdmin (initialAction) {
   try {
     const { payload: { email, password }} = initialAction;
     const { token } = yield call(auth.requestToken, email, password);
-    const action = yield call(setAdminToken, token);
-    yield * storeAdminToken(token);
+    const action = yield call(setToken, token);
+    yield * storeToken(token);
     yield put(action);
   } catch (error) {
     let message = error.message;
@@ -91,8 +81,8 @@ export function * login (initialAction) {
   try {
     const { payload: { email, password }} = initialAction
     const { token } = yield call(auth.requestToken, email, password);
+    yield * storeToken(token);
     const action = yield call(setToken, token);
-    yield * storeAdminToken(token);
     yield put(action);
   } catch (error) {
     let message = error.message;
@@ -106,16 +96,14 @@ export function * login (initialAction) {
   }
 }
 
-export function * storeAdminToken (token) {
+export function * storeToken (token) {
   const setItem = localStorage.setItem.bind(localStorage)
-  yield call(setItem, ADMIN_STORAGE_TOKEN_KEY, token);
+  yield call(setItem, STORAGE_TOKEN_KEY, token);
 }
 
 export default function* authSaga() {
-  yield takeEvery(CHECK_ADMIN_TOKEN, checkAdminToken);
-  yield takeEvery(FETCH_ADMIN_TOKEN, loginAdmin);
-  yield takeEvery(RESET_ADMIN_TOKEN, resetAdminToken);
   yield takeEvery(CHECK_TOKEN, checkToken);
+  yield takeEvery(CHECK_ADMIN_TOKEN, checkAdminToken);
   yield takeEvery(FETCH_TOKEN, login);
   yield takeEvery(RESET_TOKEN, resetToken);
 }

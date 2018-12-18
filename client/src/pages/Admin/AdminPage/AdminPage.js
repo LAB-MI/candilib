@@ -24,12 +24,13 @@ import 'moment/locale/fr';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 
-import CreneauEvent from '../../../../components/calendar/CreneauEvent';
-import messages from '../../../../components/calendar/messages';
-import { callApi } from '../../../../util/apiCaller.admin';
-import ListCandidats from '../../../Candidat/components/ListCandidats';
-import ListWhitelist from '../WhiteList/ListWhitelist';
-import SnackbarNotification from '../../../../components/Notifications/SnackbarNotificationWrapper';
+import CreneauEvent from '../../../components/calendar/CreneauEvent';
+import messages from '../../../components/calendar/messages';
+import ListCandidats from './ListCandidats';
+import api from '../../../api';
+import { downloadContent } from '../../../util/createDownload';
+import Whitelist from './Whitelist';
+import SnackbarNotification from '../../../components/Notifications/SnackbarNotificationWrapper';
 
 moment.locale('fr');
 
@@ -101,18 +102,14 @@ class AdminPage extends Component {
   }
 
   getCreneauxCandidats() {
-    callApi('auth/creneaux')
-      .then(response => {
-        return response.json();
-      })
+    api.admin.getCreneaux()
       .then(body => {
-        const eventsCreneaux = [];
         const { creneaux } = body;
         if (creneaux === undefined) {
           return;
         }
-        creneaux.map(item => {
-          const crenauItem = {
+        const eventsCreneaux = creneaux.map(item => {
+          return {
             id: item._id,
             title: `${item.centre} - ${item.inspecteur}`,
             isSelected: item.isSelected,
@@ -125,7 +122,6 @@ class AdminPage extends Component {
               .add(30, 'minutes')
               .toDate(),
           };
-          eventsCreneaux.push(crenauItem);
         });
 
         this.setState({ eventsCreneaux });
@@ -136,19 +132,17 @@ class AdminPage extends Component {
     ev.preventDefault();
 
     const data = new FormData();
-    const fileObject = this.uploadInputCVS.files[0];
+    const fileObject = this.uploadInputCSV.files[0];
     data.append('file', fileObject);
 
-    callApi('admin/candidats/upload/csv')
-      .post(data)
+    api.admin.uploadPlacesCSV(data)
       .then(() => {
         this.setState({
           success: true,
           open: true,
-          snackBarMessage: `${fileObject.name} a été télécharger.`,
+          snackBarMessage: `${fileObject.name} a été téléchargé.`,
         });
         this.getCreneauxCandidats();
-
         this.forceUpdate();
       });
   }
@@ -162,10 +156,7 @@ class AdminPage extends Component {
     const data = new FormData();
     data.append('file', this.uploadInputJSON.files[0]);
 
-
-    callApi('admin/candidats/upload/json')
-      .post(data)
-      .then(response => response.json())
+    api.admin.uploadCandidatsJson(data)
       .then(json => {
         console.log(json);
         this.setState({
@@ -182,10 +173,10 @@ class AdminPage extends Component {
     this.setState({ open: false });
   };
 
-  handleDownLoadCSV(ev) {
+  async handleDownLoadCSV(ev) {
     ev.preventDefault();
-
-    callApi('admin/candidats/export').download();
+    const response = await api.admin.exportCsv()
+    downloadContent(response)
   }
 
   handleMessage(ev) {
@@ -235,7 +226,7 @@ class AdminPage extends Component {
                     </FormControl>
 
                     <FormControl margin="normal" required>
-                      <Button type="submit" color="primary" variant="raised">
+                      <Button type="submit" color="primary" variant="contained">
                         Synchronisation JSON Aurige
                       </Button>
                     </FormControl>
@@ -251,7 +242,16 @@ class AdminPage extends Component {
                     <List>
                       {resultCandidats &&
                         resultCandidats.map(candidat => {
-                          return <ListItem> <ListItemIcon>{candidat.status === 'success' ? <CheckIcon /> : <CloseIcon />}</ListItemIcon> <ListItemText>{candidat.nom}/{candidat.neph}  </ListItemText></ListItem>
+                          return (
+                            <ListItem key={candidat.id}>
+                              <ListItemIcon>
+                                {candidat.status === 'success' ? <CheckIcon /> : <CloseIcon />}
+                              </ListItemIcon>
+                              <ListItemText>
+                                {candidat.nom} {candidat.neph}
+                              </ListItemText>
+                            </ListItem>
+                          )
                         })}
                     </List>
                   </Paper>
@@ -262,7 +262,7 @@ class AdminPage extends Component {
               <Button
                 type="submit"
                 color="primary"
-                variant="raised"
+                variant="contained"
                 onClick={this.handleDownLoadCSV}
               >
                 Export CSV
@@ -280,14 +280,14 @@ class AdminPage extends Component {
                     type="file"
                     name="csvFile"
                     inputRef={ref => {
-                      this.uploadInputCVS = ref;
+                      this.uploadInputCSV = ref;
                     }}
                     autoFocus
                   />
                 </FormControl>
 
                 <FormControl margin="normal" required>
-                  <Button type="submit" color="primary" variant="raised">
+                  <Button type="submit" color="primary" variant="contained">
                     Chargement CSV Candilib
                   </Button>
                 </FormControl>
@@ -295,7 +295,7 @@ class AdminPage extends Component {
             </CardContent>
 
             <Paper className={`${classes.paper} ${classes.calendar}`}>
-              <Typography variant="headline" component="h3">
+              <Typography variant="display2">
                 Calendrier
               </Typography>
               <BigCalendar
@@ -339,7 +339,7 @@ class AdminPage extends Component {
               <Typography variant="headline" component="h3">
                 WhiteList
               </Typography>
-              <ListWhitelist onMessage={this.handleMessage} />
+              <Whitelist onMessage={this.handleMessage} />
             </Paper>
           </Card>
         </Grid>

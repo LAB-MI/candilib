@@ -11,5 +11,7 @@ export default {
     uploadCandidatsJson: `${apiPrefix}/admin/candidats/upload/json`,
     uploadCandidatsCsv: `${apiPrefix}/admin/candidats/upload/csv`,
     exportCsv: `${apiPrefix}/admin/candidats/export`,
+    uploadPlacesCSV: `${apiPrefix}/admin/candidats/upload/csv`,
+    whitelist: `${apiPrefix}/admin/whitelist/candidats`,
   }
 }

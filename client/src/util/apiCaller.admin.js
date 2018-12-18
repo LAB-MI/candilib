@@ -6,7 +6,7 @@ export class ApiCaller {
   constructor(endpoint, method = 'get', body) {
     this._endpoint = endpoint;
     this._method = method;
-    const token = getFromStorage(KEYSTORAGETOKEN);
+    const token = localStorage.getItem(KEYSTORAGETOKEN);
     this._headers = {
       'content-type': 'application/json',
       'x-access-token': token,
@@ -74,7 +74,6 @@ export class ApiCaller {
   }
 
   post(body) {
-    this._method = 'post';
     if (body instanceof FormData) {
       delete this._headers['content-type'];
       this._body = body;

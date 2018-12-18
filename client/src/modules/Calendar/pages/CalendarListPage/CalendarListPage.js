@@ -279,9 +279,7 @@ class CalendarListPage extends Component {
     })
       .then(() => {
         this.forceUpdate();
-      },
-      (err) => console.log(err)
-      );
+      });
   }
 
   unselectCreneau(creneau) {
@@ -289,10 +287,7 @@ class CalendarListPage extends Component {
     creneau.isSelected = false;
     callApi(`auth/creneaux/${creneau.id}`, 'put', {
       creneau,
-    }).then(
-      () => { },
-      (err) => console.log(err)
-    );
+    });
   }
 
   updateCandidat(candidat) {

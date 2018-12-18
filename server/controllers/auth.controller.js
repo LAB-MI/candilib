@@ -121,7 +121,7 @@ export function login(req, res) {
       },
     );
 
-    res.status(200).send({ auth: true, 'access-token': token });
+    res.status(200).send({ auth: true, token });
   });
 }
 

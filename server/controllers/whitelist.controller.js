@@ -29,12 +29,12 @@ export function canToRegister(req, res, next) {
 
 export async function addWhitelist(req, res) {
   const { email } = req.body;
+  console.log(req.body, email)
 
   const newCandidat = new WhitelistCandidat();
 
   // Let's sanitize inputs
   newCandidat.email = sanitizeHtml(email);
-
 
   try {
     const candidat = await newCandidat.save()

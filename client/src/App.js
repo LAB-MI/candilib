@@ -6,7 +6,7 @@ import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import 'moment/locale/fr';
 
 import store from './store';
-import theme from './theme';
+import theme from './config/theme';
 import Candilib from './pages/Candilib';
 
 const basename = process.env.NODE_ENV === 'development' ? '' : '/candilib'

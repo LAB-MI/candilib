@@ -12,7 +12,7 @@ import {
   TableEditColumn,
   TableEditRow,
 } from '@devexpress/dx-react-grid-material-ui';
-import { callApi } from '../../../../util/apiCaller.admin';
+import api from '../../../api';
 
 const styles = () => ({
   table: {
@@ -97,20 +97,19 @@ class ListWhitelists extends Component {
   }
 
   getCandidats() {
-    callApi('admin/whitelist/candidats')
-      .get()
-      .then(response => response.json())
+    api.admin.getWhitelist()
       .then(candidats => {
         this.setState({ candidats });
+      })
+      .catch(err => {
+        console.log(err);
       });
   }
 
   addWhitelist(newCandidats) {
     let { candidats } = this.state;
     newCandidats.forEach(newCandidat => {
-      callApi('admin/whitelist/candidats')
-        .post(newCandidat)
-        .then(response => response.json())
+      api.admin.addToWhitelist(newCandidat)
         .then(candidat => {
           candidats = [...candidats, candidat];
           this.setState({ candidats });
@@ -127,9 +126,7 @@ class ListWhitelists extends Component {
 
   deleteWhilelist(idCandidat) {
     let { candidats } = this.state;
-    callApi('admin/whitelist/candidats')
-      .delete(idCandidat)
-      .then(response => response.json())
+    api.admin.removeFromWhitelist(idCandidat)
       .then(candidat => {
         candidats = candidats.filter(row => row._id !== candidat._id);
         this.setState({ candidats });

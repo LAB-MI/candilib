@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { Circle } from 'better-react-spinkit';
 import blue from '@material-ui/core/colors/blue';
 import { withRouter } from 'react-router-dom';
-import 'whatwg-fetch';
 
 import {
   Typography,
@@ -16,9 +15,9 @@ import {
   withStyles,
   CssBaseline,
   Snackbar,
-} from '../../../../components';
-import { requestToken, resetAuthError as resetAuthErrorAC } from '../../../../store/Auth/Auth.actions';
-import SnackbarNotification from '../../../../components/Notifications/SnackbarNotificationWrapper';
+} from '../../../components';
+import { checkAdminToken, requestToken, resetAuthError as resetAuthErrorAC } from '../../../store/Auth/Auth.actions';
+import SnackbarNotification from '../../../components/Notifications/SnackbarNotificationWrapper';
 
 
 const styles = theme => ({
@@ -84,12 +83,12 @@ class Login extends Component {
 
   componentDidUpdate () {
     if (this.props.isAuthenticated) {
+      console.log('Replacing in history', this.props.history)
       this.props.history.replace('/admin');
     }
   }
 
-
-  handleClose = () => {
+  resetError = () => {
     this.props.resetAuthError();
   };
 
@@ -104,7 +103,6 @@ class Login extends Component {
 
     const { email, password } = this.state;
 
-    console.log({ email, password })
     if (email && email.trim() && password && password.trim()) {
       this.props.login(email, password);
     }
@@ -153,7 +151,6 @@ class Login extends Component {
                     error={emailError}
                     name="password"
                     value={password}
-                    autoFocus
                     onChange={this.handleChange}
                   />
                 </FormControl>
@@ -181,11 +178,11 @@ class Login extends Component {
         <Snackbar
           open={hasError}
           autoHideDuration={8000}
-          onClose={this.handleClose}
+          onClose={this.resetError}
           className={classes.snackbar}
         >
           <SnackbarNotification
-            onClose={this.handleClose}
+            onClose={this.resetError}
             variant="error"
             className={classes.snackbarContent}
             message={signInError}
@@ -213,6 +210,7 @@ const mapStateToProps = ({auth}) => ({
 
 const mapDispatchToProps = {
   login: requestToken,
+  checkAdminToken,
   resetAuthError: resetAuthErrorAC,
 }
 

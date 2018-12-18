@@ -6,7 +6,7 @@ import { KEYSTORAGETOKEN } from './app.constants';
 export const API_URL = typeof window === 'undefined'
   || process.env.NODE_ENV === 'test'
   || process.env.NODE_ENV === 'development'
-    ? process.env.BASE_URL || `http://localhost:${process.env.PORT}/api`
+    ? process.env.BASE_URL || `http://localhost:${process.env.PORT || 3000}/api`
     : '/candilib/api';
 
 export default function callApi(endpoint, method = 'get', body) {
