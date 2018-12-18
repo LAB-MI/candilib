@@ -10,6 +10,7 @@ services:
           proxy: ${http_proxy}
           npm_registry: ${NPM_REGISTRY}
           no_proxy: ${no_proxy}
+    container_name: candilib_web
     depends_on:
       - db
     ports:
@@ -21,6 +22,7 @@ services:
       - candilib-network
   db:
     image: mongo:latest
+    container_name: candilib_db
     volumes:
       - dbdata:/data/db
     networks:
