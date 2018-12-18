@@ -1,4 +1,4 @@
-const apiPrefix = `${process.env.PUBLIC_PATH || ''}/api`
+const apiPrefix = `${process.env.PUBLIC_URL || ''}/api`
 
 export default {
   login: `${apiPrefix}/users/login`,
