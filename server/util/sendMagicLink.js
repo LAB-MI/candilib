@@ -6,7 +6,9 @@ import serverConfig, { smtpOptions } from '../config';
 
 const sendMagicLink = (candidatAurige, token) => {
   const flag = 'CHECK_OK';
-  const message = mailMessage(candidatAurige, flag);
+  const url = `${serverConfig.PUBLIC_URL}${serverConfig.authentificationRoute}?token=${encodeURIComponent(token)}&redirect=calendar`;
+
+  const message = mailMessage(candidatAurige, flag, url);
   // const INSCRIPTION_OK_MSG = `Bienvenue sur Candilib! </br>\n\r
   //   Vous êtes inscrit sur le site de réservation des candidats libres.</br>\n\r
   //   Voici votre identifiant: ${email}\n`;
@@ -15,7 +17,6 @@ const sendMagicLink = (candidatAurige, token) => {
     smtpTransport(smtpOptions),
   );
 
-  const url = `${serverConfig.host}:${serverConfig.portMail}${serverConfig.authentificationRoute}?token=${encodeURIComponent(token)}&redirect=calendar`;
 
   const mailOptions = {
     from: serverConfig.mailFrom,
@@ -105,12 +106,6 @@ const sendMagicLink = (candidatAurige, token) => {
                                               <tr>
                                                 <td class="article-content" colspan="2">
                                                   ${message.content}
-                                                  <br/>
-                                                  <p>
-                                                  <a href="${url}">
-                                                    Vous pouvez vous connecter à Candilb en cliquant sur ce lien
-                                                  </a>
-                                                  </p>
                                                 </td>
                                               </tr>
                                             </tbody>
