@@ -13,11 +13,12 @@ import {
 } from './constant';
 import sites from '../inbox/sites.json';
 import serverConfig from '../config';
-import Downshift from 'downshift';
 
-const mailMessage = (candidatAurige, flag) => {
-  const urlFAQ = `${serverConfig.host}:${serverConfig.portMail}/informations`;
-  const urlRESA = `${serverConfig.host}:${serverConfig.portMail}/auth?redirect=calendar`;
+const mailMessage = (candidatAurige, flag, urlMagicLink) => {
+  const urlFAQ = `${serverConfig.PUBLIC_URL}/informations`;
+  const urlRESA = `${serverConfig.PUBLIC_URL}/auth?redirect=calendar`;
+  const urlConnexion = `${serverConfig.PUBLIC_URL}`;
+
   const { codeNeph, nomNaissance, creneau } = candidatAurige;
 
   const message = {};
@@ -50,7 +51,7 @@ const mailMessage = (candidatAurige, flag) => {
   <br>
   <p>Nous avons bien pris en compte votre réservation à l'examen pratique
   du permis de conduire à ${site} le ${dateCreneau} à ${heureCreneau} avec
-   le numéro NEPH ${codeNeph}.!</p>
+   le numéro NEPH ${codeNeph}.</p>
   <p>${siteAdresse.adresse} </p>
   <br>
   <p>Nous vous rappelons les éléments à vérifier le jour de l'examen :</p>
@@ -70,15 +71,19 @@ const mailMessage = (candidatAurige, flag) => {
             <li>
               soit une personne dont le permis B est en cours de validité.
               Cette dernière devra présenter son permis ainsi que
-              la « charte de l’accompagnateur »
-              (<a href='https://www.legifrance.gouv.fr/jo_pdf.do?id=JORFTEXT000036251681'>https://www.legifrance.gouv.fr/jo_pdf.do?id=JORFTEXT000036251681</a>) remplie et signée
+              la « <a href='https://www.legifrance.gouv.fr/jo_pdf.do?id=JORFTEXT000036251681'>charte de l’accompagnateur</a> » remplie et signée
               pour la remettre à l’inspecteur avant le début de l’examen.
             </li>
             <li>
               <p>
                 Vous présenterez un titre d’identité en cours de validité : carte nationale
                 d’identité, passeport ou titre de séjour
-                (liste complète <a href='https://legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000033736411&categorieLien=id'>https://legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000033736411&categorieLien=id</a>).
+                (liste complète             {' '}
+                <a href="https://legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000033736411&categorieLien=id">
+                  arrêté du 23 décembre 2016 relatif à la justification de
+                  l&apos;identité, du domicile, de la résidence normale et de la
+                  régularité du séjour pour l&apos;obtention du permis de conduire
+                </a>).
               <p>
             </li>
             <li>
@@ -105,8 +110,7 @@ const mailMessage = (candidatAurige, flag) => {
       <li>
         Lorsque vous avez fait l'objet d'une annulation du permis, le récépissé
         de la « fiche retour au permis de conduire » que vous aurez imprimé
-        sur le site de l’ ANTS :
-        <a href='https://permisdeconduire.ants.gouv.fr/'>https://permisdeconduire.ants.gouv.fr/</a>.
+        sur le site de l’ <a href='https://permisdeconduire.ants.gouv.fr/'>ANTS</a>.
       </li>
     </ul>
   </div>
@@ -120,26 +124,41 @@ const mailMessage = (candidatAurige, flag) => {
     <br/>
   </p>
   <p>
-    Si besoin, vous pouvez annuler votre réservation sur <a href=${urlRESA}>Ma réservation</a>.
+    Si besoin, vous pouvez annuler <a href=${urlRESA}>votre réservation</a>.
     Si vous annulez 7 jours avant la date prévue, vous pourrez choisir un autre créneau disponible.
     Nous vous souhaitons une bonne préparation et le succès à l'examen.
-    Pour toute information, vous pouvez consulter notre aide en ligne : <a href=${urlFAQ}>Informations</a>.
+    Pour toute information, vous pouvez consulter <a href=${urlFAQ}>notre aide en ligne</a>.
   </p>
-  <p>
-    Sincères salutations,
-  </p>
-  <p>Candilib</p>
-  `;
+  <br/>
+  <p align="right">L'équipe Candilib</p>`;
 
   const INSCRIPTION_OK_MSG = `<p>Bonjour Mr/Mme ${nomMaj},</p>
   <br>
   <p>Bienvenue sur Candilib !</p>
   <br>
-  <p>Vous êtes à présent inscrit sur le site de réservation de l'examen pratique du permis de conduire.</p>
-  <p><b>Conservez précieusement ce mail qui vous permettra de vous connecter sur le site Candilib</b></p>
-  <p>Votre identifiant de connexion est l'adresse mail que vous nous avez fournie lors de votre inscription :
-  ${candidatAurige.email}
-  </p>`;
+  <p>Vous êtes inscrit sur le site de réservation de l'examen pratique du permis de conduire.</p>
+  <br/>
+  <p>
+  <a href="${urlMagicLink}">
+    Se connecter
+  </a>
+  </p>
+  <br/>
+  <p>
+      Ce lien est valable 3 jours à compter de la réception de cet email.
+  </p>
+  <p>
+     Passé ce délai, allez sur <a href="${urlConnexion}">Candilib</a>, saisissez votre adresse email ${candidatAurige.email} dans  "déjà inscrit" et vous recevrez un nouveau lien par email.
+  </p>
+  <p>
+    Lorsque vous recevrez l’email, cliquez sur "Se connecter".
+  </p>
+  <br/>
+  <p>
+  <strong>Attention:</strong>vous ne devez transmettre cet email à personne. Il permet d'accéder à votre compte personnel, de créer ou modifier votre réservation. 
+  </p>
+  
+  <p align="right">L'équipe Candilib</p>`;
 
   const INSCRIPTION_KO_MSG = `<p>Bonjour Mr/Mme ${nomMaj},</p>
   <br>
@@ -150,8 +169,7 @@ const mailMessage = (candidatAurige, flag) => {
   <p align="center">NEPH ${codeNeph} / NOM ${nomMaj}</p>
   <p>Merci de les vérifier avant de renouveler votre demande d’inscription.</p>
   <br>
-  <p>Veuillez consulter notre aide en ligne :<p>
-  <p><a href=${urlFAQ}>Informations</a></p>
+  <p>Veuillez consulter notre <a href=${urlFAQ}>aide en ligne</a>.<p>
   <br>
   <p align="right">L'équipe Candilib</p>`;
 
@@ -165,8 +183,7 @@ const mailMessage = (candidatAurige, flag) => {
     vous ne pouvez pas rejoindre le site de réservation des candidats libres sans examen du code de la route réussi
     et en cours de validité.
   </p>
-  <p>Vous pourrez trouver des informations utiles en consultant notre aide en ligne:<p>
-  <p><a href=${urlFAQ}>Informations</a></p>
+  <p>Vous pourrez trouver des informations utiles en consultant notre <a href=${urlFAQ}>aide en ligne</a>.<p>
   <br>
   <p align="right">L'équipe Candilib</p>`;
 
@@ -174,8 +191,7 @@ const mailMessage = (candidatAurige, flag) => {
   <br>
   <p>Votre code de la route n’est pas/plus valide.</p>
   </p>Vous ne pouvez pas rejoindre le site de réservation des candidats libres sans examen du code de la route réussi et en cours de validité.</p>
-  <p>Vous pourrez trouver des informations utiles en consultant notre aide en ligne:<p>
-  <p><a href=${urlFAQ}>Informations</a></p>
+  <p>Vous pourrez trouver des informations utiles en consultant <a href=${urlFAQ}>notre aide en ligne</a>.<p>
   <br>
   <p align="right">L'équipe Candilib</p>`;
 
@@ -188,43 +204,43 @@ const mailMessage = (candidatAurige, flag) => {
   switch (flag) {
   case CANDIDAT_NOK:
     message.content = INSCRIPTION_KO_MSG;
-    message.subject = '<ne pas répondre> Inscription Candilib non validée';
+    message.subject = 'Inscription Candilib non validée';
     return message;
   case INSCRIPTION_VALID:
     message.content = INSCRIPTION_VALID_MSG;
-    message.subject = "<ne pas répondre> Confirmation d'inscription Candilib";
+    message.subject = "Confirmation d'inscription Candilib";
     return message;
   case CANDIDAT_NOK_NOM:
     message.content = INSCRIPTION_KO_MSG;
-    message.subject = '<ne pas répondre> Inscription Candilib non validée';
+    message.subject = 'Inscription Candilib non validée';
     return message;
   case EPREUVE_PRATIQUE_OK:
     message.content = EPREUVE_PRATIQUE_OK_MSG;
-    message.subject = '<ne pas répondre> Problème inscription Candilib';
+    message.subject = 'Problème inscription Candilib';
     return message;
   case INSCRIPTION_OK:
     message.content = INSCRIPTION_VALID_MSG;
-    message.subject = '<ne pas répondre> Inscription Candilib en attente de vérification';
+    message.subject = 'Inscription Candilib en attente de vérification';
     return message;
   case EPREUVE_ETG_KO:
     message.content = EPREUVE_ETG_KO_MSG;
-    message.subject = '<ne pas répondre> Problème inscription Candilib';
+    message.subject = 'Problème inscription Candilib';
     return message;
   case AURIGE_OK:
     message.content = INSCRIPTION_OK_MSG;
-    message.subject = '<ne pas répondre> Validation de votre inscription à Candilib';
+    message.subject = 'Validation de votre inscription à Candilib';
     return message;
   case MAIL_CONVOCATION:
     message.content = MAIL_CONVOCATION_MSG;
-    message.subject = "<ne pas répondre> Convocation à l'examen";
+    message.subject = "Convocation à l'examen";
     return message;
   case ANNULATION_CONVOCATION:
     message.content = ANNULATION_CONVOCATION_MSG;
-    message.subject = "<ne pas répondre> Annulation de Convocation à l'examen";
+    message.subject = "Annulation de Convocation à l'examen";
     return message;
   case INSCRIPTION_UPDATE:
     message.content = INSCRIPTION_VALID_MSG;
-    message.subject = '<ne pas répondre> Inscription Candilib en attente de vérification';
+    message.subject = 'Inscription Candilib en attente de vérification';
     return message;
   default:
     return '';

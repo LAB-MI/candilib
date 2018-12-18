@@ -12,7 +12,8 @@ const config = {
   mailPassword: process.env.MAIL_PASSWORD || undefined,
   mailFrom: process.env.MAIL_FROM || '<mail_from>',
   tokenCandidatExpired: process.env.CANDIDAT_EXPIREDIN || '1h',
-  appURL: process.env.APP_URL || 'http://localhost:8000',
+  supportMail: process.env.EMAIL_SUPPORT || 'candilib93@developpement-durable.gouv.fr',
+  PUBLIC_URL: process.env.PUBLIC_URL || 'http://localhost:80',
 };
 
 export const smtpOptions = {

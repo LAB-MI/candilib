@@ -824,3 +824,8 @@ export const uploadAurigeJSON = (req, res) => {
 
   });
 };
+
+
+export function mailToContactUs(req, res) {
+  return res.status(200).send({ emailto: serverConfig.supportMail});
+}

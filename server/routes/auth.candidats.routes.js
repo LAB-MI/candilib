@@ -6,6 +6,8 @@ const router = new Router();
 // verify candidat on login by magic link
 router.route('/candidats/me').get(CandidatsController.verifyMe);
 
+router.route('/candidats/contactus').get(CandidatsController.mailToContactUs);
+
 // Get all Candidats
 router.route('/candidats').get(CandidatsController.getCandidats);
 
