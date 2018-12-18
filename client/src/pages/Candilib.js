@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import { withStyles } from "@material-ui/core/styles";
 
@@ -13,10 +12,6 @@ import Header from '../modules/App/components/Header/Header' // TODO: Refactor t
 import Footer from '../modules/App/components/Footer/Footer' // TODO: Refactor this path
 import GeneralConditions from '../modules/GeneralConditions/GeneralConditions'
 import Informations from '../modules/Informations/Informations'
-import {
-  checkToken as checkTokenAC,
-  checkAdminToken as checkAdminTokenAC,
-} from '../store/Auth/Auth.actions'
 
 const styles = theme => ({
   wrapper: {
@@ -26,9 +21,6 @@ const styles = theme => ({
 })
 
 class Candilib extends Component {
-  componentDidMount() {
-    this.props.checkAdminToken();
-  }
   render () {
     const { classes } = this.props
     return (
@@ -58,11 +50,5 @@ Candilib.propTypes = {
   classes: PropTypes.object.isRequired,
 }
 
-const mapDispatchToProps = {
-  checkAdminToken: checkAdminTokenAC,
-  checkToken: checkTokenAC,
-}
 
-const ConnectedCandilib = connect(null, mapDispatchToProps)(Candilib)
-
-export default withRouter(withStyles(styles)(ConnectedCandilib));
+export default withRouter(withStyles(styles)(Candilib));

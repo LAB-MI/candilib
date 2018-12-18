@@ -1,9 +1,9 @@
 const config = {
   mongoURL: process.env.MONGO_URL || 'mongodb://localhost:27017/candilib',
   port: process.env.PORT || 8000,
-  portMail: process.env.PORT_MAIL,
+  portClient: process.env.PORT_CLIENT,
   host: process.env.HOST || 'http://localhost',
-  authentificationRoute: '/connexion',
+  authentificationRoute: `${process.env.PUBLIC_PATH || ''}/connexion`,
   secret: process.env.SECRET || 'secret',
   smtpServer: process.env.SMTP_SERVER || '<server>',
   smtpService: process.env.SMTP_SERVICE || undefined,

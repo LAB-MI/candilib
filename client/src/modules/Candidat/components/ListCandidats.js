@@ -12,6 +12,7 @@ import moment from 'moment';
 import 'moment/locale/fr';
 import { callApi } from '../../../util/apiCaller.admin';
 import RowDetail from './RowDetail';
+import api from '../../../api';
 
 moment.locale('fr');
 
@@ -47,9 +48,7 @@ class ListCandidats extends Component {
   }
 
   getCandidats() {
-    callApi('auth/candidats')
-      .get()
-      .then(response => response.json())
+    api.admin.getCandidats()
       .then(candidats => {
         const candidatsFiltredSorted = candidats.filter((candidat) => {
           return candidat && candidat.creneau && candidat.creneau.centre && candidat.creneau.inspecteur;

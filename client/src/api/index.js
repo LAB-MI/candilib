@@ -48,7 +48,7 @@ const apiClient = {
   ),
 }
 
-const getAdminHeadersForJson = () => {
+const getHeadersForJson = () => {
   const token = localStorage.getItem(STORAGE_TOKEN_KEY)
   return {
     'Content-Type': 'application/json',
@@ -63,26 +63,11 @@ const getTokenHeader = () => {
   }
 };
 
-const getAdminHeaders = () => {
-  const token = localStorage.getItem(STORAGE_TOKEN_KEY)
-  return {
-    'x-access-token': token,
-  }
-};
-
-const getCandidatHeaders = () => {
-  const token = localStorage.getItem(STORAGE_TOKEN_KEY)
-  return {
-    'Content-Type': 'application/json',
-    'x-access-token': token,
-  }
-};
-
 export default {
   auth: {
     async sendMagicLink (email) {
       const json = await apiClient.post(apiPaths.sendMagicLink, {
-        headers: getCandidatHeaders(),
+        headers: getHeadersForJson(),
         body: JSON.stringify({
           email,
         }),
@@ -114,36 +99,65 @@ export default {
     },
 
     async verifyToken(token) {
-      const json = await apiClient.post(apiPaths.verifyToken, {
+      const json = await apiClient.get(`${apiPaths.verifyToken}?token=${token}`, {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          token,
-        }),
       })
       return json;
+    }
+  },
+
+  candidat: {
+    async getCreneaux () {
+      const json = await apiClient.get(apiPaths.creneaux(), {
+        headers: getHeadersForJson(),
+      });
+      return json;
+    },
+
+    async updateCreneau (id, creneau) {
+      const json = await apiClient.put(apiPaths.creneaux(id), {
+        headers: getHeadersForJson(),
+        body: JSON.stringify({ creneau }),
+      });
+      return json;
+    },
+
+    async getMe() {
+      const json = await apiClient.get(apiPaths.candidat('me'), {
+        headers: getHeadersForJson(),
+      })
+      return json;
+    },
+
+    async updateMe (id, candidat) {
+      const json = await apiClient.put(apiPaths.candidat(id), {
+        headers: getHeadersForJson(),
+        body: JSON.stringify({ candidat }),
+      })
+      return json
     }
   },
 
   admin: {
     async getCandidats () {
       const json = await apiClient.get(apiPaths.admin.candidats, {
-        headers: getAdminHeadersForJson(),
+        headers: getHeadersForJson(),
       });
       return json;
     },
 
     async getCreneaux () {
       const json = await apiClient.get(apiPaths.creneaux, {
-        headers: getAdminHeadersForJson(),
+        headers: getHeadersForJson(),
       });
       return json;
     },
 
     async uploadCandidatsJson (body) {
       const json = await apiClient.post(apiPaths.admin.uploadCandidatsJson, {
-        headers: getAdminHeaders(),
+        headers: getTokenHeader(),
         body,
       });
       return json;
@@ -151,7 +165,7 @@ export default {
 
     async exportCsv () {
       const json = await apiClient.getRaw(apiPaths.admin.exportCsv, {
-        headers: getAdminHeaders(),
+        headers: getTokenHeader(),
       });
       return json;
     },
@@ -180,10 +194,10 @@ export default {
 
     async addToWhitelist (candidat) {
       const json = await apiClient.post(apiPaths.admin.whitelist, {
-        headers: getAdminHeadersForJson(),
+        headers: getHeadersForJson(),
         body: JSON.stringify(candidat),
       });
-     return json;
+      return json;
     },
   },
 }

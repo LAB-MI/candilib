@@ -4,8 +4,9 @@ export default {
   login: `${apiPrefix}/users/login`,
   sendMagicLink: `${apiPrefix}/candidats/login`,
   verifyToken: `${apiPrefix}/auth/verify-token`,
-  creneaux: `${apiPrefix}/auth/creneaux`,
+  creneaux: (id) => `${apiPrefix}/auth/creneaux${id ? `/${id}` : ''}`,
   signup: `${apiPrefix}/candidats/signup`,
+  candidat: (id) => `${apiPrefix}/auth/candidats${id ? `/${id}` : ''}`,
   admin: {
     candidats: `${apiPrefix}/auth/candidats`,
     uploadCandidatsJson: `${apiPrefix}/admin/candidats/upload/json`,

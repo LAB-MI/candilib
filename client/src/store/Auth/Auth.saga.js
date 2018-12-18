@@ -11,7 +11,7 @@ import {
   setAuthenticated,
 } from './Auth.actions';
 
-import { STORAGE_TOKEN_KEY } from '../../config/constants';
+import { STORAGE_TOKEN_KEY, STORAGE_CANDIDAT_ID_KEY } from '../../config/constants';
 
 const auth = api.auth;
 
@@ -41,6 +41,7 @@ export function * checkToken (initialAction) {
       if (result.isAuthenticated) {
         const setItem = localStorage.setItem.bind(localStorage);
         yield call(setItem, STORAGE_TOKEN_KEY, token);
+        yield call(setItem, STORAGE_CANDIDAT_ID_KEY, result.id);
         const action = yield call(setAuthenticated);
         yield put(action);
       }

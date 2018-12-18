@@ -11,6 +11,8 @@ const router = new Router();
 // Add a new Candidat
 router.route('/candidats').post(CandidatsController.addCandidat);
 
+router.route('/candidats/me').get(CandidatsController.getCandidat);
+
 // Update Candidat by id
 router.route('/candidats/:id').put(CandidatsController.updateCandidat);
 

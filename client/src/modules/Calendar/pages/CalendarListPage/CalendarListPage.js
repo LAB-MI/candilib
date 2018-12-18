@@ -18,11 +18,10 @@ import 'moment/locale/fr';
 
 import CreneauEvent from '../../../../components/calendar/CreneauEvent';
 import messages from '../../../../components/calendar/messages';
-import callApi from '../../../../util/apiCaller';
-import { getFromStorage } from '../../../../util/storage';
 import CreneauDialog from '../../components/CreneauDialog';
 import SnackbarNotification from '../../../../components/Notifications/SnackbarNotificationWrapper';
 import sites from './sites.json';
+import api from '../../../../api';
 
 moment.locale('fr');
 
@@ -162,56 +161,57 @@ class CalendarListPage extends Component {
   }
 
   componentDidMount() {
-
-    setInterval(() => {
-      this.getCreneauxCandidats();
+    function getData() {
       this.getCandidat();
+      this.getCreneauxCandidats();
+      setTimeout(getData.bind(this), 3000);
+    }
+    getData.bind(this)();
+  }
 
-    }, 10000);
-    this.getCandidat();
-    this.getCreneauxCandidats();
+  componentWillUnmount () {
+    clearInterval(this.interval)
   }
 
   getCreneauxCandidats() {
-    callApi('auth/creneaux/', 'get').then(res => {
-      let creneauxCandidats = [];
-      const { creneaux } = res;
+    api.candidat.getCreneaux()
+      .then(res => {
+        let creneauxCandidats = [];
+        const { creneaux } = res;
 
-      if (creneaux) {
-        creneauxCandidats = creneaux.map(item => {
-          if (item.isSelected && this.state.candidat._id !== item.candidat) {
-            return null;
-          }
-          const creneauItem = {
-            id: item._id,
-            title: `${item.centre}`,
-            isSelected: item.isSelected,
-            inspecteur: item.inspecteur,
-            centre: item.centre,
-            start: moment(
-              moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss'),
-            ).toDate(),
-            end: moment(moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss'))
-              .add(30, 'minutes')
-              .toDate(),
-          };
-          return creneauItem;
-        })
-          .filter(item => item !== null);
-      }
-      this.setState({ creneauxCandidats, success: true });
-    });
+        if (creneaux) {
+          creneauxCandidats = creneaux.map(item => {
+            if (item.isSelected && this.state.candidat._id !== item.candidat) {
+              return null;
+            }
+            const creneauItem = {
+              id: item._id,
+              title: `${item.centre}`,
+              isSelected: item.isSelected,
+              inspecteur: item.inspecteur,
+              centre: item.centre,
+              start: moment(
+                moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss'),
+              ).toDate(),
+              end: moment(moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss'))
+                .add(30, 'minutes')
+                .toDate(),
+            };
+            return creneauItem;
+          })
+            .filter(item => item !== null);
+        }
+        this.setState({ creneauxCandidats, success: true });
+      });
   }
 
   getCandidat() {
-    const id = getFromStorage('candidatId');
-
-    callApi(`auth/candidats/${id}`, 'post').then(res => {
+    api.candidat.getMe().then(candidat => {
       // eslint-disable-next-line no-param-reassign
-      res.candidat.initialCandidat = `${res.candidat.nomNaissance
+      candidat.initialCandidat = `${candidat.nomNaissance
         .charAt(0)
-        .toUpperCase()}${res.candidat.prenom.charAt(0).toUpperCase()}`;
-      this.setState({ candidat: res.candidat, success: true });
+        .toUpperCase()}${candidat.prenom.charAt(0).toUpperCase()}`;
+      this.setState({ candidat: candidat, success: true });
     });
   }
 
@@ -254,46 +254,32 @@ class CalendarListPage extends Component {
 
   deselectCreneaux() {
     // on deselection tous les creneaux
-    callApi('auth/creneaux', 'get').then(res => {
+    api.candidat.getCreneaux().then(res => {
       const { creneaux } = res;
 
       const creneauxSelected = creneaux.filter(
         item => item.isSelected === true,
       );
 
-      creneauxSelected.map(creneauSelected => {
+      creneauxSelected.forEach(creneauSelected => {
         creneauSelected.isSelected = false; // eslint-disable-line no-param-reassign
-
-        callApi(`auth/creneaux/${creneauSelected._id}`, 'put', {
-          creneau: creneauSelected,
-        }).then(() => {
-          this.forceUpdate();
-        });
+        api.candidat.updateCreneau(creneauSelected.id, creneauSelected)
       });
     });
   }
 
   updateCreneaux(creneau) {
-    callApi(`auth/creneaux/${creneau.id}`, 'put', {
-      creneau,
-    })
-      .then(() => {
-        this.forceUpdate();
-      });
+    api.candidat.updateCreneau(creneau.id, creneau)
   }
 
   unselectCreneau(creneau) {
-    // eslint-disable-next-line no-param-reassign
-    creneau.isSelected = false;
-    callApi(`auth/creneaux/${creneau.id}`, 'put', {
-      creneau,
-    });
+    const unselectedCreneau = { ...creneau, isSelected: false };
+    api.candidat.updateCreneau(unselectedCreneau.id, unselectedCreneau)
+      .then(() => this.refreshAndUpdate())
   }
 
   updateCandidat(candidat) {
-    callApi(`auth/candidats/${candidat._id}`, 'put', {
-      candidat,
-    })
+    api.candidat.updateMe(candidat._id, candidat)
       .then(cd => {
         // eslint-disable-next-line no-param-reassign
         cd.initialCandidat = `${candidat.nomNaissance
@@ -467,7 +453,7 @@ class CalendarListPage extends Component {
                     </Typography>
                   }
                   subheader={
-                    <Typography component="p" variant="body2">
+                    <Typography component="div" variant="body2">
                       {candidat.nomNaissance} {candidat.prenom}
                       <p>Neph : {candidat.codeNeph}</p>
                     </Typography>

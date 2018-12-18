@@ -413,6 +413,22 @@ export function getCandidats(req, res) {
 }
 
 /**
+ * Get all Candidats
+ * @param req
+ * @param res
+ * @returns void
+ */
+export async function getCandidat(req, res) {
+  try {
+    const id = req.params.id === 'me' ? req.userId : req.params.id
+    const candidat = await Candidat.findById(req.userId)
+    res.status(200).json(candidat);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+}
+
+/**
  * Save a Candidat
  * @param req
  * @param res
@@ -449,21 +465,6 @@ export function addCandidat(req, res) {
       res.send(err);
     }
     res.status(200).json({ candidat: saved });
-  });
-}
-
-/**
- * Get a single Candidat
- * @param req
- * @param res
- * @returns void
- */
-export function getCandidat(req, res, next) {
-  Candidat.findOne({ _id: req.params.id }).exec((err, candidat) => {
-    if (err) {
-      next(err);
-    }
-    res.json({ candidat });
   });
 }
 
@@ -674,7 +675,7 @@ const synchroAurige = (pathname) => {
         return candidatsBase.save()
           .then(candidat => {
             if (isValid) {
-              console.warn(`Ce candidat ${candidat.email} a été mis à jour`); // eslint-disable-line no-console  
+              console.warn(`Ce candidat ${candidat.email} a été mis à jour`); // eslint-disable-line no-console
               return getCandidatStatus(nomNaissance, codeNeph, 'success');
             } else {
               console.warn(`Ce candidat ${candidat.email} a été validé`); // eslint-disable-line no-console
