@@ -1,46 +1,43 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
-// Import Style
-import styles from './App.css';
-
-// Import Components
 import Helmet from 'react-helmet';
-import { CssBaseline } from '@material-ui/core';
-import Header from './components/Header/Header';
-import Footer from './components/Footer/Footer';
+import { withStyles } from '@material-ui/core';
 
-export const App = (props) => (
+import CalendarListPage from '../Calendar/pages/CalendarListPage/CalendarListPage'
+
+const styles = theme => ({
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100%',
+  },
+})
+
+export const App = ({ children, classes }) => (
   <React.Fragment>
-    <CssBaseline />
-    <div>
-      <Helmet
-        title="Candilib"
-        titleTemplate="%s - candilib"
-        meta={[
-          { charset: 'utf-8' },
-          {
-            'http-equiv': 'X-UA-Compatible',
-            content: 'IE=edge',
-          },
-          {
-            name: 'viewport',
-            content: 'width=device-width, initial-scale=1',
-          },
-        ]}
-      />
-      <Header
-      />
-      <div className={styles.container}>
-        {props.children}
-      </div>
-      <Footer />
+    <Helmet
+      title="Candilib"
+      titleTemplate="%s - candilib"
+      meta={[
+        { charset: 'utf-8' },
+        {
+          'http-equiv': 'X-UA-Compatible',
+          content: 'IE=edge',
+        },
+        {
+          name: 'viewport',
+          content: 'width=device-width, initial-scale=1',
+        },
+      ]}
+    />
+    <div className={classes.container}>
+      <CalendarListPage />
     </div>
   </React.Fragment>
 );
 
 App.propTypes = {
-  children: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired,
 };
 
-export default App;
+export default withStyles(styles)(App);

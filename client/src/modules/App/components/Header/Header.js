@@ -1,28 +1,41 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Toolbar, AppBar, Button } from '@material-ui/core';
+import { Toolbar, AppBar, Button, Typography, withStyles } from '@material-ui/core';
 
-// Import Style
-import styles from './Header.css';
+const styles = {
+  grow: {
+    flexGrow: 1,
+  },
+  appTitle: {
+    textTransform: 'uppercase'
+  },
+  informationsLink: {
+    textAlign: 'right',
+  }
+};
 
-function Header() {
-  return (
-    <div className={styles.header}>
-      <AppBar color="default" position="static">
-        <Toolbar>
-          <Button component={Link} to="/">
-            Accueil
-          </Button>
-          <Button component={Link} to="/informations">
-            Informations
-          </Button>
-          <Button component={Link} to="/calendar">
-            Ma Réservation
-          </Button>
-        </Toolbar>
-      </AppBar>
-    </div>
-  );
-}
+const Header = ({ classes }) => (
+  <AppBar color="default" position="static">
+    <Toolbar>
+      <Typography variant="subheading" color="inherit" className={`${classes.grow} ${classes.appTitle}`}>
+        Candilib
+      </Typography>
+      <Button component={Link} to="/">
+        Accueil
+      </Button>
+      <Button component={Link} to="/informations">
+        Informations
+      </Button>
+      <Button component={Link} to="/calendar">
+        Ma Réservation
+      </Button>
+      <div className={`${classes.grow} ${classes.informationsLink}`}>
+        <Button component={Link} to="/informations">
+          ?
+        </Button>
+      </div>
+    </Toolbar>
+  </AppBar>
+);
 
-export default Header;
+export default withStyles(styles)(Header);
