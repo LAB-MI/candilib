@@ -615,11 +615,10 @@ const removeCandidat = async candidat => {
 
 const getCandidatStatus = (nom, neph, status) => ({ nom, neph, status });
 
-const synchroAurige = (pathname) => {
-  const FileContents = fs.readFileSync(pathname, 'utf8');
+const synchroAurige = async (buffer) => {
   let retourAurige = [];
   try {
-    retourAurige = JSON.parse(FileContents);
+    retourAurige = JSON.parse(buffer.toString());
   } catch (err) {
     console.error(err); // eslint-disable-line no-console
     throw err;
@@ -709,7 +708,6 @@ const synchroAurige = (pathname) => {
   });
 
   return Promise.all(result);
-
 };
 
 export function purgePermisOk(req, res) {
@@ -795,35 +793,20 @@ export const uploadAurigeCSV = (req, res, next) => {
   res.status(200).send({ name: csvFile.name });
 };
 
-export const uploadAurigeJSON = (req, res) => {
+export const uploadAurigeJSON = async (req, res) => {
   const jsonFile = req.files.file;
-  const jsonFilePath = path.resolve(
-    __dirname,
-    '../../temp/json/',
-    jsonFile.name,
-  );
-
-  jsonFile.mv(jsonFilePath, (err) => {
-    if (err) {
-      return res.status(500).send(err);
-    }
-
-    try {
-      synchroAurige(jsonFilePath).then(result => {
-
-        res.status(200).send({
-          fileName: jsonFile.name,
-          success: true,
-          message: `Le fichier ${jsonFile.name} a été synchronisé.`,
-          candidats: result,
-        });
-      });
-    } catch (err) {
-      console.error(err);// eslint-disable-line no-console
-      return res.status(500).send(err);
-    }
-
-  });
+  try {
+    const result = await synchroAurige(jsonFile.data);
+    res.status(200).send({
+      fileName: jsonFile.name,
+      success: true,
+      message: `Le fichier ${jsonFile.name} a été synchronisé.`,
+      candidats: result,
+    });
+  } catch (err) {
+    console.error(err); // eslint-disable-line no-console
+    return res.status(500).send(err);
+  }
 };
 
 
