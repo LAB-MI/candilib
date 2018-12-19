@@ -183,15 +183,20 @@ build-prod-db: ## Build production db container
 #
 save-images: build-dir save-image-db save-image-web ## Save images
 
+save-image-web: ## Save web image
+	web_image_name=$$(${DC} -f $(DC_APP_BUILD_PROD) config | python -c 'import sys, yaml, json; cfg = json.loads(json.dumps(yaml.load(sys.stdin), sys.stdout, indent=4)); print cfg["services"]["web"]["image"]') ; \
+          docker image save -o  $(BUILD_DIR)/$(FILE_IMAGE_WEB_APP_VERSION) $$web_image_name && \
+          cp $(BUILD_DIR)/$(FILE_IMAGE_WEB_APP_VERSION)  $(BUILD_DIR)/$(FILE_IMAGE_WEB_LATEST_VERSION)
+
 save-image-db: ## Save db image
 	db_image_name=$$(${DC} -f $(DC_APP_BUILD_PROD) config | python -c 'import sys, yaml, json; cfg = json.loads(json.dumps(yaml.load(sys.stdin), sys.stdout, indent=4)); print cfg["services"]["db"]["image"]') ; \
           docker image save -o  $(BUILD_DIR)/$(FILE_IMAGE_DB_APP_VERSION) $$db_image_name && \
           cp $(BUILD_DIR)/$(FILE_IMAGE_DB_APP_VERSION) $(BUILD_DIR)/$(FILE_IMAGE_DB_LATEST_VERSION)
 
-save-image-web: ## Save web image
-	web_image_name=$$(${DC} -f $(DC_APP_BUILD_PROD) config | python -c 'import sys, yaml, json; cfg = json.loads(json.dumps(yaml.load(sys.stdin), sys.stdout, indent=4)); print cfg["services"]["web"]["image"]') ; \
-          docker image save -o  $(BUILD_DIR)/$(FILE_IMAGE_WEB_APP_VERSION) $$web_image_name && \
-          cp $(BUILD_DIR)/$(FILE_IMAGE_WEB_APP_VERSION)  $(BUILD_DIR)/$(FILE_IMAGE_WEB_LATEST_VERSION)
+save-image-back: ## Save back image
+	back_image_name=$$(${DC} -f $(DC_APP_BUILD_PROD) config | python -c 'import sys, yaml, json; cfg = json.loads(json.dumps(yaml.load(sys.stdin), sys.stdout, indent=4)); print cfg["services"]["back"]["image"]') ; \
+          docker image save -o  $(BUILD_DIR)/$(FILE_IMAGE_BACK_APP_VERSION) $$back_image_name && \
+          cp $(BUILD_DIR)/$(FILE_IMAGE_BACK_APP_VERSION)  $(BUILD_DIR)/$(FILE_IMAGE_BACK_LATEST_VERSION)
 
 clean-images: clean-image-web clean-image-db ## Remove all docker images
 
@@ -223,6 +228,7 @@ publish-$(APP_VERSION):
                 $(APP)-VERSION \
                 $(FILE_ARCHIVE_APP_VERSION) \
                 $(FILE_IMAGE_WEB_APP_VERSION) \
+                $(FILE_IMAGE_BACK_APP_VERSION) \
                 $(FILE_IMAGE_DB_APP_VERSION) \
            ; do \
             curl -k -X PUT -T $$file -H 'X-Auth-Token: $(PUBLISH_AUTH_TOKEN)' $(PUBLISH_URL)/$(PUBLISH_URL_APP_VERSION)/$$file ; \
@@ -238,6 +244,7 @@ publish-$(LATEST_VERSION):
                 $(APP)-VERSION \
                 $(FILE_ARCHIVE_LATEST_VERSION) \
                 $(FILE_IMAGE_WEB_APP_VERSION) \
+                $(FILE_IMAGE_BACK_APP_VERSION) \
                 $(FILE_IMAGE_DB_APP_VERSION) \
            ; do \
             curl -k -X PUT -T $$file -H 'X-Auth-Token: $(PUBLISH_AUTH_TOKEN)' $(PUBLISH_URL)/$(PUBLISH_URL_LATEST_VERSION)/$$file ; \

@@ -1,0 +1,43 @@
+version: '3.4'
+services:
+  web:
+    image: candilib_web:${APP_VERSION:-latest}
+    container_name: candilib_web
+    depends_on:
+      - back
+    ports:
+      - "${WEB_PORT:-80}:80"
+    env_file:
+      - ${cnf:-.env}
+    environment:
+      NODE_ENV: production
+    networks:
+      - candilib-network
+  back:
+    image: candilib_back:${APP_VERSION:-latest}
+    container_name: candilib_back
+    depends_on:
+      - db
+    ports:
+      - "8000"
+    env_file:
+      - ${cnf:-.env}
+    environment:
+      NODE_ENV: production
+      MONGO_URL: ${MONGO_URL:-mongodb://db:27017/candilib}
+    networks:
+      - candilib-network
+  db:
+    image: mongo:latest
+    container_name: candilib_db
+    volumes:
+      - dbdata:/data/db
+    networks:
+      - candilib-network
+volumes:
+  dbdata:
+networks:
+  candilib-network:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1450
