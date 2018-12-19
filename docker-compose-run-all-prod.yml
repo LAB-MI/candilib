@@ -31,7 +31,7 @@ services:
     image: mongo:latest
     container_name: candilib_db
     volumes:
-      - ${DBDATA}/mongo:/data/db
+      - ${DBDATA}/db:/data/db
     networks:
       - candilib-network
 networks:
