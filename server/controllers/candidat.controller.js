@@ -595,9 +595,8 @@ export function destroyAll(req, res) {
 
 export const epreuveEtgInvalid = (candidatAurige) => {
   return (
-    candidatAurige.dateReussiteETG === undefined
+    !candidatAurige.dateReussiteETG
     || !moment(candidatAurige.dateReussiteETG).isValid()
-    || candidatAurige.dateReussiteETG === ''
   );
 };
 
