@@ -48,7 +48,7 @@ RUN npm run build
 FROM base as production
 ENV NODE_ENV=production
 COPY package.json package-lock.json ./
-RUN set -ex ;    npm install --production
+RUN set -ex ; npm install --production
 
 COPY --from=build /usr/src/app/build ./build
 
@@ -57,4 +57,8 @@ COPY --from=build /usr/src/app/build ./build
 #
 FROM nginx:latest
 COPY --from=production /usr/src/app/build/ /usr/share/nginx/html
-COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx/run.sh /run.sh
+COPY nginx/nginx-run.template /etc/nginx/conf.d/default.template
+COPY nginx/nginx.template /etc/nginx/nginx.template
+RUN  [ -f "/run.sh" ] && chmod +x /run.sh
+CMD ["/run.sh"]

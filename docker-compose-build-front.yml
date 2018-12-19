@@ -10,5 +10,7 @@ services:
           no_proxy: ${no_proxy}
           npm_registry: ${NPM_REGISTRY}
     container_name: candilib_web
+    ports:
+      - "${WEB_PORT:-80}:80"
     environment:
       NODE_ENV: production
