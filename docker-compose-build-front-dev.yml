@@ -1,0 +1,26 @@
+version: '3.4'
+services:
+  front:
+    image: candilib_web:${APP_VERSION:-latest}
+    build:
+      context: ./
+      dockerfile: Dockerfile.front
+      target: development
+      args:
+          proxy: ${http_proxy}
+          no_proxy: ${no_proxy}
+          npm_registry: ${NPM_REGISTRY}
+    container_name: candilib_web
+    environment:
+      NODE_ENV: development
+    ports:
+      - "${WEB_PORT:-8000}:8000"
+    volumes:
+       - ./client/.env:/usr/src/app/.env
+       - ./client/.editorconfig:/usr/src/app/.editorconfig
+       - ./client/.eslintignore:/usr/src/app/.eslintignore
+       - ./client/.eslintrc.js:/usr/src/app/.eslintrc.js
+       - ./client/config:/usr/src/app/config/
+       - ./client/src:/usr/src/app/src/
+       - ./client/public:/usr/src/app/public/
+       - ./client/scripts:/usr/src/app/scripts/
