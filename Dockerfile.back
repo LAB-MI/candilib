@@ -26,7 +26,7 @@ FROM base as development
 ENV NODE_ENV development
 
 COPY server/package.json server/package-lock.json ./
-RUN set -ex ; npm install --verbose
+RUN set -ex ; npm install
 
 COPY server/inbox/sites.json ./
 COPY server ./

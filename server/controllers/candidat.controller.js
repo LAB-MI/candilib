@@ -3,7 +3,6 @@ import fs from 'fs';
 import * as csvParser from 'fast-csv';
 import jwt from 'jsonwebtoken';
 import moment from 'moment';
-import path from 'path';
 import sanitizeHtml from 'sanitize-html';
 
 import Candidat from '../models/candidat';
@@ -736,59 +735,51 @@ export function purgePermisOk(req, res) {
 
 export const uploadAurigeCSV = (req, res, next) => {
   const csvFile = req.files.file;
-  const csvFilePath = path.resolve(__dirname, '../../temp/csv/', csvFile.name);
 
-  csvFile.mv(csvFilePath, (err) => {
-    if (err) {
-      return res.status(500).send(err);
-    }
-    const stream = fs.createReadStream(csvFilePath);
+  csvParser
+    .fromString(csvFile.data.toString(), { headers: false, ignoreEmpty: true })
+    .on('data', (data) => {
+      const creneau = new Creneau();
+      if (data[0] === 'Date') return;
 
-    csvParser
-      .fromStream(stream, { headers: false, ignoreEmpty: true })
-      .on('data', (data) => {
-        const creneau = new Creneau();
-        if (data[0] === 'Date') return;
+      const [day, time, inspecteur, centre] = data;
 
-        const [day, time, inspecteur, centre] = data;
+      const myDate = `${day} ${time}`;
+      const formattedDate = moment(
+        moment(myDate, 'DD-MM-YYYY HH:mm:ss').format('YYYY-MM-DD HH:mm:ss'),
+      ).add(60, 'minutes');
+      creneau.date = formattedDate;
+      creneau.inspecteur = inspecteur;
+      creneau.centre = centre;
 
-        const myDate = `${day} ${time}`;
-        const formattedDate = moment(
-          moment(myDate, 'DD-MM-YYYY HH:mm:ss').format('YYYY-MM-DD HH:mm:ss'),
-        ).add(60, 'minutes');
-        creneau.date = formattedDate;
-        creneau.inspecteur = inspecteur;
-        creneau.centre = centre;
+      const { date } = creneau;
 
-        const { date } = creneau;
-
-        Creneau.find(
-          {
-            date,
-            centre,
-            inspecteur,
-          },
-          (errFind, previousCreneau) => {
-            if (errFind) {
-              console.warn(errFind);
-            } else if (previousCreneau.length > 0) {
-              console.warn(previousCreneau, 'deja en base');
-            } else {
-              creneau.save((errSave) => {
-                if (errSave) {
-                  console.warn(errSave); // eslint-disable-line no-console
-                }
-                res.end('Done');
-              });
-            }
-          },
-        );
-      })
-      .on('end', () => {
-        console.log('done'); // eslint-disable-line no-console
-        next();
-      });
-  });
+      Creneau.find(
+        {
+          date,
+          centre,
+          inspecteur,
+        },
+        (errFind, previousCreneau) => {
+          if (errFind) {
+            console.warn(errFind);
+          } else if (previousCreneau.length > 0) {
+            console.warn(previousCreneau, 'deja en base');
+          } else {
+            creneau.save((errSave) => {
+              if (errSave) {
+                console.warn(errSave); // eslint-disable-line no-console
+              }
+              res.end('Done');
+            });
+          }
+        },
+      );
+    })
+    .on('end', () => {
+      console.log('done'); // eslint-disable-line no-console
+      next();
+    });
 
   res.status(200).send({ name: csvFile.name });
 };
