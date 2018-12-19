@@ -10,7 +10,6 @@ import {
 } from '@devexpress/dx-react-grid-material-ui';
 import moment from 'moment';
 import 'moment/locale/fr';
-import { callApi } from '../../../util/apiCaller.admin';
 import RowDetail from './RowDetail';
 import api from '../../../api';
 
@@ -61,6 +60,7 @@ class ListCandidats extends Component {
           candAdmin.date = moment(candidat.creneau.start).format('YYYY-MM-DD');
           candAdmin.centre = candidat.creneau.centre;
           candAdmin.inspecteur = candidat.creneau.inspecteur;
+          return candAdmin;
         });
         this.setState({ candidats: candidatsFiltredSorted });
       });

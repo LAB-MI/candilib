@@ -6,9 +6,8 @@ import {
 import { connect } from 'react-redux';
 
 import Login from '../../modules/Home/components/Login/Login'
-import { checkToken, resetToken } from '../../store/Auth/Auth.actions';
+import { checkToken } from '../../store/Auth/Auth.actions';
 import PrivateRoute from '../../util/PrivateRoute';
-import { Button } from '../../components/index';
 import Candidat from '../../modules/Calendar/pages/CalendarListPage/CalendarListPage';
 
 class Auth extends Component {
@@ -19,7 +18,7 @@ class Auth extends Component {
   }
 
   render () {
-    const { isAuthenticated, signout } = this.props;
+    const { isAuthenticated } = this.props;
     return (
       <div>
         <Route path="/connexion" component={Login} />
@@ -39,7 +38,6 @@ const mapStateToProps = ({ auth: { isAuthenticated } }) => ({
 })
 
 const mapDispatchToProps = {
-  signout: resetToken,
   checkToken,
 }
 

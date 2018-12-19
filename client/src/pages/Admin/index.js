@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {
-  BrowserRouter as Router,
   Route,
   withRouter,
 } from "react-router-dom";
@@ -33,7 +32,7 @@ class Auth extends Component {
   }
 
   render () {
-    const { isAuthenticated, isGettingToken, signout } = this.props;
+    const { isAuthenticated, signout } = this.props;
     return (
       <div>
         <SignOutButton signout={signout} isAuthenticated={isAuthenticated} />
@@ -49,10 +48,8 @@ class Auth extends Component {
   }
 }
 
-const mapStateToProps = ({ auth: { isAuthenticated, isCheckingToken, isGettingToken } }) => ({
+const mapStateToProps = ({ auth: { isAuthenticated } }) => ({
   isAuthenticated,
-  isGettingToken,
-  isCheckingToken,
 })
 
 const mapDispatchToProps = {
