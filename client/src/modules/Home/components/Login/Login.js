@@ -281,7 +281,7 @@ class Login extends Component {
               return;
             } else {
               this.setState({
-                messageSnackbar:
+                messageSnackbar: json.message ||
                   'Un problème est survenu, veuillez réessayer plus tard. Nous vous présentons nos excuses.',
                 portableError: false,
                 openSnackbar: true,
@@ -292,7 +292,7 @@ class Login extends Component {
             }
             if (json.message.includes('email')) {
               this.setState({
-                messageSnackbar:
+                messageSnackbar: json.message ||
                   'Vous avez déjà un compte sur Candilib, veuillez cliquer sur le lien "Déjà inscrit',
                 portableError: false,
                 openSnackbar: true,
