@@ -3,9 +3,6 @@ import * as CandidatsController from '../controllers/candidat.controller'
 
 const router = new Router()
 
-// verify candidat on login by magic link
-router.route('/candidats/me').get(CandidatsController.getCandidat)
-
 router.route('/candidats/contactus').get(CandidatsController.mailToContactUs)
 
 // Get all Candidats

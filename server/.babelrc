@@ -1,5 +1,5 @@
 {
-  "presets": ["@babel/preset-react", "@babel/preset-env", "@ava/stage-4"],
+  "presets": ["@babel/preset-env", "@ava/stage-4"],
   "plugins": ["@babel/plugin-transform-runtime"],
   "env": {
     "production": {
@@ -9,8 +9,7 @@
           {
             "modules": false
           }
-        ],
-        "@babel/preset-react"
+        ]
       ]
     }
   }

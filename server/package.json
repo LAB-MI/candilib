@@ -36,11 +36,6 @@
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
     "@babel/runtime": "^7.2.0",
-    "@devexpress/dx-react-core": "^1.9.1",
-    "@devexpress/dx-react-grid": "^1.9.1",
-    "@devexpress/dx-react-grid-material-ui": "^1.9.1",
-    "@material-ui/core": "^1.5.1",
-    "@material-ui/icons": "^2.0.3",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.15.1",
     "compression": "^1.7.3",
@@ -78,7 +73,6 @@
     "@babel/plugin-syntax-import-meta": "^7.0.0",
     "@babel/plugin-transform-runtime": "^7.2.0",
     "@babel/preset-env": "^7.2.0",
-    "@babel/preset-react": "^7.0.0",
     "@babel/register": "^7.0.0",
     "ava": "^1.0.0",
     "babel-core": "^7.0.0-bridge.0",
@@ -92,10 +86,7 @@
     "css-loader": "^0.28.7",
     "css-modules-require-hook": "^4.2.2",
     "cssnano": "^3.7.0",
-    "enzyme": "^3.7.0",
-    "enzyme-adapter-react-16": "^1.7.0",
     "eslint": "^5.10.0",
-    "eslint-config-react-app": "^3.0.5",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-ava": "^5.1.1",
     "eslint-plugin-import": "^2.14.0",
@@ -135,7 +126,6 @@
         "babelrc": false,
         "configFile": false,
         "plugins": [
-          "@babel/plugin-syntax-jsx",
           "@babel/plugin-syntax-dynamic-import",
           [
             "@babel/plugin-proposal-decorators",
@@ -151,7 +141,6 @@
           ]
         ],
         "presets": [
-          "@babel/preset-react",
           [
             "module:ava/stage-4",
             false

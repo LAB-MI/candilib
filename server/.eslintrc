@@ -1,11 +1,5 @@
 {
   "extends": ["standard", "plugin:ava/recommended"],
-  "settings": {
-    "react": {
-      "pragma": "React",
-      "version": "16.6"
-    }
-  },
   "parser": "babel-eslint",
   "plugins": ["ava"],
   "env": {
