@@ -25,19 +25,6 @@ const isProdMode = process.env.NODE_ENV === 'production';
 // Set native promises as mongoose promise
 mongoose.Promise = global.Promise;
 
-// MongoDB Connection
-if (process.env.NODE_ENV !== 'test') {
-  mongoose.connect(
-    serverConfig.mongoURL,
-    (error) => {
-      if (error) {
-        console.error('Please make sure Mongodb is installed and running!'); // eslint-disable-line no-console
-        throw error;
-      }
-    },
-  );
-}
-
 app.use(compression());
 app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
@@ -50,12 +37,37 @@ app.use('/api/admin', verifyToken, isAdmin, admin);
 
 app.use('/api', users, candidats);
 
-app.listen(serverConfig.port, (error) => {
-  if (!error) {
-    console.log(
-      `Candilib is running on port: ${process.env.PORT || serverConfig.port}`,
-    );
-  }
-});
+const startServer = () => {
+  app.listen(serverConfig.port, (error) => {
+    if (!error) {
+      console.log(
+        `Candilib is running on port: ${process.env.PORT || serverConfig.port}`,
+      );
+    } else {
+      console.error(
+        `Could not start server`, error
+      )
+    }
+  });
+}
+
+// MongoDB Connection
+if (process.env.NODE_ENV !== 'test') {
+  mongoose.connect(
+    serverConfig.mongoURL,
+    { useNewUrlParser: true },
+    (error) => {
+      if (error) {
+        console.error('Please make sure Mongodb is installed and running!'); // eslint-disable-line no-console
+        throw error;
+      }
+      // Start listening to incoming requests
+      startServer();
+    },
+  );
+} else {
+  startServer();
+}
+
 
 export default app;
