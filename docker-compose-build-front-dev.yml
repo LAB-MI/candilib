@@ -1,6 +1,6 @@
 version: '3.4'
 services:
-  front:
+  web:
     image: candilib_web:${APP_VERSION:-latest}
     build:
       context: ./

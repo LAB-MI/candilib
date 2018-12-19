@@ -34,9 +34,9 @@ script:
   - echo "# build & run production"
   - make build-all-images
   - docker images && docker ps
-  - make up-prod
+  - make up-all-prod
   - make test-up
-  - make down-prod
+  - make down-all-prod
 after_script:
   - make clean-images clean-dir
   - echo "END"
