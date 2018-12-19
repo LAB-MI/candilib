@@ -18,14 +18,19 @@ no_proxy := $(shell echo $$no_proxy)
 DC_BUILD_ARGS = --pull --no-cache --force-rm
 
 # docker-compose file: development or production  (build or run time)
-DC_APP_BUILD_DEV  := docker-compose.yml
-DC_APP_RUN_DEV    := docker-compose.yml
-DC_APP_BUILD_PROD := docker-compose-production.yml
-DC_APP_RUN_PROD   := docker-compose-run-production.yml
+DC_APP_BUILD_DEV         := docker-compose.yml
+DC_APP_RUN_DEV           := docker-compose.yml
+DC_APP_BUILD_PROD        := docker-compose-production.yml
+DC_APP_RUN_PROD          := docker-compose-run-production.yml
+#
 DC_APP_BUILD_FRONT_PROD  := docker-compose-build-front.yml
 DC_APP_RUN_FRONT_PROD    := docker-compose-build-front.yml
-DC_APP_BUILD_FRONT_DEV  := docker-compose-build-front-dev.yml
-DC_APP_RUN_FRONT_DEV    := docker-compose-build-front-dev.yml
+DC_APP_BUILD_FRONT_DEV   := docker-compose-build-front-dev.yml
+DC_APP_RUN_FRONT_DEV     := docker-compose-build-front-dev.yml
+DC_APP_BUILD_BACK_PROD   := docker-compose-build-back.yml
+DC_APP_RUN_BACK_PROD     := docker-compose-build-back.yml
+#
+DC_APP_RUN_ALL_PROD      := docker-compose-run-all-prod.yml
 
 # detect tty
 USE_TTY := $(shell test -t 1 && { DOCKER_USE_TTY="-t" ; DOCKER_COMPOSER_USE_TTY="-T" ; } )
@@ -38,6 +43,8 @@ FILE_FRONT_APP_VERSION = $(APP)-$(APP_VERSION)-front.tar.gz
 # docker image name
 FILE_IMAGE_WEB_APP_VERSION = $(APP)-web-$(APP_VERSION)-image.tar
 FILE_IMAGE_WEB_LATEST_VERSION = $(APP)-web-$(LATEST_VERSION)-image.tar
+FILE_IMAGE_BACK_APP_VERSION = $(APP)-back-$(APP_VERSION)-image.tar
+FILE_IMAGE_BACK_LATEST_VERSION = $(APP)-back-$(LATEST_VERSION)-image.tar
 FILE_IMAGE_DB_APP_VERSION = $(APP)-db-$(APP_VERSION)-image.tar
 FILE_IMAGE_DB_LATEST_VERSION = $(APP)-db-$(LATEST_VERSION)-image.tar
 
