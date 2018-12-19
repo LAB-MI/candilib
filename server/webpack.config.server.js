@@ -3,7 +3,7 @@ var path = require('path');
 var ExternalsPlugin = require('webpack2-externals-plugin');
 
 module.exports = {
-  entry: path.resolve(__dirname, 'server/server.js'),
+  entry: path.resolve(__dirname, 'server.js'),
 
   output: {
     path: __dirname + '/dist/',

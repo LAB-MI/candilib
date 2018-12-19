@@ -6,8 +6,6 @@ dotenv.config()
 
 
 if (process.env.NODE_ENV === 'production') {
-  process.env.webpackAssets = JSON.stringify(require('./dist/client/manifest.json'));
-  process.env.webpackChunkAssets = JSON.stringify(require('./dist/client/chunk-manifest.json'));
   // In production, serve the webpacked server file.
   require('./dist/server.bundle.js');
 } else {
@@ -15,5 +13,5 @@ if (process.env.NODE_ENV === 'production') {
   require('@babel/register')();
   require('babel-polyfill');
 
-  require('./server/server');
+  require('./server');
 }

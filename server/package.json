@@ -8,13 +8,13 @@
     "cover": "nyc npm run test",
     "check-coverage": "nyc check-coverage --statements 100 --branches 100 --functions 100 --lines 100",
     "start": "cross-env BABEL_DISABLE_CACHE=1 NODE_ENV=development node index.js",
-    "start:prod": "cross-env NODE_ENV=production WEB_PORT=80 pm2 --no-daemon index.js",
+    "start:prod": "cross-env NODE_ENV=production pm2 --no-daemon index.js",
     "bs": "npm run clean && npm run build && npm run build:server && npm run start:prod",
     "prebuild": "run-p lint test",
     "build": "cross-env NODE_ENV=production webpack --config webpack.config.server.js",
     "clean": "rimraf dist",
     "slate": "rimraf node_modules && npm install",
-    "lint": "eslint server",
+    "lint": "eslint ./",
     "import:json": "mongoimport --db candilib --collection candidats --type json --file candidatsLibresEnrichis_20180822_110005.json --jsonArray",
     "import:csv": "mongoimport --db candilib --collection candidats --type csv --file candilib_iso.csv --headerline"
   },
@@ -154,10 +154,11 @@
   },
   "ava": {
     "files": [
-      "server/**/*.spec.js"
+      "config.spec.js",
+      "./**/*.spec.js"
     ],
     "sources": [
-      "server/**/*.js"
+      "./**/*.js"
     ],
     "failFast": true,
     "babel": {
@@ -196,17 +197,13 @@
   },
   "nyc": {
     "include": [
-      "client/**/*.js",
-      "server/**/*.js"
+      "./**/*.js"
     ],
     "exclude": [
-      "**/*.spec.js",
-      "client/reducers.js",
-      "client/store.js",
-      "client/routes.js",
-      "server/util/setup-test-env.js",
-      "server/config.js",
-      "server/dummyData.js"
+      "./**/*.spec.js",
+      "./util/setup-test-env.js",
+      "./config.js",
+      "./dummyData.js"
     ],
     "reporter": [
       "lcov",
