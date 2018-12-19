@@ -1,13 +1,12 @@
-import nodemailer from 'nodemailer';
-import smtpTransport from 'nodemailer-smtp-transport';
-import mailMessage from './messageMailManager';
-import serverConfig, { smtpOptions } from '../config';
-
+import nodemailer from 'nodemailer'
+import smtpTransport from 'nodemailer-smtp-transport'
+import mailMessage from './messageMailManager'
+import serverConfig, { smtpOptions } from '../config'
 
 const sendMailToAccount = (candidatAurige, flag) => {
-  const message = mailMessage(candidatAurige, flag);
+  const message = mailMessage(candidatAurige, flag)
 
-  const transporter = nodemailer.createTransport(smtpTransport(smtpOptions));
+  const transporter = nodemailer.createTransport(smtpTransport(smtpOptions))
 
   const mailOptions = {
     from: serverConfig.mailFrom,
@@ -152,17 +151,17 @@ const sendMailToAccount = (candidatAurige, flag) => {
                 </table>
             </body>
         </html>`,
-  };
+  }
 
   transporter.sendMail(mailOptions, (err, info) => {
     if (err) {
-      console.log(err); // eslint-disable-line no-console
+      console.log(err) // eslint-disable-line no-console
     } else {
-      console.log('Mail sent: ' + info.response);
-      transporter.close();
+      console.log('Mail sent: ' + info.response)
+      transporter.close()
     }
-    transporter.close();
-  });
-};
+    transporter.close()
+  })
+}
 
-export default sendMailToAccount;
+export default sendMailToAccount

@@ -1,9 +1,9 @@
-import { Router } from 'express';
-import * as AuthController from '../controllers/auth.controller';
+import { Router } from 'express'
+import * as AuthController from '../controllers/auth.controller'
 
-const router = new Router();
+const router = new Router()
 
-router.route('/users/validate_token').get(AuthController.validateToken);
-router.route('/users/login').post(AuthController.login);
+router.route('/users/validate_token').get(AuthController.validateToken)
+router.route('/users/login').post(AuthController.login)
 
-export default router;
+export default router

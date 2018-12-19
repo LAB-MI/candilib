@@ -1,13 +1,13 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
-import { getHash, compareToHash } from '../util/crypto';
+import { getHash, compareToHash } from '../util/crypto'
 import {
   email as emailRegex,
   phone as phoneRegex,
   neph as nephRegex,
-} from '../lib/regex';
+} from '../lib/regex'
 
-const { Schema } = mongoose;
+const { Schema } = mongoose
 
 const candidatSchema = new Schema({
   nomNaissance: {
@@ -63,14 +63,14 @@ const candidatSchema = new Schema({
     type: Object,
     default: {},
   },
-});
+})
 
 candidatSchema.methods.generateHash = (password) => (
   getHash(password)
-);
+)
 
 candidatSchema.methods.checkPassword = (password) => (
   compareToHash(password, this.password)
-);
+)
 
-export default mongoose.model('Candidat', candidatSchema);
+export default mongoose.model('Candidat', candidatSchema)

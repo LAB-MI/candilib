@@ -1,15 +1,14 @@
 /* eslint no-console: ["error", { allow: ["warn"] }] */
-import fs from 'fs';
-import * as csvParser from 'fast-csv';
-import jwt from 'jsonwebtoken';
-import moment from 'moment';
-import sanitizeHtml from 'sanitize-html';
+import * as csvParser from 'fast-csv'
+import jwt from 'jsonwebtoken'
+import moment from 'moment'
+import sanitizeHtml from 'sanitize-html'
 
-import Candidat from '../models/candidat';
-import csv from '../util/csv-express-candilib'; // eslint-disable-line no-unused-vars
-import sendMailToAccount from '../util/sendMail';
-import serverConfig from '../config';
-import sendMagicLink from '../util/sendMagicLink';
+import Candidat from '../models/candidat'
+import csv from '../util/csv-express-candilib' // eslint-disable-line no-unused-vars
+import sendMailToAccount from '../util/sendMail'
+import serverConfig from '../config'
+import sendMagicLink from '../util/sendMagicLink'
 import {
   CANDIDAT_EXISTANT,
   INSCRIPTION_OK,
@@ -20,48 +19,48 @@ import {
   MAIL_CONVOCATION,
   ANNULATION_CONVOCATION,
   INSCRIPTION_UPDATE,
-} from '../util/constant';
-import Creneau from '../models/creneau';
-import messagesConstant from '../util/messages.constant.json';
-import { USER_STATUS_EXPIRES_IN } from '../util/jwt.constant';
-import { TOKEN_HEADER_NAME } from '../constants';
+} from '../util/constant'
+import Creneau from '../models/creneau'
+import messagesConstant from '../util/messages.constant.json'
+import { USER_STATUS_EXPIRES_IN } from '../util/jwt.constant'
+import { TOKEN_HEADER_NAME } from '../constants'
 
-const DATE_CODE_VALID = 5;
+const DATE_CODE_VALID = 5
 
-export function ValidationParamRegister(req, res, next) {
+export function ValidationParamRegister (req, res, next) {
   const {
     nom,
     neph,
     email,
     portable,
     adresse,
-  } = req.body;
-  let isOk = false;
+  } = req.body
+  let isOk = false
 
   if (!email) {
     return res.status(403).send({
       success: false,
       message: 'Error: Email ne doit pas être vide.',
-    });
+    })
   }
 
-  isOk = nom
-    && nom.trim().length > 0
-    && neph
-    && neph.trim().length > 0
-    && portable
-    && portable.trim().length > 0
-    && adresse
-    && adresse.trim().length > 0;
+  isOk = nom &&
+    nom.trim().length > 0 &&
+    neph &&
+    neph.trim().length > 0 &&
+    portable &&
+    portable.trim().length > 0 &&
+    adresse &&
+    adresse.trim().length > 0
 
   if (!isOk) {
     return res.status(403).send({
       success: false,
       message: messagesConstant.ERROR_FIELDS_EMPTY,
       codemessage: 'ERROR_FIELDS_EMPTY',
-    });
+    })
   }
-  return next();
+  return next()
 }
 
 /**
@@ -70,7 +69,7 @@ export function ValidationParamRegister(req, res, next) {
  * @param {*} res
  * @param {*} next
  */
-export function CheckCandidatIsSignedBefore(req, res, next) {
+export function CheckCandidatIsSignedBefore (req, res, next) {
   const {
     nom,
     neph,
@@ -78,49 +77,56 @@ export function CheckCandidatIsSignedBefore(req, res, next) {
     prenom,
     portable,
     adresse,
-  } = req.body;
+  } = req.body
 
   Candidat.findOne({
     nomNaissance: nom,
     codeNeph: neph,
   }).exec((err, candidat) => {
+    if (err) {
+      return res.status(500).json({
+        success: false,
+        message: 'Problème inconnu',
+        codemessage: 'UNKNOWN',
+      })
+    }
     if (candidat) {
       if (candidat.isValid === true) {
         return res.status(422).send({
           success: false,
           message: messagesConstant.ALREADY_REGISTERED,
           codemessage: 'ALREADY_REGISTERED',
-        });
+        })
       }
       if (
-        candidat.email === email
-        && candidat.prenom === prenom
-        && candidat.portable === portable
-        && candidat.adresse === adresse
+        candidat.email === email &&
+        candidat.prenom === prenom &&
+        candidat.portable === portable &&
+        candidat.adresse === adresse
       ) {
         return res.status(422).send({
           success: false,
           message: messagesConstant.ALREADY_REGISTERED_NO_AURIGE,
           codemessage: 'ALREADY_REGISTERED_NO_AURIGE',
-        });
+        })
       }
-      req.candidat = candidat;
+      req.candidat = candidat
     }
 
-    return next();
-  });
+    return next()
+  })
 }
 
-export function checkMailIsUsed(req, res, next) {
-  const { candidat, body } = req;
-  const { email } = body;
+export function checkMailIsUsed (req, res, next) {
+  const { candidat, body } = req
+  const { email } = body
 
   Candidat.findOne({ email }).exec((err, previousUsers) => {
     if (err) {
       return res.status(500).send({
         success: false,
         message: 'Error: Server error',
-      });
+      })
     }
     if (previousUsers) {
       if (candidat) {
@@ -130,7 +136,7 @@ export function checkMailIsUsed(req, res, next) {
             success: false,
             message:
               'Vous avez déjà un compte sur Candilib, veuillez cliquer sur le lien "Déjà inscrit',
-          });
+          })
         }
       } else {
         // SigneUp candidat
@@ -138,55 +144,55 @@ export function checkMailIsUsed(req, res, next) {
           success: false,
           message:
             'Vous avez déjà un compte sur Candilib, veuillez cliquer sur le lien "Déjà inscrit',
-        });
+        })
       }
     }
-    return next();
-  });
+    return next()
+  })
 }
 
-export function preUpdateInfoCandidat(req, res, next) {
+export function preUpdateInfoCandidat (req, res, next) {
   const {
     candidat,
     body,
-  } = req;
+  } = req
 
   const {
     email,
     prenom,
     portable,
     adresse,
-  } = body;
+  } = body
 
   if (!candidat) {
-    return next();
+    return next()
   }
 
-  req.mailChanged = candidat.email !== email;
+  req.mailChanged = candidat.email !== email
 
-  candidat.email = email;
-  candidat.prenom = prenom;
-  candidat.portable = portable;
-  candidat.adresse = adresse;
+  candidat.email = email
+  candidat.prenom = prenom
+  candidat.portable = portable
+  candidat.adresse = adresse
 
-  req.body.id = candidat.id;
-  req.body.candidat = candidat;
+  req.body.id = candidat.id
+  req.body.candidat = candidat
 
-  return next();
+  return next()
 }
 
-export function updateInfoCandidat(req, res, next) {
-  const { id, candidat } = req.body;
+export function updateInfoCandidat (req, res, next) {
+  const { id, candidat } = req.body
 
   if (!id || !candidat) {
-    return next();
+    return next()
   }
   Candidat.findByIdAndUpdate(id, candidat, { new: true }, (err, user) => {
     if (err) {
-      next(err);
+      next(err)
     } else {
       if (req.mailChanged) {
-        sendMailToAccount(user, INSCRIPTION_UPDATE);
+        sendMailToAccount(user, INSCRIPTION_UPDATE)
       }
 
       const token = jwt.sign(
@@ -197,7 +203,7 @@ export function updateInfoCandidat(req, res, next) {
         {
           expiresIn: USER_STATUS_EXPIRES_IN.candidat(),
         },
-      );
+      )
 
       return res.status(200).send({
         success: true,
@@ -210,9 +216,9 @@ export function updateInfoCandidat(req, res, next) {
         candidat,
         auth: true,
         token,
-      });
+      })
     }
-  });
+  })
 }
 
 /**
@@ -221,8 +227,8 @@ export function updateInfoCandidat(req, res, next) {
  * @param res
  * @returns void
  */
-export function signUp(req, res) {
-  const { body } = req;
+export function signUp (req, res) {
+  const { body } = req
 
   const {
     nom,
@@ -231,13 +237,13 @@ export function signUp(req, res) {
     prenom,
     portable,
     adresse,
-  } = body;
+  } = body
 
   if (!email) {
     return res.status(403).send({
       success: false,
       message: 'Error: Email ne doit pas être vide.',
-    });
+    })
   }
   // Steps:
   // 1. Verify neph and mail doesn't exist
@@ -253,7 +259,7 @@ export function signUp(req, res) {
         return res.status(500).send({
           success: false,
           message: 'Error: Server error',
-        });
+        })
       }
 
       if (previousUsers.length > 0) {
@@ -261,26 +267,26 @@ export function signUp(req, res) {
           success: false,
           message:
             'Vous avez déjà un compte sur Candilib, veuillez cliquer sur le lien "Déjà inscrit',
-        });
+        })
       }
 
       // Save the new user
-      const newCandidat = new Candidat();
+      const newCandidat = new Candidat()
 
       // Let's sanitize inputs
-      newCandidat.nomNaissance = sanitizeHtml(nom);
+      newCandidat.nomNaissance = sanitizeHtml(nom)
       // see https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript
       newCandidat.prenom = sanitizeHtml(
         prenom.normalize('NFD').replace(/[\u0300-\u036f]/g, ''),
-      );
-      newCandidat.codeNeph = neph;
-      newCandidat.dateReussiteETG = null;
-      newCandidat.dateDernierEchecPratique = null;
-      newCandidat.reussitePratique = null;
-      newCandidat.portable = sanitizeHtml(portable);
-      newCandidat.adresse = sanitizeHtml(adresse);
-      newCandidat.email = sanitizeHtml(email);
-      newCandidat.isValid = false;
+      )
+      newCandidat.codeNeph = neph
+      newCandidat.dateReussiteETG = null
+      newCandidat.dateDernierEchecPratique = null
+      newCandidat.reussitePratique = null
+      newCandidat.portable = sanitizeHtml(portable)
+      newCandidat.adresse = sanitizeHtml(adresse)
+      newCandidat.email = sanitizeHtml(email)
+      newCandidat.isValid = false
       newCandidat.creneau = {}
 
       newCandidat.save((error, candidat) => {
@@ -288,10 +294,10 @@ export function signUp(req, res) {
           return res.status(500).send({
             success: false,
             message: error.message,
-          });
+          })
         }
 
-        sendMailToAccount(candidat, INSCRIPTION_OK);
+        sendMailToAccount(candidat, INSCRIPTION_OK)
 
         const token = jwt.sign(
           {
@@ -301,7 +307,7 @@ export function signUp(req, res) {
           {
             expiresIn: USER_STATUS_EXPIRES_IN.candidat(),
           },
-        );
+        )
 
         return res.status(200).send({
           success: true,
@@ -310,48 +316,48 @@ export function signUp(req, res) {
           candidat,
           auth: true,
           token,
-        });
-      });
+        })
+      })
     },
-  );
+  )
 }
 
-export function verifyMe(req, res) {
+export function verifyMe (req, res) {
   Candidat.findById(req.userId, (err, user) => {
     if (err) {
       return res.status(500).send({
         auth: false,
         message: 'Problème pour retrouver cet utilisateur .',
-      });
+      })
     }
     if (!user) {
       return res
         .status(404)
-        .send({ auth: false, message: 'Utilisateur non reconnu.' });
+        .send({ auth: false, message: 'Utilisateur non reconnu.' })
     }
-    const token = req.headers[TOKEN_HEADER_NAME] || req.query.token;
-    res.redirect('/sites?token=' + token);
-  });
+    const token = req.headers[TOKEN_HEADER_NAME] || req.query.token
+    res.redirect('/sites?token=' + token)
+  })
 }
 
-export function login(req, res) {
-  const { email } = req.body;
+export function login (req, res) {
+  const { email } = req.body
 
   Candidat.findOne({ email }, (err, user) => {
     if (err) {
-      return res.status(500).send({ auth: false, message: 'Erreur serveur.' });
+      return res.status(500).send({ auth: false, message: 'Erreur serveur.' })
     }
 
     if (!user) {
       return res
         .status(404)
-        .send({ auth: false, message: 'Utilisateur non reconnu.' });
+        .send({ auth: false, message: 'Utilisateur non reconnu.' })
     }
 
-    const emailIsValid = email === user.email;
+    const emailIsValid = email === user.email
 
     if (!emailIsValid) {
-      return res.status(401).send({ auth: false, token: null });
+      return res.status(401).send({ auth: false, token: null })
     }
 
     if (!user.isValid) {
@@ -359,7 +365,7 @@ export function login(req, res) {
         auth: false,
         token: null,
         message: 'Utiliseur en attente de validation.',
-      });
+      })
     }
 
     const token = jwt.sign(
@@ -370,7 +376,7 @@ export function login(req, res) {
       {
         expiresIn: USER_STATUS_EXPIRES_IN.candidat(),
       },
-    );
+    )
 
     sendMagicLink(user, token)
       .then((response) => {
@@ -380,7 +386,7 @@ export function login(req, res) {
           response,
           message:
             'Veuillez consulter votre boîte mail pour vous connecter (pensez à vérifier dans vos courriers indésirables).',
-        });
+        })
       })
       .catch((error) => {
         res.status(500).send({
@@ -389,9 +395,9 @@ export function login(req, res) {
           error,
           message:
             "Un problème est survenu lors de l'envoi du lien de connexion. Nous vous prions de réessayer plus tard.",
-        });
-      });
-  });
+        })
+      })
+  })
 }
 
 /**
@@ -400,15 +406,15 @@ export function login(req, res) {
  * @param res
  * @returns void
  */
-export function getCandidats(req, res) {
+export function getCandidats (req, res) {
   Candidat.find()
     .sort('-dateAdded')
     .exec((err, Candidats) => {
       if (err) {
-        res.status(500).send(err);
+        res.status(500).send(err)
       }
-      res.status(200).json(Candidats);
-    });
+      res.status(200).json(Candidats)
+    })
 }
 
 /**
@@ -417,13 +423,13 @@ export function getCandidats(req, res) {
  * @param res
  * @returns void
  */
-export async function getCandidat(req, res) {
+export async function getCandidat (req, res) {
   try {
     const id = req.params.id === 'me' ? req.userId : req.params.id
     const candidat = await Candidat.findById(id)
-    res.status(200).json(candidat);
+    res.status(200).json(candidat)
   } catch (err) {
-    res.status(500).send(err);
+    res.status(500).send(err)
   }
 }
 
@@ -433,38 +439,38 @@ export async function getCandidat(req, res) {
  * @param res
  * @returns void
  */
-export function addCandidat(req, res) {
+export function addCandidat (req, res) {
   if (
-    !req.body.candidat.nomNaissance
-    || !req.body.candidat.codeNeph
-    || !req.body.candidat.email
+    !req.body.candidat.nomNaissance ||
+    !req.body.candidat.codeNeph ||
+    !req.body.candidat.email
   ) {
-    res.status(403).end();
+    res.status(403).end()
   }
 
-  const newCandidat = new Candidat(req.body.candidat);
+  const newCandidat = new Candidat(req.body.candidat)
 
   // Let's sanitize inputs
-  newCandidat.nomNaissance = sanitizeHtml(newCandidat.nomNaissance);
-  newCandidat.nomUsage = sanitizeHtml(newCandidat.nomUsage);
-  newCandidat.prenom = sanitizeHtml(newCandidat.prenom);
-  newCandidat.codeNeph = sanitizeHtml(newCandidat.codeNeph);
-  newCandidat.dateNaissance = sanitizeHtml(newCandidat.dateNaissance);
-  newCandidat.dateReussiteETG = sanitizeHtml(newCandidat.dateReussiteETG);
+  newCandidat.nomNaissance = sanitizeHtml(newCandidat.nomNaissance)
+  newCandidat.nomUsage = sanitizeHtml(newCandidat.nomUsage)
+  newCandidat.prenom = sanitizeHtml(newCandidat.prenom)
+  newCandidat.codeNeph = sanitizeHtml(newCandidat.codeNeph)
+  newCandidat.dateNaissance = sanitizeHtml(newCandidat.dateNaissance)
+  newCandidat.dateReussiteETG = sanitizeHtml(newCandidat.dateReussiteETG)
   newCandidat.dateDernierEchecPratique = sanitizeHtml(
     newCandidat.dateDernierEchecPratique,
-  );
-  newCandidat.reussitePratique = sanitizeHtml(newCandidat.reussitePratique);
-  newCandidat.portable = sanitizeHtml(newCandidat.portable);
-  newCandidat.adresse = sanitizeHtml(newCandidat.adresse);
-  newCandidat.email = sanitizeHtml(newCandidat.email);
+  )
+  newCandidat.reussitePratique = sanitizeHtml(newCandidat.reussitePratique)
+  newCandidat.portable = sanitizeHtml(newCandidat.portable)
+  newCandidat.adresse = sanitizeHtml(newCandidat.adresse)
+  newCandidat.email = sanitizeHtml(newCandidat.email)
 
   newCandidat.save((err, saved) => {
     if (err) {
-      res.send(err);
+      res.send(err)
     }
-    res.status(200).json({ candidat: saved });
-  });
+    res.status(200).json({ candidat: saved })
+  })
 }
 
 /**
@@ -473,14 +479,14 @@ export function addCandidat(req, res) {
  * @param res
  * @returns void
  */
-export function getCandidatNeph(req, res, next) {
-  const neph = parseInt(req.params.neph, 10);
+export function getCandidatNeph (req, res, next) {
+  const neph = parseInt(req.params.neph, 10)
   Candidat.find({ codeNeph: neph }).exec((err, candidat) => {
     if (err) {
-      next(err);
+      next(err)
     }
-    res.json({ candidat });
-  });
+    res.json({ candidat })
+  })
 }
 
 /**
@@ -490,24 +496,24 @@ export function getCandidatNeph(req, res, next) {
  * @returns void
  */
 
-export function updateCandidat(req, res, next) {
+export function updateCandidat (req, res, next) {
   Candidat.findByIdAndUpdate(
     req.params.id,
     req.body.candidat,
     { new: true },
     (err, user) => {
       if (err) {
-        next(err);
+        next(err)
       } else {
         if (user.creneau && user.creneau.title) {
-          sendMailToAccount(user, MAIL_CONVOCATION);
+          sendMailToAccount(user, MAIL_CONVOCATION)
         } else {
-          sendMailToAccount(user, ANNULATION_CONVOCATION);
+          sendMailToAccount(user, ANNULATION_CONVOCATION)
         }
-        res.json(user);
+        res.json(user)
       }
     },
-  );
+  )
 }
 
 /**
@@ -516,16 +522,16 @@ export function updateCandidat(req, res, next) {
  * @param res
  * @returns void
  */
-export function deleteCandidat(req, res) {
+export function deleteCandidat (req, res) {
   Candidat.findOne({ _id: req.params.id }).exec((err, candidat) => {
     if (err) {
-      res.status(500).send(err);
+      res.status(500).send(err)
     }
 
     candidat.remove(() => {
-      res.status(200).end('candidat deleted');
-    });
-  });
+      res.status(200).end('candidat deleted')
+    })
+  })
 }
 
 /**
@@ -534,20 +540,20 @@ export function deleteCandidat(req, res) {
  * @param res
  * @returns void
  */
-export function deleteCandidatNeph(req, res) {
+export function deleteCandidatNeph (req, res) {
   Candidat.findOne({ codeNeph: req.params.neph }).exec((err, candidat) => {
     if (err) {
-      res.status(500).send(err);
+      res.status(500).send(err)
     }
 
     candidat.remove(() => {
-      res.status(200).end('candidat deleted');
-    });
-  });
+      res.status(200).end('candidat deleted')
+    })
+  })
 }
 
-export function exportToCSV(req, res) {
-  const filename = 'candidatsLibresPrintel.csv';
+export function exportToCSV (req, res) {
+  const filename = 'candidatsLibresPrintel.csv'
 
   Candidat.find(
     {},
@@ -562,8 +568,8 @@ export function exportToCSV(req, res) {
   )
     .lean()
     .exec({}, (err, candidats) => {
-      if (err) res.send(err);
-      const newData = [];
+      if (err) res.send(err)
+      const newData = []
       candidats.map((n) => {
         newData.push({
           'Code NEPH': n.codeNeph,
@@ -571,111 +577,111 @@ export function exportToCSV(req, res) {
           "Nom d'usage": n.nomUsage,
           Prénom: n.prenom,
           email: n.email,
-        });
-        return true;
-      });
+        })
+        return true
+      })
 
-      res.status(200);
-      res.setHeader('Content-Type', ['text/csv ; charset=utf-8']);
-      res.setHeader('Content-Disposition', `attachment; filename= ${filename}`);
-      return res.csv(newData, 'utf-8', true);
-    });
+      res.status(200)
+      res.setHeader('Content-Type', ['text/csv ; charset=utf-8'])
+      res.setHeader('Content-Disposition', `attachment; filename= ${filename}`)
+      return res.csv(newData, 'utf-8', true)
+    })
 }
 
-export function destroyAll(req, res) {
+export function destroyAll (req, res) {
   Candidat.remove({}, (err) => {
     if (err) {
-      console.warn(err); // eslint-disable-line no-console
+      console.warn(err) // eslint-disable-line no-console
     } else {
-      res.send(' destroy success');
-      res.end();
+      res.send(' destroy success')
+      res.end()
     }
-  });
+  })
 }
 
 export const epreuveEtgInvalid = (candidatAurige) => {
   return (
-    !candidatAurige.dateReussiteETG
-    || !moment(candidatAurige.dateReussiteETG).isValid()
-  );
-};
+    !candidatAurige.dateReussiteETG ||
+    !moment(candidatAurige.dateReussiteETG).isValid()
+  )
+}
 
 const removeCandidat = async candidat => {
-  const { email } = candidat;
+  const { email } = candidat
   try {
-    await candidat.remove();
-    return candidat;
+    await candidat.remove()
+    return candidat
   } catch (error) {
-    console.error(`Erreur de suppression pour ce candidat ${email}`);// eslint-disable-line no-console
-    throw error;
+    console.error(`Erreur de suppression pour ce candidat ${email}`)// eslint-disable-line no-console
+    throw error
   }
 }
 
-const getCandidatStatus = (nom, neph, status) => ({ nom, neph, status });
+const getCandidatStatus = (nom, neph, status) => ({ nom, neph, status })
 
 const synchroAurige = async (buffer) => {
-  let retourAurige = [];
+  let retourAurige = []
   try {
-    retourAurige = JSON.parse(buffer.toString());
+    retourAurige = JSON.parse(buffer.toString())
   } catch (err) {
-    console.error(err); // eslint-disable-line no-console
-    throw err;
+    console.error(err) // eslint-disable-line no-console
+    throw err
   }
 
   const result = retourAurige.map(async (candidatAurige) => {
-    const { nomNaissance, codeNeph, candidatExistant, dateReussiteETG, reussitePratique, dateDernierEchecPratique } = candidatAurige;
+    const { nomNaissance, codeNeph, candidatExistant, dateReussiteETG, reussitePratique, dateDernierEchecPratique } = candidatAurige
 
     try {
       const candidatsBase = await Candidat.findOne({ nomNaissance, codeNeph })
 
       if (candidatsBase === undefined || candidatsBase === null) {
-        console.error(`Candidat ${codeNeph}/${nomNaissance} non trouvé`);// eslint-disable-line no-console
-        return getCandidatStatus(nomNaissance, codeNeph, 'error');
+        console.error(`Candidat ${codeNeph}/${nomNaissance} non trouvé`)// eslint-disable-line no-console
+        return getCandidatStatus(nomNaissance, codeNeph, 'error')
       }
 
-      const { email } = candidatsBase;
+      const { email } = candidatsBase
 
       if (candidatExistant === CANDIDAT_NOK) {
         return removeCandidat(candidatsBase).then(resp => {
-          console.warn(`Ce candidat ${email} a été detruit: NEPH inconnu`); // eslint-disable-line no-console
-          sendMailToAccount(candidatsBase, CANDIDAT_NOK);
-          return getCandidatStatus(nomNaissance, codeNeph, 'success');
-        });
+          console.warn(`Ce candidat ${email} a été detruit: NEPH inconnu`) // eslint-disable-line no-console
+          sendMailToAccount(candidatsBase, CANDIDAT_NOK)
+          return getCandidatStatus(nomNaissance, codeNeph, 'success')
+        })
       } else if (candidatExistant === CANDIDAT_NOK_NOM) {
         return removeCandidat(candidatsBase).then(resp => {
-          console.warn(`Ce candidat ${email} a été detruit: Nom inconnu`); // eslint-disable-line no-console
-          sendMailToAccount(candidatsBase, CANDIDAT_NOK_NOM);
-          return getCandidatStatus(nomNaissance, codeNeph, 'success');
-        });
+          console.warn(`Ce candidat ${email} a été detruit: Nom inconnu`) // eslint-disable-line no-console
+          sendMailToAccount(candidatsBase, CANDIDAT_NOK_NOM)
+          return getCandidatStatus(nomNaissance, codeNeph, 'success')
+        })
       } else if (epreuveEtgInvalid(candidatAurige)) {
         return removeCandidat(candidatsBase).then(resp => {
-          console.warn(`Ce candidat ${email} a été detruit: NEPH inconnu`); // eslint-disable-line no-console
-          sendMailToAccount(candidatsBase, CANDIDAT_NOK_NOM);
-          return getCandidatStatus(nomNaissance, codeNeph, 'success');
-        });
+          console.warn(`Ce candidat ${email} a été detruit: NEPH inconnu`) // eslint-disable-line no-console
+          sendMailToAccount(candidatsBase, CANDIDAT_NOK_NOM)
+          return getCandidatStatus(nomNaissance, codeNeph, 'success')
+        })
       } else if (moment().diff(dateReussiteETG, 'years', true) > DATE_CODE_VALID) {
         return removeCandidat(candidatsBase).then(resp => {
-          console.warn(`Ce candidat ${email} a été detruit: Date ETG KO`); // eslint-disable-line no-console
-          sendMailToAccount(candidatAurige, EPREUVE_ETG_KO);
-          return getCandidatStatus(nomNaissance, codeNeph, 'success');
-        });
+          console.warn(`Ce candidat ${email} a été detruit: Date ETG KO`) // eslint-disable-line no-console
+          sendMailToAccount(candidatAurige, EPREUVE_ETG_KO)
+          return getCandidatStatus(nomNaissance, codeNeph, 'success')
+        })
       } else if (reussitePratique === EPREUVE_PRATIQUE_OK) {
         return removeCandidat(candidatsBase).then(resp => {
-          console.warn(`Ce candidat ${email} a été detruit: PRATIQUE OK`); // eslint-disable-line no-console
-          sendMailToAccount(candidatAurige, EPREUVE_PRATIQUE_OK);
-          return getCandidatStatus(nomNaissance, codeNeph, 'success');
-        });
+          console.warn(`Ce candidat ${email} a été detruit: PRATIQUE OK`) // eslint-disable-line no-console
+          sendMailToAccount(candidatAurige, EPREUVE_PRATIQUE_OK)
+          return getCandidatStatus(nomNaissance, codeNeph, 'success')
+        })
       } else if (candidatExistant === CANDIDAT_EXISTANT) {
-        const { isValid } = candidatsBase;
+        const { isValid } = candidatsBase
 
-        candidatsBase.set({ dateReussiteETG, dateDernierEchecPratique, reussitePratique, isValid: true });
+        candidatsBase.set({ dateReussiteETG, dateDernierEchecPratique, reussitePratique, isValid: true })
         return candidatsBase.save()
           .then(candidat => {
             if (isValid) {
-              console.warn(`Ce candidat ${candidat.email} a été mis à jour`); // eslint-disable-line no-console
-              return getCandidatStatus(nomNaissance, codeNeph, 'success');
+              console.warn(`Ce candidat ${candidat.email} a été mis à jour`) // eslint-disable-line no-console
+              return getCandidatStatus(nomNaissance, codeNeph, 'success')
             } else {
-              console.warn(`Ce candidat ${candidat.email} a été validé`); // eslint-disable-line no-console
+              console.warn(`Ce candidat ${candidat.email} a été validé`) // eslint-disable-line no-console
               const token = jwt.sign(
                 {
                   id: candidat.id,
@@ -684,74 +690,73 @@ const synchroAurige = async (buffer) => {
                 {
                   expiresIn: USER_STATUS_EXPIRES_IN.candidat(),
                 },
-              );
+              )
 
-              sendMagicLink(candidat, token);
-              return getCandidatStatus(nomNaissance, codeNeph, 'success');
+              sendMagicLink(candidat, token)
+              return getCandidatStatus(nomNaissance, codeNeph, 'success')
             }
           }).catch(err => {
-            console.error(`Erreur de mise à jours pour ce candidat ${email}`);// eslint-disable-line no-console
-            return getCandidatStatus(nomNaissance, codeNeph, 'error');
+            console.error(`Erreur de mise à jours pour ce candidat ${email}:`, err)// eslint-disable-line no-console
+            return getCandidatStatus(nomNaissance, codeNeph, 'error')
           })
       } else {
-        console.warn(`Ce candidat ${email} n'a pas été traité. Cas inconnu`); // eslint-disable-line no-console
-        return getCandidatStatus(nomNaissance, codeNeph, 'error');
+        console.warn(`Ce candidat ${email} n'a pas été traité. Cas inconnu`) // eslint-disable-line no-console
+        return getCandidatStatus(nomNaissance, codeNeph, 'error')
       }
     } catch (error) {
-      console.error(error);// eslint-disable-line no-console
-      console.error(`Erreur dans la recherche du candidat pour ce candidat ${codeNeph}/${nomNaissance}`);// eslint-disable-line no-console
-      return getCandidatStatus(nomNaissance, codeNeph, 'error');
+      console.error(error)// eslint-disable-line no-console
+      console.error(`Erreur dans la recherche du candidat pour ce candidat ${codeNeph}/${nomNaissance}`)// eslint-disable-line no-console
+      return getCandidatStatus(nomNaissance, codeNeph, 'error')
     }
+  })
 
-  });
+  return Promise.all(result)
+}
 
-  return Promise.all(result);
-};
-
-export function purgePermisOk(req, res) {
+export function purgePermisOk (req, res) {
   Candidat.find(
     {
       reussitePratique: 'OK',
     },
     (err, candidats) => {
       if (err) {
-        console.warn(err); // eslint-disable-line no-console
+        console.warn(err) // eslint-disable-line no-console
       } else {
         candidats.map((c) => {
           Candidat.findOne({ _id: c._id }).exec((error, cand) => {
             if (error) {
-              res.send(error);
+              res.send(error)
             }
             cand.remove(() => {
-              res.status(200).end();
-            });
-          });
-        });
+              res.status(200).end()
+            })
+          })
+        })
       }
     },
-  );
+  )
 }
 
 export const uploadAurigeCSV = (req, res, next) => {
-  const csvFile = req.files.file;
+  const csvFile = req.files.file
 
   csvParser
     .fromString(csvFile.data.toString(), { headers: false, ignoreEmpty: true })
     .on('data', (data) => {
-      const creneau = new Creneau();
-      if (data[0] === 'Date') return;
+      const creneau = new Creneau()
+      if (data[0] === 'Date') return
 
-      const [day, time, inspecteur, centre] = data;
+      const [day, time, inspecteur, centre] = data
 
-      const myDate = `${day} ${time}`;
+      const myDate = `${day} ${time}`
       const formattedDate = moment(
         moment(myDate, 'DD-MM-YYYY HH:mm:ss').format('YYYY-MM-DD HH:mm:ss'),
-      ).add(60, 'minutes');
-      creneau.date = formattedDate;
-      creneau.inspecteur = inspecteur;
-      creneau.centre = centre;
+      ).add(60, 'minutes')
+      creneau.date = formattedDate
+      creneau.inspecteur = inspecteur
+      creneau.centre = centre
 
-      const { date } = creneau;
+      const { date } = creneau
 
       Creneau.find(
         {
@@ -761,45 +766,44 @@ export const uploadAurigeCSV = (req, res, next) => {
         },
         (errFind, previousCreneau) => {
           if (errFind) {
-            console.warn(errFind);
+            console.warn(errFind)
           } else if (previousCreneau.length > 0) {
-            console.warn(previousCreneau, 'deja en base');
+            console.warn(previousCreneau, 'deja en base')
           } else {
             creneau.save((errSave) => {
               if (errSave) {
-                console.warn(errSave); // eslint-disable-line no-console
+                console.warn(errSave) // eslint-disable-line no-console
               }
-              res.end('Done');
-            });
+              res.end('Done')
+            })
           }
         },
-      );
+      )
     })
     .on('end', () => {
-      console.log('done'); // eslint-disable-line no-console
-      next();
-    });
+      console.log('done') // eslint-disable-line no-console
+      next()
+    })
 
-  res.status(200).send({ name: csvFile.name });
-};
+  res.status(200).send({ name: csvFile.name })
+}
 
 export const uploadAurigeJSON = async (req, res) => {
-  const jsonFile = req.files.file;
+  const jsonFile = req.files.file
   try {
-    const result = await synchroAurige(jsonFile.data);
+    const result = await synchroAurige(jsonFile.data)
     res.status(200).send({
       fileName: jsonFile.name,
       success: true,
       message: `Le fichier ${jsonFile.name} a été synchronisé.`,
       candidats: result,
-    });
+    })
   } catch (err) {
-    console.error(err); // eslint-disable-line no-console
-    return res.status(500).send(err);
+    console.error(err) // eslint-disable-line no-console
+    return res.status(500).send(err)
   }
-};
+}
 
-
-export function mailToContactUs(req, res) {
-  return res.status(200).send({ emailto: serverConfig.supportMail});
+export function mailToContactUs (req, res) {
+  return res.status(200).send({ emailto: serverConfig.supportMail })
 }

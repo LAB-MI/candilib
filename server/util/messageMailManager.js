@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment from 'moment'
 import {
   CANDIDAT_NOK,
   CANDIDAT_NOK_NOM,
@@ -10,32 +10,32 @@ import {
   AURIGE_OK,
   MAIL_CONVOCATION,
   ANNULATION_CONVOCATION,
-} from './constant';
-import sites from '../inbox/sites.json';
-import serverConfig from '../config';
+} from './constant'
+import sites from '../inbox/sites.json'
+import serverConfig from '../config'
 
 const mailMessage = (candidatAurige, flag, urlMagicLink) => {
-  const urlFAQ = `${serverConfig.PUBLIC_URL}/informations`;
-  const urlRESA = `${serverConfig.PUBLIC_URL}/auth?redirect=calendar`;
-  const urlConnexion = `${serverConfig.PUBLIC_URL}`;
+  const urlFAQ = `${serverConfig.PUBLIC_URL}/informations`
+  const urlRESA = `${serverConfig.PUBLIC_URL}/auth?redirect=calendar`
+  const urlConnexion = `${serverConfig.PUBLIC_URL}`
 
-  const { codeNeph, nomNaissance, creneau } = candidatAurige;
+  const { codeNeph, nomNaissance, creneau } = candidatAurige
 
-  const message = {};
+  const message = {}
 
-  const nomMaj = nomNaissance ? nomNaissance.toUpperCase() : '';
+  const nomMaj = nomNaissance ? nomNaissance.toUpperCase() : ''
 
-  const site = creneau && creneau.title ? creneau.title : '';
+  const site = creneau && creneau.title ? creneau.title : ''
   const dateCreneau = creneau && creneau.start
     ? moment(creneau.start).format('DD MMMM YYYY')
-    : '';
+    : ''
   const heureCreneau = creneau && creneau.start
-    ? moment(creneau.start).format('HH:mm') : '';
+    ? moment(creneau.start).format('HH:mm') : ''
 
-  let siteAdresse = [];
+  let siteAdresse = []
 
   if (creneau && creneau.title) {
-    siteAdresse = sites.find(item => item.nom.toUpperCase() === creneau.title);
+    siteAdresse = sites.find(item => item.nom.toUpperCase() === creneau.title)
   }
 
   const ANNULATION_CONVOCATION_MSG = `<p>Bonjour Mr/Mme ${nomMaj},</p>
@@ -43,7 +43,7 @@ const mailMessage = (candidatAurige, flag, urlMagicLink) => {
   <p>votre réservation à l'examen pratique du permis de conduire avec
   le numéro NEPH ${codeNeph} est bien annulée. </p>
   <br>
-  <p align="right">L'équipe Candilib</p>`;
+  <p align="right">L'équipe Candilib</p>`
 
   const MAIL_CONVOCATION_MSG = `
   <p>Le présent mail vaut convocation.</p>
@@ -130,7 +130,7 @@ const mailMessage = (candidatAurige, flag, urlMagicLink) => {
     Pour toute information, vous pouvez consulter <a href=${urlFAQ}>notre aide en ligne</a>.
   </p>
   <br/>
-  <p align="right">L'équipe Candilib</p>`;
+  <p align="right">L'équipe Candilib</p>`
 
   const INSCRIPTION_OK_MSG = `<p>Bonjour Mr/Mme ${nomMaj},</p>
   <br>
@@ -158,7 +158,7 @@ const mailMessage = (candidatAurige, flag, urlMagicLink) => {
   <strong>Attention:</strong>vous ne devez transmettre cet email à personne. Il permet d'accéder à votre compte personnel, de créer ou modifier votre réservation. 
   </p>
   
-  <p align="right">L'équipe Candilib</p>`;
+  <p align="right">L'équipe Candilib</p>`
 
   const INSCRIPTION_KO_MSG = `<p>Bonjour Mr/Mme ${nomMaj},</p>
   <br>
@@ -171,7 +171,7 @@ const mailMessage = (candidatAurige, flag, urlMagicLink) => {
   <br>
   <p>Veuillez consulter notre <a href=${urlFAQ}>aide en ligne</a>.<p>
   <br>
-  <p align="right">L'équipe Candilib</p>`;
+  <p align="right">L'équipe Candilib</p>`
 
   const EPREUVE_PRATIQUE_OK_MSG = `<p>Bonjour Mr/Mme ${nomMaj},</p>
   <br>
@@ -185,7 +185,7 @@ const mailMessage = (candidatAurige, flag, urlMagicLink) => {
   </p>
   <p>Vous pourrez trouver des informations utiles en consultant notre <a href=${urlFAQ}>aide en ligne</a>.<p>
   <br>
-  <p align="right">L'équipe Candilib</p>`;
+  <p align="right">L'équipe Candilib</p>`
 
   const EPREUVE_ETG_KO_MSG = `<p>Bonjour Mr/Mme ${nomMaj},</p>
   <br>
@@ -193,58 +193,58 @@ const mailMessage = (candidatAurige, flag, urlMagicLink) => {
   </p>Vous ne pouvez pas rejoindre le site de réservation des candidats libres sans examen du code de la route réussi et en cours de validité.</p>
   <p>Vous pourrez trouver des informations utiles en consultant <a href=${urlFAQ}>notre aide en ligne</a>.<p>
   <br>
-  <p align="right">L'équipe Candilib</p>`;
+  <p align="right">L'équipe Candilib</p>`
 
   const INSCRIPTION_VALID_MSG = `<p>Bonjour Mr/Mme ${nomMaj},</p>
   <p>Votre demande d’inscription est en cours de vérification,
   vous recevrez une information sous 48h hors week-end et jours fériés.</p>
   <br>
-  <p align="right">L'équipe Candilib</p>`;
+  <p align="right">L'équipe Candilib</p>`
 
   switch (flag) {
-  case CANDIDAT_NOK:
-    message.content = INSCRIPTION_KO_MSG;
-    message.subject = 'Inscription Candilib non validée';
-    return message;
-  case INSCRIPTION_VALID:
-    message.content = INSCRIPTION_VALID_MSG;
-    message.subject = "Confirmation d'inscription Candilib";
-    return message;
-  case CANDIDAT_NOK_NOM:
-    message.content = INSCRIPTION_KO_MSG;
-    message.subject = 'Inscription Candilib non validée';
-    return message;
-  case EPREUVE_PRATIQUE_OK:
-    message.content = EPREUVE_PRATIQUE_OK_MSG;
-    message.subject = 'Problème inscription Candilib';
-    return message;
-  case INSCRIPTION_OK:
-    message.content = INSCRIPTION_VALID_MSG;
-    message.subject = 'Inscription Candilib en attente de vérification';
-    return message;
-  case EPREUVE_ETG_KO:
-    message.content = EPREUVE_ETG_KO_MSG;
-    message.subject = 'Problème inscription Candilib';
-    return message;
-  case AURIGE_OK:
-    message.content = INSCRIPTION_OK_MSG;
-    message.subject = 'Validation de votre inscription à Candilib';
-    return message;
-  case MAIL_CONVOCATION:
-    message.content = MAIL_CONVOCATION_MSG;
-    message.subject = "Convocation à l'examen";
-    return message;
-  case ANNULATION_CONVOCATION:
-    message.content = ANNULATION_CONVOCATION_MSG;
-    message.subject = "Annulation de Convocation à l'examen";
-    return message;
-  case INSCRIPTION_UPDATE:
-    message.content = INSCRIPTION_VALID_MSG;
-    message.subject = 'Inscription Candilib en attente de vérification';
-    return message;
-  default:
-    return '';
+    case CANDIDAT_NOK:
+      message.content = INSCRIPTION_KO_MSG
+      message.subject = 'Inscription Candilib non validée'
+      return message
+    case INSCRIPTION_VALID:
+      message.content = INSCRIPTION_VALID_MSG
+      message.subject = "Confirmation d'inscription Candilib"
+      return message
+    case CANDIDAT_NOK_NOM:
+      message.content = INSCRIPTION_KO_MSG
+      message.subject = 'Inscription Candilib non validée'
+      return message
+    case EPREUVE_PRATIQUE_OK:
+      message.content = EPREUVE_PRATIQUE_OK_MSG
+      message.subject = 'Problème inscription Candilib'
+      return message
+    case INSCRIPTION_OK:
+      message.content = INSCRIPTION_VALID_MSG
+      message.subject = 'Inscription Candilib en attente de vérification'
+      return message
+    case EPREUVE_ETG_KO:
+      message.content = EPREUVE_ETG_KO_MSG
+      message.subject = 'Problème inscription Candilib'
+      return message
+    case AURIGE_OK:
+      message.content = INSCRIPTION_OK_MSG
+      message.subject = 'Validation de votre inscription à Candilib'
+      return message
+    case MAIL_CONVOCATION:
+      message.content = MAIL_CONVOCATION_MSG
+      message.subject = "Convocation à l'examen"
+      return message
+    case ANNULATION_CONVOCATION:
+      message.content = ANNULATION_CONVOCATION_MSG
+      message.subject = "Annulation de Convocation à l'examen"
+      return message
+    case INSCRIPTION_UPDATE:
+      message.content = INSCRIPTION_VALID_MSG
+      message.subject = 'Inscription Candilib en attente de vérification'
+      return message
+    default:
+      return ''
   }
-};
+}
 
-export default mailMessage;
+export default mailMessage

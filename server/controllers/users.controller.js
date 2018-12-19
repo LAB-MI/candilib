@@ -1,13 +1,13 @@
-import sanitizeHtml from 'sanitize-html';
+import sanitizeHtml from 'sanitize-html'
 
-import User from '../models/user';
-import { getHash } from '../util/crypto';
+import User from '../models/user'
+import { getHash } from '../util/crypto'
 
 // eslint-disable-next-line import/prefer-default-export
-export function registerAdmin(req, res, next) {
-  const { email, password } = req.body;
+export function registerAdmin (req, res, next) {
+  const { email, password } = req.body
 
-  const hashPassword = getHash(password);
+  const hashPassword = getHash(password)
 
   // verify user don't exist
 
@@ -16,14 +16,14 @@ export function registerAdmin(req, res, next) {
       return res.status(500).send({
         success: false,
         message: err.errmsg,
-      });
+      })
     }
 
     if (previousUsers.length > 0) {
       return res.status(409).send({
         success: false,
         message: 'Error: Account already exist.',
-      });
+      })
     }
 
     User.create(
@@ -34,15 +34,15 @@ export function registerAdmin(req, res, next) {
       },
       (error, user) => {
         if (error) {
-          res.status(500).send('Il y a un problème avec votre demande !');
-          next(error);
+          res.status(500).send('Il y a un problème avec votre demande !')
+          next(error)
         } else {
           res
             .status(200)
-            .send({ message: "l'utilisateur " + user.email + ' est créé.' });
-          next();
+            .send({ message: "l'utilisateur " + user.email + ' est créé.' })
+          next()
         }
       },
-    );
-  });
+    )
+  })
 }

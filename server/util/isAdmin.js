@@ -1,8 +1,8 @@
-export default function isAdmin(req, res, next) {
+export default function isAdmin (req, res, next) {
   if (req.userLevel === 1) {
-    return next();
+    return next()
   }
   res
     .status(401)
-    .send({ auth: false, message: 'Erreur de vérification Token.' });
+    .send({ auth: false, message: 'Erreur de vérification Token.' })
 }

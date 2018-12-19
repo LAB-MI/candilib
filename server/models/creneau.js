@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
-const { Schema } = mongoose;
+const { Schema } = mongoose
 
 const creneauDateSchema = new Schema({
   inspecteur: {
@@ -23,6 +23,6 @@ const creneauDateSchema = new Schema({
     type: String,
     required: false,
   },
-});
+})
 
-export default mongoose.model('Creneau', creneauDateSchema, 'creneaux');
+export default mongoose.model('Creneau', creneauDateSchema, 'creneaux')

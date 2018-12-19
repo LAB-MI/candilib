@@ -1,9 +1,9 @@
-import { Router } from 'express';
+import { Router } from 'express'
 
-import * as UsersController from '../../controllers/users.controller';
+import * as UsersController from '../../controllers/users.controller'
 
-const router = new Router();
+const router = new Router()
 
-router.route('/users').post(UsersController.registerAdmin);
+router.route('/users').post(UsersController.registerAdmin)
 
-export default router;
+export default router

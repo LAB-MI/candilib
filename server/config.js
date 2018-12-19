@@ -14,7 +14,7 @@ const config = {
   tokenCandidatExpired: process.env.CANDIDAT_EXPIREDIN || '1h',
   supportMail: process.env.EMAIL_SUPPORT || 'candilib93@developpement-durable.gouv.fr',
   PUBLIC_URL: process.env.PUBLIC_URL || 'http://localhost:80',
-};
+}
 
 export const smtpOptions = {
   host: config.smtpServer,
@@ -24,7 +24,7 @@ export const smtpOptions = {
     // do not failed with selfsign certificates
     rejectUnauthorized: false,
   },
-};
+}
 
 // In development, if mailUser is not falsy, use it
 // (see .env file at the root of the project to use an external SMTP like gmail)
@@ -32,8 +32,8 @@ if (process.env.NODE_ENV === 'development' && config.mailUser) {
   smtpOptions.auth = {
     user: config.mailUser,
     pass: config.mailPassword,
-  };
-  smtpOptions.service = config.smtpService;
+  }
+  smtpOptions.service = config.smtpService
 }
 
-export default config;
+export default config

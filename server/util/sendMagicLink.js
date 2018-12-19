@@ -1,22 +1,20 @@
-import nodemailer from 'nodemailer';
-import smtpTransport from 'nodemailer-smtp-transport';
-import mailMessage from './messageMailManager';
-import serverConfig, { smtpOptions } from '../config';
-
+import nodemailer from 'nodemailer'
+import smtpTransport from 'nodemailer-smtp-transport'
+import mailMessage from './messageMailManager'
+import serverConfig, { smtpOptions } from '../config'
 
 const sendMagicLink = (candidatAurige, token) => {
-  const flag = 'CHECK_OK';
-  const url = `${serverConfig.PUBLIC_URL}${serverConfig.authentificationRoute}?token=${encodeURIComponent(token)}&redirect=calendar`;
+  const flag = 'CHECK_OK'
+  const url = `${serverConfig.PUBLIC_URL}${serverConfig.authentificationRoute}?token=${encodeURIComponent(token)}&redirect=calendar`
 
-  const message = mailMessage(candidatAurige, flag, url);
+  const message = mailMessage(candidatAurige, flag, url)
   // const INSCRIPTION_OK_MSG = `Bienvenue sur Candilib! </br>\n\r
   //   Vous êtes inscrit sur le site de réservation des candidats libres.</br>\n\r
   //   Voici votre identifiant: ${email}\n`;
 
   const transporter = nodemailer.createTransport(
     smtpTransport(smtpOptions),
-  );
-
+  )
 
   const mailOptions = {
     from: serverConfig.mailFrom,
@@ -160,20 +158,20 @@ const sendMagicLink = (candidatAurige, token) => {
           </table>
         </body>
       </html>`,
-  };
+  }
 
   return new Promise((resolve, reject) => {
     transporter.sendMail(mailOptions, (err, info) => {
       if (err) {
-        transporter.close();
-        reject(err); // eslint-disable-line no-console
+        transporter.close()
+        reject(err) // eslint-disable-line no-console
       } else {
-        console.log('MagicLink sent: ' + info.response);
-        transporter.close();
-        resolve(info.response);
+        console.log('MagicLink sent: ' + info.response)
+        transporter.close()
+        resolve(info.response)
       }
-    });
-  });
-};
+    })
+  })
+}
 
-export default sendMagicLink;
+export default sendMagicLink

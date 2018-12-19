@@ -1,8 +1,8 @@
-import mongoose from 'mongoose';
+import mongoose from 'mongoose'
 
 import { email as emailRegex } from '../lib/regex'
 
-const { Schema } = mongoose;
+const { Schema } = mongoose
 
 const whitelistCanditatSchema = new Schema({
   email: {
@@ -12,6 +12,6 @@ const whitelistCanditatSchema = new Schema({
     unique: true,
     match: emailRegex,
   },
-});
+})
 
-export default mongoose.model('WhitelistCandidat', whitelistCanditatSchema);
+export default mongoose.model('WhitelistCandidat', whitelistCanditatSchema)
