@@ -17,7 +17,7 @@ test_result=1
 dirname=$(dirname $0)
 until [ "$timeout" -le 0 -o "$test_result" -eq "0" ] ; do
 	## TODO:
-	${DC} -f ${DC_APP_RUN_PROD}  exec ${USE_TTY} $container_name mongo --quiet  --eval "JSON.stringify(db.serverStatus({}));"
+	${DC} -f ${DC_APP_RUN_ALL_PROD}  exec ${USE_TTY} $container_name mongo --quiet  --eval "JSON.stringify(db.serverStatus({}));"
 	test_result=$?
 	echo "Wait $timeout seconds: ${APP}-$container_name up $test_result";
 	(( timeout-- ))
