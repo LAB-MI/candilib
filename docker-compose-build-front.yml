@@ -1,0 +1,14 @@
+version: '3.4'
+services:
+  front:
+    image: candilib_web:${APP_VERSION:-latest}
+    build:
+      context: ./
+      dockerfile: Dockerfile.front
+      args:
+          proxy: ${http_proxy}
+          no_proxy: ${no_proxy}
+          npm_registry: ${NPM_REGISTRY}
+    container_name: candilib_web
+    environment:
+      NODE_ENV: production

@@ -11,6 +11,8 @@ BUILD_DIR=${APP_PATH}/${APP}-build
 # binaries
 DOCKER := $(shell type -p docker)
 DC     := $(shell type -p docker-compose)
+proxy := $(shell echo $$http_proxy)
+no_proxy := $(shell echo $$no_proxy)
 
 # cli docker-compose
 DC_BUILD_ARGS = --pull --no-cache --force-rm
@@ -20,6 +22,10 @@ DC_APP_BUILD_DEV  := docker-compose.yml
 DC_APP_RUN_DEV    := docker-compose.yml
 DC_APP_BUILD_PROD := docker-compose-production.yml
 DC_APP_RUN_PROD   := docker-compose-run-production.yml
+DC_APP_BUILD_FRONT_PROD  := docker-compose-build-front.yml
+DC_APP_RUN_FRONT_PROD    := docker-compose-build-front.yml
+DC_APP_BUILD_FRONT_DEV  := docker-compose-build-front-dev.yml
+DC_APP_RUN_FRONT_DEV    := docker-compose-build-front-dev.yml
 
 # detect tty
 USE_TTY := $(shell test -t 1 && { DOCKER_USE_TTY="-t" ; DOCKER_COMPOSER_USE_TTY="-T" ; } )
@@ -27,6 +33,7 @@ USE_TTY := $(shell test -t 1 && { DOCKER_USE_TTY="-t" ; DOCKER_COMPOSER_USE_TTY=
 # source archive
 FILE_ARCHIVE_APP_VERSION = $(APP)-$(APP_VERSION)-archive.tar.gz
 FILE_ARCHIVE_LATEST_VERSION = $(APP)-$(LATEST_VERSION)-archive.tar.gz
+FILE_FRONT_APP_VERSION = $(APP)-$(APP_VERSION)-front.tar.gz
  
 # docker image name
 FILE_IMAGE_WEB_APP_VERSION = $(APP)-web-$(APP_VERSION)-image.tar
@@ -50,7 +57,7 @@ NPM_REGISTRY = $(shell echo $$NPM_REGISTRY )
 
 # Run env
 #  Mongo DB volume path (in production mode)
-DBDATA := ${APP_PATH}/data
+DBDATA := ${APP_PATH}/db
 
 # export all variables in subshell
 export

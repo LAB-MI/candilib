@@ -81,10 +81,35 @@ build-all-images: build-dir build-prod
 build-archive: clean-archive build-dir ## Build archive
 	@echo "Build $(APP) $(APP)-$(APP_VERSION) archive"
 	echo "$(APP_VERSION)" > VERSION ; cp VERSION $(BUILD_DIR)/$(APP)-VERSION
-	tar -zcvf $(BUILD_DIR)/$(FILE_ARCHIVE_APP_VERSION) --exclude $$(basename $(BUILD_DIR)) $$( git ls-files ) VERSION
-	# git archive --format=tar.gz -o $(BUILD_DIR)/$(FILE_ARCHIVE_APP_VERSION) HEAD
+# tar -zcvf $(BUILD_DIR)/$(FILE_ARCHIVE_APP_VERSION) --exclude $$(basename $(BUILD_DIR))  *
+	git archive --format=tar.gz -o $(BUILD_DIR)/$(FILE_ARCHIVE_APP_VERSION) HEAD
 	@echo "Build $(APP) $(APP)-$(LATEST_VERSION) archive"
 	cp $(BUILD_DIR)/$(FILE_ARCHIVE_APP_VERSION) $(BUILD_DIR)/$(FILE_ARCHIVE_LATEST_VERSION)
+
+prepare-build-front:
+	if [ -f "${FRONTEND}/$(FILE_FRONTEND_APP_VERSION)" ] ; then rm -rf ${FRONTEND}/$(FILE_FRONTEND_APP_VERSION) ; fi
+	( cd client  && tar -zcvf $(FILE_FRONTEND_APP_VERSION) --exclude *.tar.gz --exclude Dockerfile.* . )
+
+check-build-front-dev: ## Check front docker-compose syntax
+	${DC} -f $(DC_APP_BUILD_FRONT_DEV) config -q
+
+build-front-dev-web: ## Build front container
+	${DC} -f ${DC_APP_BUILD_FRONT_DEV} build ${DC_BUILD_ARGS}
+run-front-dev-web: ## Build front container
+	${DC} -f ${DC_APP_BUILD_FRONT_DEV} up -d
+down-front-dev-web: ## Build front container
+	${DC} -f ${DC_APP_BUILD_FRONT_DEV} down
+
+check-build-front-prod: ## Check front docker-compose syntax
+	${DC} -f $(DC_APP_BUILD_FRONT_PROD) config
+
+build-front-prod-web: ## Build front container
+	proxy="${proxy}" NPM_REGISTRY="${NPM_REGISTRY}" no_proxy="${no_proxy}" ${DC} -f ${DC_APP_BUILD_FRONT_PROD} build ${DC_BUILD_ARGS}
+run-front-prod-web: ## Build front container
+	${DC} -f ${DC_APP_BUILD_FRONT_PROD} up -d
+down-front-prod-web: ## Build front container
+	${DC} -f ${DC_APP_BUILD_FRONT_PROD} down
+
 
 clean-archive:
 	@echo "Clean $(APP) archive"
