@@ -421,7 +421,7 @@ export function getCandidats(req, res) {
 export async function getCandidat(req, res) {
   try {
     const id = req.params.id === 'me' ? req.userId : req.params.id
-    const candidat = await Candidat.findById(req.userId)
+    const candidat = await Candidat.findById(id)
     res.status(200).json(candidat);
   } catch (err) {
     res.status(500).send(err);
