@@ -1,16 +1,15 @@
 /* eslint no-console: ["error", { allow: ["warn"] }] */
-import fs from 'fs';
-import * as csvParser from 'fast-csv';
-import jwt from 'jsonwebtoken';
-import moment from 'moment';
-import sanitizeHtml from 'sanitize-html';
-import latinize from 'latinize';
+import * as csvParser from 'fast-csv'
+import jwt from 'jsonwebtoken'
+import moment from 'moment'
+import sanitizeHtml from 'sanitize-html'
+import latinize from 'latinize'
 
-import Candidat from '../models/candidat';
-import csv from '../util/csv-express-candilib'; // eslint-disable-line no-unused-vars
-import sendMailToAccount from '../util/sendMail';
-import serverConfig from '../config';
-import sendMagicLink from '../util/sendMagicLink';
+import Candidat from '../models/candidat'
+import csv from '../util/csv-express-candilib' // eslint-disable-line no-unused-vars
+import sendMailToAccount from '../util/sendMail'
+import serverConfig from '../config'
+import sendMagicLink from '../util/sendMagicLink'
 import {
   CANDIDAT_EXISTANT,
   INSCRIPTION_OK,
@@ -65,9 +64,9 @@ export function ValidationParamRegister (req, res, next) {
   return next()
 }
 
-export function TransformParam(req, res, next){
-  req.body.nom = latinize(sanitizeHtml(req.body.nom)).toUpperCase();
-  return next();  
+export function TransformParam (req, res, next) {
+  req.body.nom = latinize(sanitizeHtml(req.body.nom)).toUpperCase()
+  return next()
 }
 /**
  *
@@ -653,18 +652,17 @@ const synchroAurige = async (buffer) => {
   }
 
   const result = retourAurige.map(async (candidatAurige) => {
-    
-    const { codeNeph, candidatExistant, dateReussiteETG, reussitePratique, dateDernierEchecPratique } = candidatAurige;
-    
-    if(!candidatAurige.nomNaissance){
-      console.error(`Erreur dans la recherche du candidat pour ce candidat ${codeNeph}/${nomNaissance}: Pas de nom de naissance dans le fichier Aurige`);// eslint-disable-line no-console
-      return getCandidatStatus(nomNaissance, codeNeph, 'error');
+    const { codeNeph, candidatExistant, dateReussiteETG, reussitePratique, dateDernierEchecPratique } = candidatAurige
+
+    let nomNaissance = candidatAurige.nomNaissance
+    if (!nomNaissance) {
+      console.error(`Erreur dans la recherche du candidat pour ce candidat ${codeNeph}/${nomNaissance}: Pas de nom de naissance dans le fichier Aurige`)// eslint-disable-line no-console
+      return getCandidatStatus(nomNaissance, codeNeph, 'error')
     }
-    
-    const  nomNaissance = latinize(candidatAurige.nomNaissance).toUpperCase();
+
+    nomNaissance = latinize(nomNaissance).toUpperCase()
 
     try {
-      
       const candidatsBase = await Candidat.findOne({ nomNaissance, codeNeph })
 
       if (candidatsBase === undefined || candidatsBase === null) {

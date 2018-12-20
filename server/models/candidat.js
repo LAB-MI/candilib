@@ -13,7 +13,7 @@ const candidatSchema = new Schema({
   nomNaissance: {
     type: String,
     required: true,
-    uppercase:true,
+    uppercase: true,
   },
   prenom: {
     type: String,
