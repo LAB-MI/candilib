@@ -8,7 +8,6 @@ import { STORAGE_TOKEN_KEY } from '../config/constants';
 const checkStatus = async (response) => {
   if (response.status === 401) {
     store.dispatch(resetToken())
-    throw new Error('unauthorized')
   }
   return response;
 }
@@ -17,14 +16,10 @@ const checkValidJson = async (response) => {
   let data;
   try {
     data = await response.json()
+    return data
   } catch (e) {
     throw new Error('invalid_json')
   }
-  if (response.ok) {
-      return data;
-  }
-
-  throw new Error(data.message || 'Une erreur inattendue est survenue. Veuillez réessayer plus tard.');
 }
 
 export const fetchClient = (url, options) => fetch(url, options).then(checkStatus)

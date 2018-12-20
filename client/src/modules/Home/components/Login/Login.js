@@ -295,7 +295,7 @@ class Login extends Component {
             if (json.message.includes('email')) {
               this.setState({
                 messageSnackbar: json.message ||
-                  'Vous avez déjà un compte sur Candilib, veuillez cliquer sur le lien "Déjà inscrit',
+                  'Vous avez déjà un compte sur Candilib, veuillez cliquer sur le lien "Déjà inscrit"',
                 portableError: false,
                 openSnackbar: true,
 
@@ -336,32 +336,19 @@ class Login extends Component {
           });
       } else {
         api.auth.sendMagicLink(this.state.email)
-          .then(json => {
-            if (json.success) {
-              this.setState({
-                messageSnackbar: json.message,
-                openSnackbar: true,
-                isLoading: false,
-                emailError: false,
-                portableError: false,
-                emailConfirmationError: false,
-                email: '',
-                success: true,
-              });
-            } else {
-              this.setState({
-                emailError: false,
-                portableError: false,
-                messageSnackbar: json.message,
-                openSnackbar: true,
-                isLoading: false,
-                success: false,
-              });
+          .then(({ message, success }) => {
+            const partialState = {
+              emailError: !success,
+              isLoading: false,
+              openSnackbar: true,
+              messageSnackbar: message,
+              success,
             }
+            this.setState(partialState)
           })
           .catch(error => {
             this.setState({
-              messageSnackbar:
+              messageSnackbar: error.message ||
                 'Un problème est survenu, veuillez réessayer plus tard. Nous vous présentons nos excuses.',
               openSnackbar: true,
               isLoading: false,
