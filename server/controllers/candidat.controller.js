@@ -1,21 +1,8 @@
 /* eslint no-console: ["error", { allow: ["warn"] }] */
-<<<<<<< HEAD
-import * as csvParser from 'fast-csv'
-import jwt from 'jsonwebtoken'
-import moment from 'moment'
-import sanitizeHtml from 'sanitize-html'
-
-import Candidat from '../models/candidat'
-import csv from '../util/csv-express-candilib' // eslint-disable-line no-unused-vars
-import sendMailToAccount from '../util/sendMail'
-import serverConfig from '../config'
-import sendMagicLink from '../util/sendMagicLink'
-=======
 import fs from 'fs';
 import * as csvParser from 'fast-csv';
 import jwt from 'jsonwebtoken';
 import moment from 'moment';
-import path from 'path';
 import sanitizeHtml from 'sanitize-html';
 import latinize from 'latinize';
 
@@ -24,7 +11,6 @@ import csv from '../util/csv-express-candilib'; // eslint-disable-line no-unused
 import sendMailToAccount from '../util/sendMail';
 import serverConfig from '../config';
 import sendMagicLink from '../util/sendMagicLink';
->>>>>>> 4410772... nom et nomNaissance to uppercase et latinize
 import {
   CANDIDAT_EXISTANT,
   INSCRIPTION_OK,
@@ -654,9 +640,7 @@ const synchroAurige = async (buffer) => {
   }
 
   const result = retourAurige.map(async (candidatAurige) => {
-<<<<<<< HEAD
-    const { nomNaissance, codeNeph, candidatExistant, dateReussiteETG, reussitePratique, dateDernierEchecPratique } = candidatAurige
-=======
+    
     const { codeNeph, candidatExistant, dateReussiteETG, reussitePratique, dateDernierEchecPratique } = candidatAurige;
     
     if(!candidatAurige.nomNaissance){
@@ -665,7 +649,6 @@ const synchroAurige = async (buffer) => {
     }
     
     const  nomNaissance = latinize(candidatAurige.nomNaissance).toUpperCase();
->>>>>>> 4410772... nom et nomNaissance to uppercase et latinize
 
     try {
       
