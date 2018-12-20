@@ -13,6 +13,7 @@ import {
 } from '@material-ui/core';
 import { Circle } from 'better-react-spinkit';
 import debounce from 'debounce-fn';
+import lanitize from 'latinize';
 
 import blue from '@material-ui/core/colors/blue';
 import SnackbarNotification from '../../../../components/Notifications/SnackbarNotificationWrapper';
@@ -205,6 +206,9 @@ class Login extends Component {
   };
 
   handleChange = ({ target: { name, value } }) => {
+    if(name === 'nom' && value){
+      value = lanitize(value).toUpperCase(); 
+    }
     this.setState(
       {
         [name]: value,
