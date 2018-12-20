@@ -24,6 +24,7 @@ const styles = () => ({
 });
 
 const columns = [
+  { name: 'date', title: 'Date' },
   { name: 'nomNaissance', title: 'Nom' },
   { name: 'codeNeph', title: 'Neph' },
   { name: 'email', title: 'Email' },
@@ -57,6 +58,7 @@ class ListCandidats extends Component {
             candidat.creneau &&
             candidat.creneau.centre &&
             candidat.creneau.inspecteur) {
+            candidat.date = moment(candidat.creneau.start).format('YYYY-MM-DD');
             candidat.centre = candidat.creneau.centre;
             candidat.inspecteur = candidat.creneau.inspecteur;
           }
