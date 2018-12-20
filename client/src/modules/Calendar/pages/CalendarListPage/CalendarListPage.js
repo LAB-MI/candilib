@@ -40,7 +40,7 @@ const eventStyleGetter = event => {
     borderColor: 'white',
     fontSize: 10,
     margin: 0,
-    padding: 5,
+    padding: '0 5px',
   };
 
   if (isSelected) {
@@ -164,7 +164,7 @@ class CalendarListPage extends Component {
     function getData() {
       this.getCandidat();
       this.getCreneauxCandidats();
-      setTimeout(getData.bind(this), 3000);
+      setTimeout(getData.bind(this), 10000);
     }
     getData.bind(this)();
   }
@@ -472,15 +472,15 @@ class CalendarListPage extends Component {
                   {candidat.dateReussiteETG && (
                     <Typography component="p">
                       Date d'obtention du code :
-                      <p>{moment(candidat.dateReussiteETG).format('DD MMMM YYYY')}</p>
+                      <span style={{display: 'block'}}>{moment(candidat.dateReussiteETG).format('DD MMMM YYYY')}</span>
                     </Typography>
                   )}
                   {candidat.dateDernierEchecPratique && (
                     <Typography component="p">
                       Date dernier échec pratique Permis B :{' '}
-                      <p>{moment(candidat.dateDernierEchecPratique).format(
+                      <span style={{display: 'block'}}>{moment(candidat.dateDernierEchecPratique).format(
                         'DD MMMM YYYY',
-                      )}</p>
+                      )}</span>
                     </Typography>
                   )}
                 </CardContent>
