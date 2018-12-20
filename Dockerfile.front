@@ -46,8 +46,6 @@ RUN npm run build
 #
 FROM base as production
 ENV NODE_ENV=production
-COPY client/package.json client/package-lock.json ./
-RUN set -ex ; npm install --production
 
 COPY --from=build /usr/src/app/build ./build
 
