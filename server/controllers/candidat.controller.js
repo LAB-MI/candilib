@@ -1,4 +1,5 @@
 /* eslint no-console: ["error", { allow: ["warn"] }] */
+<<<<<<< HEAD
 import * as csvParser from 'fast-csv'
 import jwt from 'jsonwebtoken'
 import moment from 'moment'
@@ -9,6 +10,21 @@ import csv from '../util/csv-express-candilib' // eslint-disable-line no-unused-
 import sendMailToAccount from '../util/sendMail'
 import serverConfig from '../config'
 import sendMagicLink from '../util/sendMagicLink'
+=======
+import fs from 'fs';
+import * as csvParser from 'fast-csv';
+import jwt from 'jsonwebtoken';
+import moment from 'moment';
+import path from 'path';
+import sanitizeHtml from 'sanitize-html';
+import latinize from 'latinize';
+
+import Candidat from '../models/candidat';
+import csv from '../util/csv-express-candilib'; // eslint-disable-line no-unused-vars
+import sendMailToAccount from '../util/sendMail';
+import serverConfig from '../config';
+import sendMagicLink from '../util/sendMagicLink';
+>>>>>>> 4410772... nom et nomNaissance to uppercase et latinize
 import {
   CANDIDAT_EXISTANT,
   INSCRIPTION_OK,
@@ -27,7 +43,12 @@ import { TOKEN_HEADER_NAME } from '../constants'
 
 const DATE_CODE_VALID = 5
 
+<<<<<<< HEAD
 export function ValidationParamRegister (req, res, next) {
+=======
+
+export function ValidationParamRegister(req, res, next) {
+>>>>>>> 4410772... nom et nomNaissance to uppercase et latinize
   const {
     nom,
     neph,
@@ -63,6 +84,10 @@ export function ValidationParamRegister (req, res, next) {
   return next()
 }
 
+export function TransformParam(req, res, next){
+  req.body.nom = latinize(sanitizeHtml(req.body.nom)).toUpperCase();
+  return next();  
+}
 /**
  *
  * @param {*} req
@@ -629,9 +654,21 @@ const synchroAurige = async (buffer) => {
   }
 
   const result = retourAurige.map(async (candidatAurige) => {
+<<<<<<< HEAD
     const { nomNaissance, codeNeph, candidatExistant, dateReussiteETG, reussitePratique, dateDernierEchecPratique } = candidatAurige
+=======
+    const { codeNeph, candidatExistant, dateReussiteETG, reussitePratique, dateDernierEchecPratique } = candidatAurige;
+    
+    if(!candidatAurige.nomNaissance){
+      console.error(`Erreur dans la recherche du candidat pour ce candidat ${codeNeph}/${nomNaissance}: Pas de nom de naissance dans le fichier Aurige`);// eslint-disable-line no-console
+      return getCandidatStatus(nomNaissance, codeNeph, 'error');
+    }
+    
+    const  nomNaissance = latinize(candidatAurige.nomNaissance).toUpperCase();
+>>>>>>> 4410772... nom et nomNaissance to uppercase et latinize
 
     try {
+      
       const candidatsBase = await Candidat.findOne({ nomNaissance, codeNeph })
 
       if (candidatsBase === undefined || candidatsBase === null) {

@@ -10,6 +10,7 @@ router
   .route('/candidats/signup')
   .post(
     CandidatsController.ValidationParamRegister,
+    CandidatsController.TransformParam,
     canToRegister,
     CandidatsController.CheckCandidatIsSignedBefore,
     CandidatsController.checkMailIsUsed,
