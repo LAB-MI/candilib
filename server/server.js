@@ -4,6 +4,7 @@ import mongoose from 'mongoose'
 import bodyParser from 'body-parser'
 import path from 'path'
 import fileUpload from 'express-fileupload'
+import util from 'util'
 
 import candidats from './routes/candidats.routes'
 import creneaux from './routes/creneaux.routes'
@@ -22,8 +23,8 @@ const isDevMode = process.env.NODE_ENV === 'development';
 const isProdMode = process.env.NODE_ENV === 'production';
 */
 
-// Set native promises as mongoose promise
 mongoose.Promise = global.Promise
+mongoose.connect = util.promisify(mongoose.connect)
 
 app.use(compression())
 app.use(bodyParser.json({ limit: '20mb' }))
@@ -51,20 +52,30 @@ const startServer = () => {
   })
 }
 
+let mongoConnectionAttempt = 10
+
+const startServerWithMongo = async () => {
+  try {
+    await mongoose.connect(
+      serverConfig.mongoURL,
+      { useNewUrlParser: true },
+    )
+    console.log('Connected to Mongo!')
+    startServer()
+  } catch (err) {
+    --mongoConnectionAttempt
+    if (mongoConnectionAttempt > 0) {
+      console.error(`Could not connect to Mongo, ${mongoConnectionAttempt} tries left:'`)
+      setTimeout(startServerWithMongo, 2000)
+      return
+    }
+    console.error('Could not connect to Mongo, make sure it is started and listening on the appropriate port')
+  }
+}
+
 // MongoDB Connection
 if (process.env.NODE_ENV !== 'test') {
-  mongoose.connect(
-    serverConfig.mongoURL,
-    { useNewUrlParser: true },
-    (error) => {
-      if (error) {
-        console.error('Please make sure Mongodb is installed and running!') // eslint-disable-line no-console
-        throw error
-      }
-      // Start listening to incoming requests
-      startServer()
-    },
-  )
+  startServerWithMongo()
 } else {
   startServer()
 }
