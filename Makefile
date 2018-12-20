@@ -145,18 +145,24 @@ stop-db-prod: ## Down db container
 #
 ## All container web + back + db
 #
-up-all-prod: check-run-all-prod  ## Run all containers (front+back+db)in production mode
+up-all-prod: check-run-all-prod up-all-prod-db wait-db ## Run all containers (front+back+db)in production mode
 	${DC} -f ${DC_APP_RUN_ALL_PROD} up -d --no-build
 
 check-run-all-prod: check-prerequisites ## Check production compose syntax
 	${DC} -f $(DC_APP_RUN_ALL_PROD) config -q
+
+up-all-prod-web: ## Up web container in production mode
+	${DC} -f ${DC_APP_RUN_ALL_PROD} up -d --no-build web
+up-all-prod-back: ## Up back container in production mode
+	${DC} -f ${DC_APP_RUN_ALL_PROD} up -d --no-build back
+up-all-prod-db: ## Up db container in production mode
+	${DC} -f ${DC_APP_RUN_ALL_PROD} up -d --no-build db
 
 down-all-prod: check-run-all-prod  ## Stop containers in production mode
 	${DC} -f ${DC_APP_RUN_ALL_PROD} down
 
 stop-all-prod-web: ## Stop web container in production mode
 	${DC} -f ${DC_APP_RUN_ALL_PROD} stop web
-
 stop-all-prod-back: ## Stop back container in production mode
 	${DC} -f ${DC_APP_RUN_ALL_PROD} stop back
 stop-all-prod-db: ## Stop db container in production mode
@@ -265,12 +271,14 @@ publish-$(LATEST_VERSION):
 #
 # test
 #
-test-up: wait-db test-up-db test-up-web test-up-$(APP) ## Test running container (db,web,app)
+test-up: wait-db test-up-db test-up-back test-up-web test-up-$(APP) ## Test running container (db,web,app)
 
 wait-db: ## wait db up and running
-	time bash -x tests/wait-db.sh
+	time bash tests/wait-db.sh
 test-up-web: ## test web container up and runnng
 	time bash -x tests/test-up-web.sh
+test-up-back: ## test back container up and runnng
+	time bash -x tests/test-up-back.sh
 test-up-db: ## test db container up and runnng
 	time bash -x tests/test-up-db.sh
 test-up-${APP}: ## test app up and running
