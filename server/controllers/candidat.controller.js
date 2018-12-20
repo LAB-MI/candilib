@@ -29,12 +29,7 @@ import { TOKEN_HEADER_NAME } from '../constants'
 
 const DATE_CODE_VALID = 5
 
-<<<<<<< HEAD
 export function ValidationParamRegister (req, res, next) {
-=======
-
-export function ValidationParamRegister(req, res, next) {
->>>>>>> 4410772... nom et nomNaissance to uppercase et latinize
   const {
     nom,
     neph,
