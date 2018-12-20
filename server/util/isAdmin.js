@@ -4,5 +4,9 @@ export default function isAdmin (req, res, next) {
   }
   res
     .status(401)
-    .send({ auth: false, message: 'Erreur de vérification Token.' })
+    .send({
+      auth: false,
+      message: 'Erreur de vérification Token.',
+      success: false,
+    })
 }

@@ -18,8 +18,9 @@ export function canToRegister (req, res, next) {
     if (candidat === null) {
       return res.status(401).send({
         auth: false,
-        message: messages.NO_AUTH_WHITELIST,
         codemessage: 'NO_AUTH_WHITELIST',
+        message: messages.NO_AUTH_WHITELIST,
+        success: false,
       })
     }
     return next()

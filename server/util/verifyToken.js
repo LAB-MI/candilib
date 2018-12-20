@@ -6,10 +6,19 @@ export default function verifyToken (req, res, next) {
   const token = req.headers[TOKEN_HEADER_NAME] || req.query.token
   if (!token) {
     if (res !== undefined) {
-      return res.status(401).send({ auth: false, message: 'Token absent' })
+      return res.status(401).send({
+        auth: false,
+        message: 'Token absent',
+        success: false,
+      })
     }
 
-    return next({ status: 401, auth: false, message: 'Token absent' })
+    return next({
+      status: 401,
+      auth: false,
+      message: 'Token absent',
+      success: false,
+    })
   }
 
   try {
@@ -20,6 +29,10 @@ export default function verifyToken (req, res, next) {
   } catch (error) {
     return res
       .status(401)
-      .send({ auth: false, message: 'Token invalide' })
+      .send({
+        auth: false,
+        message: 'Token invalide',
+        success: false,
+      })
   }
 }

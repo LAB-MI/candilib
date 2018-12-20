@@ -334,12 +334,17 @@ export function verifyMe (req, res) {
       return res.status(500).send({
         auth: false,
         message: 'Problème pour retrouver cet utilisateur .',
+        success: false,
       })
     }
     if (!user) {
       return res
         .status(404)
-        .send({ auth: false, message: 'Utilisateur non reconnu.' })
+        .send({
+          auth: false,
+          message: 'Utilisateur non reconnu.',
+          success: false,
+        })
     }
     const token = req.headers[TOKEN_HEADER_NAME] || req.query.token
     res.redirect('/sites?token=' + token)
@@ -351,19 +356,31 @@ export function login (req, res) {
 
   Candidat.findOne({ email }, (err, user) => {
     if (err) {
-      return res.status(500).send({ auth: false, message: 'Erreur serveur.' })
+      return res.status(500).send({
+        auth: false,
+        message: 'Erreur serveur.',
+        success: false,
+      })
     }
 
     if (!user) {
       return res
         .status(404)
-        .send({ auth: false, message: 'Utilisateur non reconnu.' })
+        .send({
+          auth: false,
+          message: 'Utilisateur non reconnu.',
+          success: false,
+        })
     }
 
     const emailIsValid = email === user.email
 
     if (!emailIsValid) {
-      return res.status(401).send({ auth: false, token: null })
+      return res.status(401).send({
+        auth: false,
+        success: false,
+        token: null,
+      })
     }
 
     if (!user.isValid) {
@@ -371,6 +388,7 @@ export function login (req, res) {
         auth: false,
         token: null,
         message: 'Utiliseur en attente de validation.',
+        success: false,
       })
     }
 

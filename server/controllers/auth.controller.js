@@ -67,13 +67,18 @@ export function verifyMe (req, res) {
       return res.status(500).send({
         auth: false,
         message: 'Problème pour retrouver cet utilisateur.',
+        success: false,
       })
     }
 
     if (!user) {
       return res
         .status(404)
-        .send({ auth: false, message: 'Utilisateur non reconnu.' })
+        .send({
+          auth: false,
+          message: 'Utilisateur non reconnu.',
+          success: false,
+        })
     }
 
     res.status(200).send(user)
@@ -85,13 +90,21 @@ export function login (req, res) {
 
   User.findOne({ email }, (err, user) => {
     if (err) {
-      return res.status(500).send({ auth: false, message: 'Erreur serveur' })
+      return res.status(500).send({
+        auth: false,
+        message: 'Erreur serveur',
+        success: false,
+      })
     }
 
     if (!user) {
       return res
         .status(404)
-        .send({ auth: false, message: 'Utilisateur non reconnu. ' })
+        .send({
+          auth: false,
+          message: 'Utilisateur non reconnu.',
+          success: false,
+        })
     }
 
     let passwordIsValid = false
@@ -102,7 +115,11 @@ export function login (req, res) {
     const usernameIsValid = email === user.email
 
     if (!usernameIsValid || !passwordIsValid) {
-      return res.status(401).send({ auth: false, token: null })
+      return res.status(401).send({
+        auth: false,
+        success: false,
+        token: null,
+      })
     }
 
     const token = jwt.sign(
@@ -128,7 +145,11 @@ export function validateToken (req, res) {
   const token = req.headers[TOKEN_HEADER_NAME] || req.query.token
 
   if (!token) {
-    return res.status(401).send({ message: 'Token absent' })
+    return res.status(401).send({
+      auth: false,
+      message: 'Token absent',
+      success: false,
+    })
   }
 
   try {
@@ -150,6 +171,10 @@ export function validateToken (req, res) {
 
     res.status(200).send({ isTokenValid: true, id: decoded.id })
   } catch (err) {
-    return res.status(401).send({ message: 'Token invalide', isTokenValid: false })
+    return res.status(401).send({
+      isTokenValid: false,
+      message: 'Token invalide',
+      success: false,
+    })
   }
 }
