@@ -4,6 +4,9 @@ import Button from '../components/Button';
 import { withStyles } from '@material-ui/core';
 
 const styles = theme => ({
+  buttonWrapper: {
+    display: 'flex',
+  },
   welcomeTitle: {
     textAlign: 'center',
   },
@@ -30,7 +33,7 @@ const Home = ({ classes }) => (
         </Button>
       </Link>
       <Link to="/inscription">
-        <Button variant="outlined" color="secondary">
+        <Button variant="outlined" color="primary">
           Vous inscrire
         </Button>
       </Link>
