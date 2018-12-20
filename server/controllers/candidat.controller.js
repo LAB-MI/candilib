@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import moment from 'moment';
 import path from 'path';
 import sanitizeHtml from 'sanitize-html';
+import latinize from 'latinize';
 
 import Candidat from '../models/candidat';
 import csv from '../util/csv-express-candilib'; // eslint-disable-line no-unused-vars
@@ -28,6 +29,7 @@ import { USER_STATUS_EXPIRES_IN } from '../util/jwt.constant';
 import { TOKEN_HEADER_NAME } from '../constants';
 
 const DATE_CODE_VALID = 5;
+
 
 export function ValidationParamRegister(req, res, next) {
   const {
@@ -65,6 +67,10 @@ export function ValidationParamRegister(req, res, next) {
   return next();
 }
 
+export function TransformParam(req, res, next){
+  req.body.nom = latinize(sanitizeHtml(req.body.nom)).toUpperCase();
+  return next();  
+}
 /**
  *
  * @param {*} req
@@ -625,9 +631,17 @@ const synchroAurige = (pathname) => {
   }
 
   const result = retourAurige.map(async (candidatAurige) => {
-    const { nomNaissance, codeNeph, candidatExistant, dateReussiteETG, reussitePratique, dateDernierEchecPratique } = candidatAurige;
+    const { codeNeph, candidatExistant, dateReussiteETG, reussitePratique, dateDernierEchecPratique } = candidatAurige;
+    
+    if(!candidatAurige.nomNaissance){
+      console.error(`Erreur dans la recherche du candidat pour ce candidat ${codeNeph}/${nomNaissance}: Pas de nom de naissance dans le fichier Aurige`);// eslint-disable-line no-console
+      return getCandidatStatus(nomNaissance, codeNeph, 'error');
+    }
+    
+    const  nomNaissance = latinize(candidatAurige.nomNaissance).toUpperCase();
 
     try {
+      
       const candidatsBase = await Candidat.findOne({ nomNaissance, codeNeph })
 
       if (candidatsBase === undefined || candidatsBase === null) {

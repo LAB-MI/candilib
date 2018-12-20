@@ -84,7 +84,8 @@
     "sanitize-html": "^1.11.4",
     "typeface-roboto": "0.0.54",
     "uglifyjs-webpack-plugin": "^1.0.0",
-    "babel-runtime": "^6.26.0"
+    "babel-runtime": "^6.26.0",
+    "latinize": "^0.4.0"
   },
   "devDependencies": {
     "ava": "^0.25.0",
