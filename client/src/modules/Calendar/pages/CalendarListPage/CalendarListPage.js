@@ -68,7 +68,6 @@ const styles = theme => ({
   },
   gridCandidat: {
     minHeight: 'fit-content',
-    // backgroundColor: 'red',
     [theme.breakpoints.up('sm')]: {},
     [theme.breakpoints.up('md')]: {
       height: '50%',
@@ -167,10 +166,6 @@ class CalendarListPage extends Component {
       setTimeout(getData.bind(this), 10000);
     }
     getData.bind(this)();
-  }
-
-  componentWillUnmount () {
-    clearInterval(this.interval)
   }
 
   getCreneauxCandidats() {
