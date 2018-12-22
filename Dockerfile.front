@@ -1,4 +1,4 @@
-FROM node:8 as base
+FROM node:8-slim as base
 ARG proxy
 ARG npm_registry
 # ARG sass_registry
