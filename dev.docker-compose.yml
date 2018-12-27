@@ -1,0 +1,112 @@
+version: '3.4'
+services:
+  back:
+    image: candilib_back:${APP_VERSION:-latest}
+    build:
+      context: ./
+      dockerfile: Dockerfile.back
+      target: development
+      args:
+          proxy: ${http_proxy}
+          no_proxy: ${no_proxy}
+          npm_registry: ${NPM_REGISTRY}
+    container_name: candilib_back
+    depends_on:
+      - db
+    environment:
+      NODE_ENV: development
+      MONGO_URL: ${MONGO_URL:-mongodb://db:27017/candilib}
+    ports:
+      - "${WEB_PORT:-8000}:8000"
+      - "9229:9229"
+    networks:
+      - candilib-network
+    volumes:
+      - ./server/.babelrc:/usr/src/app/.babelrc
+      - ./server/.eslintignore:/usr/src/app/.eslintignore
+      - ./server/.eslintrc:/usr/src/app/.eslintrc
+      - ./server/config.js:/usr/src/app/config.js
+      - ./server/config.spec.js:/usr/src/app/config.spec.js
+      - ./server/constants.js:/usr/src/app/constants.js
+      - ./server/controllers:/usr/src/app/controllers
+      - ./server/inbox:/usr/src/app/inbox
+      - ./server/index.js:/usr/src/app/index.js
+      - ./server/lib:/usr/src/app/lib
+      - ./server/models:/usr/src/app/models
+      - ./server/nodemon.json:/usr/src/app/nodemon.json
+      - ./server/package.json:/usr/src/app/package.json
+      - ./server/processes.json:/usr/src/app/processes.json
+      - ./server/routes:/usr/src/app/routes
+      - ./server/server.js:/usr/src/app/server.js
+      - ./server/temp:/usr/src/app/temp
+      - ./server/util:/usr/src/app/util
+      - ./server/webpack.config.babel.js:/usr/src/app/webpack.config.babel.js
+      - ./server/webpack.config.server.js:/usr/src/app/webpack.config.server.js
+      - .env:/usr/src/app/.env
+  db:
+    image: mongo:latest
+    container_name: candilib_db
+    volumes:
+      - dbdata:/data/db
+    networks:
+      - candilib-network
+    ports:
+      - "${WEB_PORT:-27017}:27017"
+  web:
+    image: candilib_web:${APP_VERSION:-latest}
+    build:
+      context: ./
+      dockerfile: dev.front.Dockerfile
+      target: development
+      args:
+          proxy: ${http_proxy}
+          no_proxy: ${no_proxy}
+          npm_registry: ${NPM_REGISTRY}
+    container_name: candilib_web
+    depends_on:
+      - back
+    environment:
+      NODE_ENV: development
+      API_URL: ${API_URL:-http://candilib_back:8000}
+#      HTTPS: 'true'
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    volumes:
+      #  - ./.env:/usr/src/app/.env
+      #  - ./.editorconfig:/usr/src/app/.editorconfig
+      #  - ./.eslintignore:/usr/src/app/.eslintignore
+      #  - ./.eslintrc.js:/usr/src/app/.eslintrc.js
+       - ./client/config:/usr/src/app/config/
+       - ./client/src:/usr/src/app/src/
+       - ./client/public:/usr/src/app/public/
+       - ./client/scripts:/usr/src/app/scripts/
+       - ./client/package.json:/usr/src/app/package.json
+    networks:
+      - candilib-network
+  nginx:
+    image: nginx:latest
+    restart: always
+    container_name: candilib_nginx:${APP_VERSION:-latest}
+    volumes:
+      - ./nginx/candilib_nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/candilib_proxy.conf:/etc/nginx/proxy.conf
+      - ./nginx/logs:/var/log/nginx/
+      - ./nginx/ssl/certs/cert.pem:/etc/ssl/certs/candilib.minint.fr.crt
+      - ./nginx/ssl/private/key.pem:/etc/ssl/private/candilib.minint.fr.key
+    container_name: candilib_nginx
+    # depends_on:
+      # - web
+      # - back
+    ports:
+      - "443:443"
+      - "${APP_PORT:-80}:80"
+    networks:
+      - candilib-network
+
+volumes:
+  dbdata:
+networks:
+  candilib-network:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1450
