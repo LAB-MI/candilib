@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core';
-import { RowDetailState } from '@devexpress/dx-react-grid';
+// import { RowDetailState } from '@devexpress/dx-react-grid';
+import { SortingState,
+  IntegratedSorting,RowDetailState } from '@devexpress/dx-react-grid';
 import {
   Grid,
   Table,
@@ -77,11 +79,13 @@ class ListCandidats extends Component {
           rows={candidats}
           columns={columns}
         >
+          <SortingState  defaultSorting={[{ columnName: 'date', direction: 'asc' }]}/>
+          <IntegratedSorting/> 
           <RowDetailState
             defaultExpandedRowIds={[2, 5]}
           />
           <Table />
-          <TableHeaderRow />
+          <TableHeaderRow showSortingControls/>
           <TableRowDetail
             contentComponent={RowDetail}
           />

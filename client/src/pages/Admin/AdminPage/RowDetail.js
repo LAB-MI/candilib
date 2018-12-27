@@ -33,7 +33,7 @@ const RowDetail = ({ row }) => (
     </Typography>
     {row.dateReussiteETG && (
       <Typography component="p">
-        Date d'expiration du Code : {moment(row.dateReussiteETG).format('DD MMMM YYYY')}
+        Date d'obtention du Code : {moment(row.dateReussiteETG).format('DD MMMM YYYY')}
       </Typography>
     )}
     {row.dateDernierEchecPratique && (
