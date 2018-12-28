@@ -65,7 +65,9 @@ export function ValidationParamRegister (req, res, next) {
 }
 
 export function TransformParam (req, res, next) {
-  req.body.nom = latinize(sanitizeHtml(req.body.nom)).toUpperCase()
+  req.body.nom = latinize(sanitizeHtml(req.body.nom.trim())).toUpperCase()
+  req.body.neph = req.bofy.neph.trim()
+  req.body.email = req.body.email.trim()
   return next()
 }
 /**
