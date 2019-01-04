@@ -94,6 +94,8 @@ class AdminPage extends Component {
     this.handleUploadCSV = this.handleUploadCSV.bind(this);
     this.handleUploadJSON = this.handleUploadJSON.bind(this);
     this.handleDownLoadCSV = this.handleDownLoadCSV.bind(this);
+    this.handleDownLoadCSVResa = this.handleDownLoadCSVResa.bind(this);
+    
     this.handleMessage = this.handleMessage.bind(this);
   }
 
@@ -176,6 +178,12 @@ class AdminPage extends Component {
   async handleDownLoadCSV(ev) {
     ev.preventDefault();
     const response = await api.admin.exportCsv()
+    downloadContent(response)
+  }
+
+  async handleDownLoadCSVResa(ev) {
+    ev.preventDefault();
+    const response = await api.admin.exportCsvResa()
     downloadContent(response)
   }
 
@@ -329,6 +337,14 @@ class AdminPage extends Component {
               <Typography variant="headline" component="h3">
                 Candidats
               </Typography>
+              <Button
+                type="submit"
+                color="primary"
+                variant="contained"
+                onClick={this.handleDownLoadCSVResa}
+              >
+                Export CSV Candidats Réservés
+              </Button>
               <ListCandidats />
             </Paper>
           </Card>

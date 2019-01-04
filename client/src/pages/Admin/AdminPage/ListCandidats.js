@@ -49,7 +49,7 @@ class ListCandidats extends Component {
 
     this.state = {
       candidats: [],
-      grouping: [{ columnName: 'centre' }],
+//      grouping: [{ columnName: 'centre' }],
       groupingStateColumnExtensions: [
         { columnName: 'date', groupingEnabled: false },
         { columnName: 'nomNaissance', groupingEnabled: false },

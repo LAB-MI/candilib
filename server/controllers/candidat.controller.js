@@ -613,6 +613,41 @@ export function exportToCSV (req, res) {
     })
 }
 
+export function exportToCSVWithCrenaux (req, res) {
+  const filename = 'candidatsLibresReserve.csv'
+
+  Candidat.find(
+    {
+      'creneau.id': {
+        $exists: true,
+      },
+      isValid: true,
+    }
+  )
+    .lean()
+    .exec({}, (err, candidats) => {
+      if (err) res.send(err)
+      const newData = []
+      candidats.map((n) => {
+        newData.push({
+          inspecteur: n.creneau.inspecteur,
+          centre: n.creneau.centre,
+          'Date réservé': n.creneau.start && moment(n.creneau.start).format('YYYY-MM-DD HH:mm'),
+          'Code NEPH': n.codeNeph,
+          'Nom de naissance': n.nomNaissance,
+          Prénom: n.prenom,
+          email: n.email,
+        })
+        return true
+      })
+
+      res.status(200)
+      res.setHeader('Content-Type', ['text/csv ; charset=utf-8'])
+      res.setHeader('Content-Disposition', `attachment; filename= ${filename}`)
+      return res.csv(newData, 'utf-8', true)
+    })
+}
+
 export function destroyAll (req, res) {
   Candidat.remove({}, (err) => {
     if (err) {

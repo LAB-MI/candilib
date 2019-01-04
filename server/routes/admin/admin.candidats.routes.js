@@ -40,4 +40,6 @@ router
   .route('/candidats/upload/json')
   .post(uploadJSON.single('file'), CandidatsController.uploadAurigeJSON)
 
+router.route('/candidats/exportWithCreneau').get(CandidatsController.exportToCSVWithCrenaux)
+
 export default router
