@@ -25,6 +25,7 @@ import Creneau from '../models/creneau'
 import messagesConstant from '../util/messages.constant.json'
 import { USER_STATUS_EXPIRES_IN } from '../util/jwt.constant'
 import { TOKEN_HEADER_NAME } from '../constants'
+import { cpus } from 'os';
 
 const DATE_CODE_VALID = 5
 
@@ -615,16 +616,19 @@ export function exportToCSV (req, res) {
 
 export function exportToCSVWithCrenaux (req, res) {
   const filename = 'candidatsLibresReserve.csv'
+  const { date, inspecteur, centre } = req.query
 
-  Candidat.find(
-    {
-      'creneau.id': {
-        $exists: true,
-      },
-      isValid: true,
-    }
-  )
-    .lean()
+  let query = Candidat.where('creneau.id').exists(true).where('isValid').equals(true)
+  if (date && moment(date).isValid()) {
+    const startDate = moment(date).startOf('day').toISOString()
+    const endDate = moment(date).endOf('day').toISOString()
+    query.where('creneau.start').gte(startDate).lt(endDate)
+  }
+
+  if (inspecteur && inspecteur.trim().length > 0) query = query.where('creneau.inspecteur', inspecteur)
+  if (centre && centre.trim().length > 0) query = query.where('creneau.centre', centre)
+
+  query
     .exec({}, (err, candidats) => {
       if (err) res.send(err)
       const newData = []
@@ -640,6 +644,18 @@ export function exportToCSVWithCrenaux (req, res) {
         })
         return true
       })
+
+      if (newData.length === 0) {
+        newData.push({
+          inspecteur: '',
+          centre: '',
+          'Date réservé': '',
+          'Code NEPH': '',
+          'Nom de naissance': '',
+          Prénom: '',
+          email: '',
+        })
+      }
 
       res.status(200)
       res.setHeader('Content-Type', ['text/csv ; charset=utf-8'])
