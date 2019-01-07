@@ -25,7 +25,6 @@ import Creneau from '../models/creneau'
 import messagesConstant from '../util/messages.constant.json'
 import { USER_STATUS_EXPIRES_IN } from '../util/jwt.constant'
 import { TOKEN_HEADER_NAME } from '../constants'
-import { cpus } from 'os';
 
 const DATE_CODE_VALID = 5
 
