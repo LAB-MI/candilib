@@ -16,6 +16,8 @@ import serverConfig from './config'
 import verifyToken from './util/verifyToken'
 import isAdmin from './util/isAdmin'
 
+import npmVersion from './package.json'
+
 const app = new Express()
 
 /*
@@ -38,11 +40,15 @@ app.use('/api/admin', verifyToken, isAdmin, admin)
 
 app.use('/api', users, candidats)
 
+app.get('/api/version', function (req, res) {
+  res.send(npmVersion.version)
+})
+
 const startServer = () => {
   app.listen(serverConfig.port, (error) => {
     if (!error) {
       console.log(
-        `Candilib is running on port: ${process.env.PORT || serverConfig.port}`,
+        `Candilib version ${npmVersion.version} is running on port: ${process.env.PORT || serverConfig.port}`,
       )
     } else {
       console.error(

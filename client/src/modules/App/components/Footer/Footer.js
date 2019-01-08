@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { withStyles } from '@material-ui/core';
+import npmConfig from '../../../../../package.json';
 
 import bg from '../../header-bk.png';
 
@@ -28,7 +29,7 @@ export const Footer = ({ classes = {} }) => (
     className={classes.footer}
   >
     <p>
-      © 2018 · Candilib. - <Link to="/mentionslegales" className={classes.footerLink}>Mentions legales</Link>
+      © 2018 · Candilib. - <Link to="/mentionslegales" className={classes.footerLink}>Mentions legales</Link> - Version: {npmConfig.version}
     </p>
   </div>
 );
