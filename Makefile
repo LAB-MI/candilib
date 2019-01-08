@@ -110,6 +110,7 @@ down-front-dev: ## Down front container
 check-build-front-prod: ## Check front docker-compose syntax
 	${DC} -f $(DC_APP_BUILD_FRONT_PROD) config
 build-front-prod: check-build-front-prod ## Build front container
+	sed -i.back -e 's/  "version":.*/  "version": "${APP_VERSION}",/' client/package.json
 	proxy="${proxy}" NPM_REGISTRY="${NPM_REGISTRY}" no_proxy="${no_proxy}" ${DC} -f ${DC_APP_BUILD_FRONT_PROD} build ${DC_BUILD_ARGS}
 run-front-prod: ## Run front container
 	${DC} -f ${DC_APP_BUILD_FRONT_PROD} up -d
@@ -121,6 +122,7 @@ down-front-prod: ## Down front container
 check-build-back-prod: ## Check back docker-compose syntax
 	${DC} -f $(DC_APP_BUILD_BACK_PROD) config
 build-back-prod: check-build-back-prod ## Build back container
+	sed -i.back -e 's/  "version":.*/  "version": "${APP_VERSION}",/' server/package.json
 	proxy="${proxy}" NPM_REGISTRY="${NPM_REGISTRY}" no_proxy="${no_proxy}" ${DC} -f ${DC_APP_BUILD_BACK_PROD} build ${DC_BUILD_ARGS}
 run-back-prod: ## Build back container
 	${DC} -f ${DC_APP_BUILD_BACK_PROD} up -d
