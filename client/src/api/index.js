@@ -164,6 +164,12 @@ export default {
       });
       return json;
     },
+    async exportCsvResa(){
+      const json = await apiClient.getRaw(apiPaths.admin.exportCsvResa, {
+        headers: getTokenHeader(),
+      });
+      return json;
+    },
 
     async uploadPlacesCSV (body) {
       const json = await apiClient.post(apiPaths.admin.uploadPlacesCSV, {
