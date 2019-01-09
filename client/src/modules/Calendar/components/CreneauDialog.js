@@ -17,15 +17,15 @@ class CreneauDialog extends Component {
   };
 
   handleClose = () => {
-    this.props.onClose(this.props.selectedValue);
+    this.props.onValid(this.props.selectedValue);
   };
 
   handleListItemClick = value => {
-    this.props.onClose(value);
+    this.props.onValid(value);
   };
 
   render() {
-    const { selectedValue, lastReserved, isModificationResa, isDeleteResa, ...other } = this.props;
+    const { selectedValue, lastReserved, isModificationResa, isDeleteResa, onValid, onCancel, ...other } = this.props;
     let maDate = '';
     let monSite = '';
     let ancDate = '';
@@ -43,7 +43,7 @@ class CreneauDialog extends Component {
     }
 
     return (
-      <Dialog onClose={this.handleClose} aria-labelledby="simple-dialog-title" {...other}>
+      <Dialog onClose={this.onCancel} aria-labelledby="simple-dialog-title" {...other}>
         {isDeleteResa && !isModificationResa &&
           <div>
             <DialogTitle id="simple-dialog-title">Annulation réservation : </DialogTitle>
@@ -104,7 +104,7 @@ class CreneauDialog extends Component {
 }
 
 CreneauDialog.propTypes = {
-  onClose: PropTypes.func,
+  onValid: PropTypes.func,
   onCancel: PropTypes.func,
   selectedValue: PropTypes.object,
   lastReserved: PropTypes.object,
