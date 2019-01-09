@@ -333,7 +333,8 @@ class CalendarListPage extends Component {
     if (
       lastReserved &&
       lastReserved !== 'null' &&
-      lastReserved !== 'undefined'
+      lastReserved !== 'undefined' &&
+      lastReserved.id !== undefined
     ) {
       this.unselectCreneau(lastReserved);
     }
@@ -351,7 +352,11 @@ class CalendarListPage extends Component {
     }
     candidat.creneau = creneau;
 
-    this.updateCreneaux(creneau);
+    if(creneau.id !== undefined){
+      this.updateCreneaux(creneau);
+    }else{
+      console.warn("on creneau selection, there is not creneau to updated");
+    }
 
     this.updateCandidat(candidat);
 
@@ -423,7 +428,7 @@ class CalendarListPage extends Component {
           <CreneauDialog
             selectedValue={selectedCreneau}
             open={open}
-            onClose={this.handleClose}
+            onValid={this.handleClose}
             lastReserved={lastReserved}
             onCancel={this.handleCancel}
             isModificationResa={isModificationResa}
