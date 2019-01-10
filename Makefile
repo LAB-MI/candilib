@@ -275,12 +275,12 @@ publish-$(LATEST_VERSION):
 test-up: wait-db test-up-db test-up-back test-up-web test-up-$(APP) ## Test running container (db,web,app)
 
 wait-db: ## wait db up and running
-	time bash tests/wait-db.sh
-test-up-web: ## test web container up and runnng
+	time bash -x tests/wait-db.sh
+test-up-web: ## test web container up and running
 	time bash -x tests/test-up-web.sh
-test-up-back: ## test back container up and runnng
+test-up-back: ## test back container up and running
 	time bash -x tests/test-up-back.sh
-test-up-db: ## test db container up and runnng
+test-up-db: ## test db container up and running
 	time bash -x tests/test-up-db.sh
 test-up-${APP}: ## test app up and running
-	time bash tests/test-up-${APP}.sh
+	time bash -x tests/test-up-${APP}.sh

@@ -16,7 +16,7 @@ timeout=120;
 test_result=1
 dirname=$(dirname $0)
 until [ "$timeout" -le 0 -o "$test_result" -eq "0" ] ; do
-	${DC} -f ${DC_APP_RUN_ALL_PROD}  exec ${USE_TTY} $container_name mongo --eval "print(\"waited for connection\")"
+	${DC} -f ${DC_APP_RUN_ALL_PROD}  exec ${DOCKER_COMPOSE_USE_TTY} $container_name mongo --eval "print(\"waited for connection\")"
 	test_result=$?
 	echo "Wait $timeout seconds: ${APP}-$container_name up $test_result";
 	(( timeout-- ))
