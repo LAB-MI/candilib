@@ -33,7 +33,8 @@ DC_APP_RUN_BACK_PROD     := docker-compose-build-back.yml
 DC_APP_RUN_ALL_PROD      := docker-compose-run-all-prod.yml
 
 # detect tty
-USE_TTY := $(shell test -t 1 && { DOCKER_USE_TTY="-t" ; DOCKER_COMPOSER_USE_TTY="-T" ; } )
+DOCKER_USE_TTY := $(shell test -t 1 || echo "-t" )
+DOCKER_COMPOSE_USE_TTY := $(shell test -t 1 || echo "-T" )
 
 # source archive
 FILE_ARCHIVE_APP_VERSION = $(APP)-$(APP_VERSION)-archive.tar.gz
