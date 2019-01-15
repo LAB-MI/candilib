@@ -280,7 +280,7 @@ class CalendarListPage extends Component {
         cd.initialCandidat = `${candidat.nomNaissance
           .charAt(0)
           .toUpperCase()}${candidat.prenom.charAt(0).toUpperCase()}`;
-        if (!cd.creneau) {
+        if (!cd.creneau || !cd.creneau.isSelected) {
           this.setState({
             candidat,
             success: true,
