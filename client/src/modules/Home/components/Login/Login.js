@@ -405,7 +405,7 @@ class Login extends Component {
                     />
                   </FormControl>
                   <FormControl margin="normal" required fullWidth>
-                    <InputLabel htmlFor="nom">Nom (obligatoire)</InputLabel>
+                    <InputLabel htmlFor="nom">Nom de naissance (obligatoire)</InputLabel>
                     <Input
                       id="nom"
                       name="nom"
