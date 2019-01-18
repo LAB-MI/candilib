@@ -33,7 +33,6 @@ const mailMessage = (candidatAurige, flag, urlMagicLink) => {
     ? moment(creneau.start).format('HH:mm') : ''
 
   let siteAdresse = []
-  
   if (creneau && creneau.title) {
     siteAdresse = sites.find(item => item.nom.trim().toUpperCase() === creneau.title.trim())
   }
