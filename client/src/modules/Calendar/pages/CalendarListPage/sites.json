@@ -13,5 +13,10 @@
     "nom": "Bobigny",
     "label": "Centre d'examen du permis de conduire de Bobigny",
     "adresse": "320 Avenue Paul Vaillant-Couturier, Bobigny, FR, 93000"
+  },
+  {
+    "nom": "Saint-Brice",
+    "label": "Centre d'examen du permis de conduire de Saint-Brice",
+    "adresse": "Rue de la Forêt, Saint-Brice-sous-Forêt, FR, 95350"
   }
 ]
