@@ -18,8 +18,10 @@ no_proxy := $(shell echo $$no_proxy)
 DC_BUILD_ARGS = --pull --no-cache --force-rm
 
 # docker-compose file: development or production  (build or run time)
-DC_APP_BUILD_DEV         := docker-compose.yml
-DC_APP_RUN_DEV           := docker-compose.yml
+#DC_APP_BUILD_DEV         := docker-compose.yml
+#DC_APP_RUN_DEV           := docker-compose.yml
+DC_APP_BUILD_DEV         := dev.docker-compose.yml
+DC_APP_RUN_DEV           := dev.docker-compose.yml
 DC_APP_BUILD_PROD        := docker-compose-production.yml
 DC_APP_RUN_PROD          := docker-compose-run-production.yml
 #
