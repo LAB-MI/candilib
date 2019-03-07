@@ -117,6 +117,7 @@ class AdminPage extends Component {
             isSelected: item.isSelected,
             inspecteur: item.inspecteur,
             centre: item.centre,
+            idCandidat: item.candidat,
             start: moment(
               moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss'),
             ).toDate(),
@@ -127,6 +128,19 @@ class AdminPage extends Component {
         });
 
         this.setState({ eventsCreneaux });
+      });
+  }
+
+  deleteCreneau(idCreneau) {
+    let { creneau } = this.state;
+    api.admin.removeCreneau(idCreneau)
+      .then(eventsCreneaux => {
+        eventsCreneaux = eventsCreneaux.filter(row => row._id !== creneau._id);
+        this.setState({ eventsCreneaux });
+      })
+      .catch(err => {
+        console.log(err);
+        this.props.onMessage(err);
       });
   }
 
@@ -322,7 +336,16 @@ class AdminPage extends Component {
                 defaultView="work_week"
                 eventPropGetter={eventStyleGetter}
                 onSelectEvent={
-                  event => alert(`${event.title} : ${moment(event.start).format('LLL')}`) // eslint-disable-line no-alert
+                  event => {
+                    if(event.isSelected) {
+                      alert(`${event.title}\n${event.idCandidat}\n${moment(event.start).format('LLL')}`); // eslint-disable-line no-alert
+                    } else {
+                      if(window.confirm(`Voulez-vous supprimer cette place ?\n${event.title}\n${moment(event.start).format('LLL')}`)) {
+                        alert(`suppression\n ${event.id}`);
+                        api.admin.deleteCreneau(event.id);
+                      } // eslint-disable-line no-alert
+                    }
+                  }
                 }
                 components={{
                   event: CreneauEvent,

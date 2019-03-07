@@ -150,6 +150,13 @@ export default {
       return json;
     },
 
+    async removeCreneau (id) {
+      const json = await apiClient.delete(apiPaths.admin.creneaux(id), {
+        headers: getTokenHeader(),
+      });
+      return json;
+    },
+
     async uploadCandidatsJson (body) {
       const json = await apiClient.post(apiPaths.admin.uploadCandidatsJson, {
         headers: getTokenHeader(),
