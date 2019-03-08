@@ -15,6 +15,6 @@ export default {
     exportCsvResa: `${apiPrefix}/admin/candidats/exportWithCreneau`,
     uploadPlacesCSV: `${apiPrefix}/admin/candidats/upload/csv`,
     whitelist: `${apiPrefix}/admin/whitelist/candidats`,
-    creneaux: (id) => `${apiPrefix}/admin/creneaux${id ? `/${id}` : ''}`,
+    creneaux: `${apiPrefix}/admin/creneaux`,
   }
 }

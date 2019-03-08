@@ -151,7 +151,7 @@ export default {
     },
 
     async removeCreneau (id) {
-      const json = await apiClient.delete(apiPaths.admin.creneaux(id), {
+      const json = await apiClient.delete(`${apiPaths.admin.creneaux}/${id}`, {
         headers: getTokenHeader(),
       });
       return json;
