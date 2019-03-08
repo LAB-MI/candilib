@@ -140,7 +140,7 @@ class AdminPage extends Component {
       })
       .catch(err => {
         console.log(err);
-        this.props.onMessage(err);
+        // this.props.onMessage(err);
       });
   }
 
@@ -338,11 +338,12 @@ class AdminPage extends Component {
                 onSelectEvent={
                   event => {
                     if(event.isSelected) {
-                      alert(`${event.title}\n${event.idCandidat}\n${moment(event.start).format('LLL')}`); // eslint-disable-line no-alert
+                      alert(`${event.title}\n${moment(event.start).format('LLL')}\nCette place est réservée et ne peut être supprimée/`); // eslint-disable-line no-alert
                     } else {
-                      if(window.confirm(`Voulez-vous supprimer cette place ?\n${event.title}\n${moment(event.start).format('LLL')}`)) {
-                        alert(`suppression\n ${event.id}`);
-                        api.admin.deleteCreneau(event.id);
+                      if(window.confirm(`Voulez-vous supprimer cette place ?\n${event.title}\n${moment(event.start).format('LLL')}\nAttention! Cette action est irréversible !`)) {
+                        this.deleteCreneau(event.id);
+                        this.getCreneauxCandidats();
+                        alert(`Créneau supprimé.`);
                       } // eslint-disable-line no-alert
                     }
                   }

@@ -83,13 +83,17 @@ export function updateCreneau (req, res, next) {
  * @returns void
  */
 export function deleteCreneau (req, res) {
-  Creneau.findOne({ cuid: req.params.id }).exec((err, creneau) => {
+  Creneau.findOne({ _id: req.params.id }).exec((err, creneau) => {
     if (err) {
-      res.status(500).send(err)
+      return res.status(500).send({
+        success: false,
+        message: err.message,
+      })
     }
 
     creneau.remove(() => {
-      res.status(200).end()
+      res.status(200).json(creneau)
+      console.log(`Créneau ${creneau.centre} - ${creneau.inspecteur} du ${creneau.date} supprimé.`)
     })
   })
 }
