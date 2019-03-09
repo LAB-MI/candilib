@@ -342,8 +342,8 @@ class AdminPage extends Component {
                     } else {
                       if(window.confirm(`Voulez-vous supprimer cette place ?\n${event.title}\n${moment(event.start).format('LLL')}\nAttention! Cette action est irréversible !`)) {
                         this.deleteCreneau(event.id);
-                        this.getCreneauxCandidats();
                         alert(`Créneau supprimé.`);
+                        this.getCreneauxCandidats();
                       } // eslint-disable-line no-alert
                     }
                   }

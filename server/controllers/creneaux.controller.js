@@ -91,10 +91,15 @@ export function deleteCreneau (req, res) {
       })
     }
 
-    creneau.remove(() => {
-      res.status(200).json(creneau)
-      console.log(`Créneau ${creneau.centre} - ${creneau.inspecteur} du ${creneau.date} supprimé.`)
-    })
+    if(creneau != undefined){
+      creneau.remove(() => {
+        res.status(200).json(creneau)
+        console.log(`Créneau ${creneau.centre} - ${creneau.inspecteur} du ${creneau.date} supprimé.`)
+      })
+    } else {
+      res.status(404).json('{inspecteur: "", centre: "", date: "", isSelected: "", candidat: ""}')
+      console.log('Créneau innexistant')
+    }
   })
 }
 
