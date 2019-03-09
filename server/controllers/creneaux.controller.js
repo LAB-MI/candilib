@@ -11,7 +11,7 @@ import Creneau from '../models/creneau'
  * @param res
  * @returns void
  */
-export function getCreneaux(req, res) {
+export function getCreneaux (req, res) {
   Creneau.find().sort('-dateAdded').exec((err, creneaux) => {
     if (err) {
       res.status(500).send(err)
@@ -26,7 +26,7 @@ export function getCreneaux(req, res) {
  * @param res
  * @returns void
  */
-export function addCreneau(req, res) {
+export function addCreneau (req, res) {
   if (!req.body.creneau.title) {
     res.status(403).end()
   }
@@ -50,7 +50,7 @@ export function addCreneau(req, res) {
  * @param res
  * @returns void
  */
-export function getCreneau(req, res) {
+export function getCreneau (req, res) {
   Creneau.findOne({ id: req.params.id }).exec((err, creneau) => {
     if (err) {
       res.status(500).send(err)
@@ -66,7 +66,7 @@ export function getCreneau(req, res) {
  * @returns void
  */
 
-export function updateCreneau(req, res, next) {
+export function updateCreneau (req, res, next) {
   Creneau.findByIdAndUpdate(req.params.id, req.body.creneau, { new: true }, (err, creneau) => {
     if (err) {
       next(err)
@@ -82,7 +82,7 @@ export function updateCreneau(req, res, next) {
  * @param res
  * @returns void
  */
-export function deleteCreneau(req, res) {
+export function deleteCreneau (req, res) {
   Creneau.findOne({ _id: req.params.id }).exec((err, creneau) => {
     if (err) {
       return res.status(500).send({
