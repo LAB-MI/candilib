@@ -223,12 +223,14 @@ class CalendarListPage extends Component {
     const { candidat } = this.state;
 
     // Récupération des dates
-    const datePratique = moment(candidat.dateDernierEchecPratique).add(45, 'days');
-    const dateSelected = moment(creneau.start);
-    const delai = dateSelected.diff(datePratique);
-    if(delai < 0) {
-      alert(`Suite à votre dernier passage du\n${moment(candidat.dateDernierEchecPratique).format(' DD MMMM YYYY')},\nvous ne pouvez pas réserver une nouvelle place avant le\n${datePratique.format('DD MMMM YYYY')}`);
-      return;
+    if (candidat.dateDernierEchecPratique !== "") {
+      const dateProchaineReservation = moment(candidat.dateDernierEchecPratique).add(45, 'days');
+      const dateSelected = moment(creneau.start);
+      const delai = dateSelected.diff(dateProchaineReservation);
+      if(delai < 0) {
+        alert(`Suite à votre dernier passage du\n${moment(candidat.dateDernierEchecPratique).format(' DD MMMM YYYY')},\nvous ne pouvez pas réserver une nouvelle place avant le\n${dateProchaineReservation.format('DD MMMM YYYY')}`);
+        return;
+      }
     }
 
     // Recuperation et Modification reservation

@@ -338,7 +338,7 @@ class AdminPage extends Component {
                 onSelectEvent={
                   event => {
                     if(event.isSelected) {
-                      alert(`${event.title}\n${moment(event.start).format('LLL')}\nCette place est réservée et ne peut être supprimée/`); // eslint-disable-line no-alert
+                      alert(`${event.title}\n${moment(event.start).format('LLL')}\nCette place est réservée et ne peut être supprimée`); // eslint-disable-line no-alert
                     } else {
                       if(window.confirm(`Voulez-vous supprimer cette place ?\n${event.title}\n${moment(event.start).format('LLL')}\nAttention! Cette action est irréversible !`)) {
                         this.deleteCreneau(event.id);
