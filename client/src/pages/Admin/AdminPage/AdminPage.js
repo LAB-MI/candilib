@@ -117,6 +117,7 @@ class AdminPage extends Component {
             isSelected: item.isSelected,
             inspecteur: item.inspecteur,
             centre: item.centre,
+            idCandidat: item.candidat,
             start: moment(
               moment.utc(item.date).format('YYYY-MM-DD HH:mm:ss'),
             ).toDate(),
@@ -127,6 +128,19 @@ class AdminPage extends Component {
         });
 
         this.setState({ eventsCreneaux });
+      });
+  }
+
+  deleteCreneau(idCreneau) {
+    let { creneau } = this.state;
+    api.admin.removeCreneau(idCreneau)
+      .then(eventsCreneaux => {
+        eventsCreneaux = eventsCreneaux.filter(row => row._id !== creneau._id);
+        this.setState({ eventsCreneaux });
+      })
+      .catch(err => {
+        console.log(err);
+        // this.props.onMessage(err);
       });
   }
 
@@ -322,7 +336,17 @@ class AdminPage extends Component {
                 defaultView="work_week"
                 eventPropGetter={eventStyleGetter}
                 onSelectEvent={
-                  event => alert(`${event.title} : ${moment(event.start).format('LLL')}`) // eslint-disable-line no-alert
+                  event => {
+                    if(event.isSelected) {
+                      alert(`${event.title}\n${moment(event.start).format('LLL')}\nCette place est réservée et ne peut être supprimée`); // eslint-disable-line no-alert
+                    } else {
+                      if(window.confirm(`Voulez-vous supprimer cette place ?\n${event.title}\n${moment(event.start).format('LLL')}\nAttention! Cette action est irréversible !`)) {
+                        this.deleteCreneau(event.id);
+                        alert(`Créneau supprimé.`);
+                        this.getCreneauxCandidats();
+                      } // eslint-disable-line no-alert
+                    }
+                  }
                 }
                 components={{
                   event: CreneauEvent,
