@@ -834,7 +834,7 @@ export const uploadAurigeCSV = (req, res, next) => {
       const myDate = `${day.trim()} ${time.trim()}`
       const formattedDate = moment(
         moment(myDate, 'DD-MM-YYYY HH:mm:ss').format('YYYY-MM-DD HH:mm:ss'),
-      ).add(60, 'minutes')
+      ).add(120, 'minutes')
       creneau.date = formattedDate
       creneau.inspecteur = inspecteur && inspecteur.trim().toUpperCase()
       creneau.centre = centre && centre.trim().toUpperCase()
